@@ -1,5 +1,5 @@
-resource "azurerm_firewall_policy" "fw_pl" { #TODO terraform docs documentation
-  name                = var.name             #TODO push to git
+resource "azurerm_firewall_policy" "fw_pl" {
+  name                = var.name
   location            = var.location         # TODO each module is its own repo on git
   resource_group_name = var.resource_group_name
 

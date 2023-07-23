@@ -28,7 +28,7 @@ module "hub_log_analytics" {
 
 locals {
   hub_network_security_groups     = jsondecode(file("./objects/hub/network_security_groups.json"))
-  hub_network_security_groups_map = {for nsg in local.hub_network_security_groups : nsg.name => nsg}
+  hub_network_security_groups_map = { for nsg in local.hub_network_security_groups : nsg.name => nsg }
 }
 
 module "hub_network_security_groups" {
@@ -45,8 +45,8 @@ module "hub_network_security_groups" {
 }
 
 locals {
-  hub_route_tables     = jsondecode(file("./objects/hub/route_tables.json")) #TODO templatefile
-  hub_route_tables_map = {for rt in local.hub_route_tables : rt.name => rt}
+  hub_route_tables     = jsondecode(templatefile("./objects/hub/route_tables.json", local.route_table_vars))
+  hub_route_tables_map = { for rt in local.hub_route_tables : rt.name => rt }
 }
 
 module "hub_route_tables" {
@@ -62,7 +62,7 @@ module "hub_route_tables" {
 locals {
   hub_vnet_name          = "${local.prefix}-hub-vnet"
   hub_vnet_address_space = ["10.0.0.0/16"]
-  hub_vnet_subnets       = [
+  hub_vnet_subnets = [
     {
       name                               = "GatewaySubnet"
       address_prefixes                   = ["10.0.0.0/24"]
@@ -204,7 +204,7 @@ locals {
   hub_acr_nic_name       = "${local.prefix}-hub-acr-nic"
   hub_acr_pe_name        = "${local.prefix}-hub-acr-pe"
   hub_acr_pe_subresource = "registry"
-  hub_acr_vnet_links     = [
+  hub_acr_vnet_links = [
     {
       vnet_id = module.work_virtual_network.id
       name    = "work-link"

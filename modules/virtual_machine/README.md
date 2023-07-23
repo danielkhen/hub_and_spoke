@@ -35,8 +35,9 @@
 
 | Name | Description |
 |------|-------------|
-| <a name="output_id"></a> [id](#output\_id) | A list of all virtual machines ids. |
+| <a name="output_ids"></a> [ids](#output\_ids) | A list of all virtual machines ids. |
 | <a name="output_names"></a> [names](#output\_names) | A list of all virtual machines names. |
+| <a name="output_nic_ids"></a> [nic\_ids](#output\_nic\_ids) | A list of all network interfaces ids. |
 | <a name="output_objects"></a> [objects](#output\_objects) | A list of all virtual machines. |
 
 ## Resources

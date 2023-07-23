@@ -30,7 +30,7 @@ module "monitor_network_security_groups" {
 }
 
 locals {
-  monitor_route_tables     = jsondecode(file("./objects/monitor/route_tables.json")) #TODO templatefile
+  monitor_route_tables     = jsondecode(templatefile("./objects/monitor/route_tables.json", local.route_table_vars))
   monitor_route_tables_map = { for rt in local.monitor_route_tables : rt.name => rt }
 }
 
@@ -74,12 +74,12 @@ locals {
   monitor_vm_os_disk  = merge(local.vm_os_disk, { name = "${local.prefix}-monitor-vm-os-disk" })
   monitor_vm_role_assignments = [ #TODO move to template file
     {
-      scope   = module.hub_log_analytics.id
-      role = "Reader"
+      scope = module.hub_log_analytics.id
+      role  = "Reader"
     },
     {
-      scope   = data.azurerm_log_analytics_workspace.activity_log_analytics.id
-      role = "Reader"
+      scope = data.azurerm_log_analytics_workspace.activity_log_analytics.id
+      role  = "Reader"
     }
   ]
 }
@@ -105,4 +105,23 @@ module "monitor_vm" {
 
   log_analytics    = true
   log_analytics_id = module.hub_log_analytics.id
+}
+
+locals {
+  monitor_vm_dns_name    = "monitor.net"
+  monitor_vm_record_name = "grafana"
+  monitor_vm_vnet_links = [{
+    vnet_id = module.hub_virtual_network.id
+    name    = "hub-link"
+  }]
+}
+
+module "monitor_vm_record" {
+  source = "./modules/dns_a_record"
+
+  resource_group_name = azurerm_resource_group.monitor.name
+  dns_name            = local.monitor_vm_dns_name
+  name                = local.monitor_vm_record_name
+  records             = [module.monitor_vm.private_ips[0]]
+  vnet_links          = local.monitor_vm_vnet_links
 }

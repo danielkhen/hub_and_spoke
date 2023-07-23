@@ -155,6 +155,24 @@
             ]
           }
         ]
+      },
+      {
+        "name": "monitor-vm-dns",
+        "action": "Allow",
+        "priority": 900,
+        "rules": [
+          {
+            "name": "monitor.net",
+            "source_addresses": ["172.0.0.0/16"],
+            "destination_fqdns": ["grafana.monitor.net"],
+            "protocols": [
+              {
+                "type": "Http",
+                "port": 80
+              }
+            ]
+          }
+        ]
       }
     ]
   }

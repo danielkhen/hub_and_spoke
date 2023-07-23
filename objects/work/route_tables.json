@@ -4,33 +4,33 @@
     "routes": [
       {
         "name": "monitor-vnet",
-        "address_prefix": "10.2.0.0/16",
+        "address_prefix": "${address_prefixes.monitor_vnet}",
         "next_hop_type": "VirtualAppliance",
-        "next_hop_in_ip_address": "10.0.1.4"
+        "next_hop_in_ip_address": "${ip_addresses.firewall}"
       },
       {
         "name": "outbound",
         "address_prefix": "0.0.0.0/0",
         "next_hop_type": "VirtualAppliance",
-        "next_hop_in_ip_address": "10.0.1.4"
+        "next_hop_in_ip_address": "${ip_addresses.firewall}"
       },
       {
         "name": "hub-vnet",
-        "address_prefix": "10.0.0.0/16",
+        "address_prefix": "${address_prefixes.hub_vnet}",
         "next_hop_type": "VirtualAppliance",
-        "next_hop_in_ip_address": "10.0.1.4"
+        "next_hop_in_ip_address": "${ip_addresses.firewall}"
       },
       {
-        "name": "vng-address-pool-1",
-        "address_prefix": "172.0.0.0/17",
+        "name": "vpn-address-pool-1",
+        "address_prefix": "${address_prefixes.vpn_pool_1}",
         "next_hop_type": "VirtualAppliance",
-        "next_hop_in_ip_address": "10.0.1.4"
+        "next_hop_in_ip_address": "${ip_addresses.firewall}"
       },
       {
-        "name": "vng-address-pool-2",
-        "address_prefix": "172.0.128.0/17",
+        "name": "vpn-address-pool-2",
+        "address_prefix": "${address_prefixes.vpn_pool_2}",
         "next_hop_type": "VirtualAppliance",
-        "next_hop_in_ip_address": "10.0.1.4"
+        "next_hop_in_ip_address": "${ip_addresses.firewall}"
       }
     ]
   }

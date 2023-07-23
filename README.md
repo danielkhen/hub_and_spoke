@@ -44,6 +44,7 @@ No outputs.
 | <a name="module_monitor_route_tables"></a> [monitor\_route\_tables](#module\_monitor\_route\_tables) | ./modules/route_table | n/a |
 | <a name="module_monitor_virtual_network"></a> [monitor\_virtual\_network](#module\_monitor\_virtual\_network) | ./modules/virtual_network | n/a |
 | <a name="module_monitor_vm"></a> [monitor\_vm](#module\_monitor\_vm) | ./modules/virtual_machine | n/a |
+| <a name="module_monitor_vm_record"></a> [monitor\_vm\_record](#module\_monitor\_vm\_record) | ./modules/dns_a_record | n/a |
 | <a name="module_work_aks"></a> [work\_aks](#module\_work\_aks) | ./modules/kubernetes_cluster | n/a |
 | <a name="module_work_network_security_groups"></a> [work\_network\_security\_groups](#module\_work\_network\_security\_groups) | ./modules/network_security_group | n/a |
 | <a name="module_work_private_storage"></a> [work\_private\_storage](#module\_work\_private\_storage) | ./modules/storage_account | n/a |

@@ -30,7 +30,7 @@ module "work_network_security_groups" {
 }
 
 locals {
-  work_route_tables     = jsondecode(file("./objects/work/route_tables.json")) #TODO templatefile
+  work_route_tables     = jsondecode(templatefile("./objects/work/route_tables.json", local.route_table_vars))
   work_route_tables_map = { for rt in local.work_route_tables : rt.name => rt }
 }
 
