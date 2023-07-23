@@ -1,0 +1,42 @@
+[
+  {
+    "name": "hub-gateway-rt",
+    "routes": [
+      {
+        "name": "work-vnet",
+        "address_prefix": "10.1.0.0/16",
+        "next_hop_type": "VirtualAppliance",
+        "next_hop_in_ip_address": "10.0.1.4"
+      },
+      {
+        "name": "monitor-vnet",
+        "address_prefix": "10.2.0.0/16",
+        "next_hop_type": "VirtualAppliance",
+        "next_hop_in_ip_address": "10.0.1.4"
+      }
+    ]
+  },
+  {
+    "name": "hub-rt",
+    "routes": [
+      {
+        "name": "work-vnet",
+        "address_prefix": "10.1.0.0/16",
+        "next_hop_type": "VirtualAppliance",
+        "next_hop_in_ip_address": "10.0.1.4"
+      },
+      {
+        "name": "monitor-vnet",
+        "address_prefix": "10.2.0.0/16",
+        "next_hop_type": "VirtualAppliance",
+        "next_hop_in_ip_address": "10.0.1.4"
+      },
+      {
+        "name": "outbound",
+        "address_prefix": "0.0.0.0/0",
+        "next_hop_type": "VirtualAppliance",
+        "next_hop_in_ip_address": "10.0.1.4"
+      }
+    ]
+  }
+]

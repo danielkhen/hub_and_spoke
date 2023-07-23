@@ -1,0 +1,6 @@
+[
+  {
+    "name": "hub-ACRSubnet-nsg",
+    "network_security_rules": []
+  }
+]

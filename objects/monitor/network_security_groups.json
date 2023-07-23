@@ -1,0 +1,6 @@
+[
+  {
+    "name": "monitor-MonitorSubnet-nsg",
+    "network_security_rules": []
+  }
+]

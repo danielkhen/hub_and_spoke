@@ -1,0 +1,161 @@
+[
+  {
+    "name": "application-group",
+    "priority": 200,
+    "rule_collections": [
+      {
+        "name": "vms-limited-downloads",
+        "action": "Allow",
+        "priority": 300,
+        "rules": [
+          {
+            "name": "azure-ubuntu-archive",
+            "source_addresses": ["10.1.0.0/24","10.2.0.0/24"],
+            "destination_fqdns": ["azure.archive.ubuntu.com"],
+            "protocols": [
+              {
+                "type": "Http",
+                "port": 80
+              }
+            ]
+          },
+          {
+            "name": "google-apis",
+            "source_addresses": ["10.1.0.0/24"],
+            "destination_fqdns": ["storage.googleapis.com"],
+            "protocols": [
+              {
+                "type": "Https",
+                "port": 443
+              }
+            ]
+          },
+          {
+            "name": "docker",
+            "source_addresses": ["10.1.0.0/24", "10.2.0.0/24"],
+            "destination_fqdns": ["auth.docker.io", "registry-1.docker.io", "index.docker.io", "dseasb33srnrn.cloudfront.net", "production.cloudflare.docker.com"],
+            "protocols": [
+              {
+                "type": "Https",
+                "port": 443
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "work-vm-azure-access",
+        "action": "Allow",
+        "priority": 400,
+        "rules": [
+          {
+            "name": "active-directory",
+            "source_addresses": ["10.1.0.0/24"],
+            "destination_fqdns": ["login.microsoftonline.com"],
+            "protocols": [
+              {
+                "type": "Https",
+                "port": 443
+              }
+            ]
+          },
+          {
+            "name": "resource-manager-both-vms",
+            "source_addresses": ["10.1.0.0/24"],
+            "destination_fqdns": ["management.azure.com"],
+            "protocols": [
+              {
+                "type": "Https",
+                "port": 443
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "monitor-vm-azure-access",
+        "action": "Allow",
+        "priority": 500,
+        "rules": [
+          {
+            "name": "active-directory",
+            "source_addresses": ["10.2.0.0/24"],
+            "destination_fqdns": ["api.loganalytics.io"],
+            "protocols": [
+              {
+                "type": "Https",
+                "port": 443
+              }
+            ]
+          },
+          {
+            "name": "resource-manager-both-vms",
+            "source_addresses": ["10.2.0.0/24"],
+            "destination_fqdns": ["management.azure.com"],
+            "protocols": [
+              {
+                "type": "Https",
+                "port": 443
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "acr-access",
+        "action": "Allow",
+        "priority": 600,
+        "rules": [
+          {
+            "name": "acr-access",
+            "source_addresses": ["10.1.0.0/24", "10.1.2.0/24"],
+            "destination_fqdns": ["dtfhubacr.azurecr.io", "dtfhubacr.westeurope.data.azurecr.io"],
+            "destination_fqdn_tags": [],
+            "protocols": [
+              {
+                "type": "Https",
+                "port": 443
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "aks-access",
+        "action": "Allow",
+        "priority": 700,
+        "rules": [
+          {
+            "name": "aks-fqdn-tags",
+            "source_addresses": ["10.1.2.0/24"],
+            "destination_fqdn_tags": ["AzureKubernetesService"],
+            "protocols": [
+              {
+                "type": "Https",
+                "port": 443
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "aks-diagnostics",
+        "action": "Allow",
+        "priority": 800,
+        "rules": [
+          {
+            "name": "monitor-logs",
+            "source_addresses": ["10.1.2.0/24"],
+            "destination_fqdns": ["196532a9-0816-479d-a9b1-5907fa82fa85.ods.opinsights.azure.com"],
+            "protocols": [
+              {
+                "type": "Https",
+                "port": 443
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]

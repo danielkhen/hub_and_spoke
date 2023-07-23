@@ -1,0 +1,29 @@
+[
+  {
+    "name": "network-group",
+    "priority": 100,
+    "rule_collections": [
+      {
+        "name": "vm-access",
+        "action": "Allow",
+        "priority": 1000,
+        "rules": [
+          {
+            "name": "ssh",
+            "source_addresses": ["172.0.0.0/16"],
+            "protocols": ["TCP"],
+            "destination_ports":["22"],
+            "destination_addresses": ["10.1.0.0/24", "10.2.0.0/24"]
+          },
+          {
+            "name": "grafana-monitor",
+            "source_addresses": ["172.0.0.0/16"],
+            "protocols": ["TCP"],
+            "destination_ports":["80"],
+            "destination_addresses": ["10.2.0.0/24"]
+          }
+        ]
+      }
+]
+  }
+]

@@ -1,0 +1,37 @@
+[
+  {
+    "name": "work-rt",
+    "routes": [
+      {
+        "name": "monitor-vnet",
+        "address_prefix": "10.2.0.0/16",
+        "next_hop_type": "VirtualAppliance",
+        "next_hop_in_ip_address": "10.0.1.4"
+      },
+      {
+        "name": "outbound",
+        "address_prefix": "0.0.0.0/0",
+        "next_hop_type": "VirtualAppliance",
+        "next_hop_in_ip_address": "10.0.1.4"
+      },
+      {
+        "name": "hub-vnet",
+        "address_prefix": "10.0.0.0/16",
+        "next_hop_type": "VirtualAppliance",
+        "next_hop_in_ip_address": "10.0.1.4"
+      },
+      {
+        "name": "vng-address-pool-1",
+        "address_prefix": "172.0.0.0/17",
+        "next_hop_type": "VirtualAppliance",
+        "next_hop_in_ip_address": "10.0.1.4"
+      },
+      {
+        "name": "vng-address-pool-2",
+        "address_prefix": "172.0.128.0/17",
+        "next_hop_type": "VirtualAppliance",
+        "next_hop_in_ip_address": "10.0.1.4"
+      }
+    ]
+  }
+]
