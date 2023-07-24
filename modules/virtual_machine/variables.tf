@@ -36,14 +36,8 @@ variable "admin_password" {
   default     = null
 }
 
-variable "log_analytics" {
-  description = "(Optional) Use a log analytics workspace to capture logs and metrics."
-  type        = bool
-  default     = false
-}
-
 variable "log_analytics_id" {
-  description = "(Optional) The id of the log analytics workspace, Required when log analytics enabled."
+  description = "(Optional) The id of the log analytics workspace."
   type        = string
   default     = null
 }
@@ -51,7 +45,11 @@ variable "log_analytics_id" {
 variable "identity_type" {
   description = "(Optional) The type of the identity of the virtual machines."
   type        = string
-  default     = null
+  default     = "None"
+  validation {
+    condition = contains(["SystemAssigned", "UserAssigned", "None"], var.identity_type)
+    error_message = "Identity should be SystemAssigned, UserAssigned or None"
+  }
 }
 
 variable "role_assignments" {
@@ -87,8 +85,13 @@ variable "ip_configuration_name" {
 }
 
 variable "os_type" {
-  description = "(Required) The os type of the vm, linux or windows."
+  description = "(Required) The os type of the vm, Linux or Windows."
   type        = string
+
+  validation {
+    condition = contains(["Windows", "Linux"], var.os_type)
+    error_message = "Os type should be Windows or Linux."
+  }
 }
 
 variable "disable_password_authentication" {
@@ -129,4 +132,21 @@ variable "os_disk" {
       placement = optional(string, null)
     }), null)
   })
+}
+
+variable "disks" {
+  description = "(Optional) A list of managed disk to attach to the virtual machines."
+  type = list(object({
+    name                   = string
+    storage_account_Type   = string
+    create_option          = string
+    disk_size_gb           = optional(number, null)
+    disk_encryption_set_id = optional(string, null)
+    disk_iops_read_write   = optional(number, null)
+    disk_mbps_read_write   = optional(number, null)
+    disk_iops_read_only    = optional(number, null)
+    disk_mbps_read_only    = optional(number, null)
+    upload_size_bytes      = optional(number, null)
+  }))
+  default = []
 }

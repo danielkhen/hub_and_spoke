@@ -1,0 +1,10 @@
+[
+  {
+    "scope": "${resource_ids.hub_log_analytics}",
+    "role": "Reader"
+  },
+  {
+    "scope": "${resource_ids.activity_log_analytics}",
+    "role": "Reader"
+  }
+]

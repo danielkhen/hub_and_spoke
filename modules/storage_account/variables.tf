@@ -16,21 +16,47 @@ variable "resource_group_name" {
 variable "account_tier" {
   description = "(Required) The tier of the storage account."
   type        = string
+
+  validation {
+    condition     = contains(["Standard", "Premium"], var.account_tier)
+    error_message = "The account tier should be Standard or Premium."
+  }
 }
 
 variable "account_replication_type" {
   description = "(Required) The type of replication used for this storage account."
   type        = string
+
+  validation {
+    condition     = contains(["LRS", "GRS", "RAGRS", "ZRS", "GZRS", "RAGZRS"], var.account_replication_type)
+    error_message = "Replication type possible values are LRS, GRS, RAGRS, ZRS, GZRS and RAGZRS."
+  }
 }
 
-variable "log_analytics" {
-  description = "(Optional) Use a log analytics workspace to capture logs and metrics."
-  type        = bool
-  default     = false
+variable "account_kind" {
+  description = "(Optional) The kind of the storage account."
+  type        = string
+  default     = "StorageV2"
+
+  validation {
+    condition = contains(["BlobStorage", "BlockBlobStorage", "FileStorage", "Storage", "StorageV2"], var.account_kind)
+    error_message = "Account kind possible values are BlobStorage, BlockBlobStorage, FileStorage, Storage and StorageV2."
+  }
+}
+
+variable "access_tier" {
+  description = "(Optional) The access tier of the storage account."
+  type        = string
+  default     = "Hot"
+
+  validation {
+    condition     = contains(["Hot", "Cool"], var.access_tier)
+    error_message = "Access tier should be Hot or Cold."
+  }
 }
 
 variable "log_analytics_id" {
-  description = "(Optional) The id of the log analytics workspace, Required when log analytics enabled."
+  description = "(Optional) The id of the log analytics workspace."
   type        = string
   default     = null
 }

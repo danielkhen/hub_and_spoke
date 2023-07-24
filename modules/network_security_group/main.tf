@@ -35,5 +35,4 @@ module "nsg_diagnostics" {
   name                       = var.diagnostic_settings_name
   target_resource_id         = azurerm_network_security_group.nsg.id
   log_analytics_workspace_id = var.log_analytics_id
-  enabled                    = var.log_analytics
 }

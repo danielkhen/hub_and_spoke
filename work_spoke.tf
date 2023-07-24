@@ -12,7 +12,7 @@ resource "azurerm_resource_group" "work" {
 }
 
 locals {
-  work_network_security_groups     = jsondecode(file("./objects/work/network_security_groups.json"))
+  work_network_security_groups     = jsondecode(templatefile("./objects/work/network_security_groups.json", local.nsg_vars))
   work_network_security_groups_map = { for nsg in local.work_network_security_groups : nsg.name => nsg }
 }
 
@@ -25,7 +25,6 @@ module "work_network_security_groups" {
   resource_group_name    = azurerm_resource_group.work.name
   network_security_rules = each.value.network_security_rules
 
-  log_analytics    = true
   log_analytics_id = module.hub_log_analytics.id
 }
 
@@ -47,25 +46,31 @@ module "work_route_tables" {
 locals {
   work_vnet_name          = "${local.prefix}-work-vnet"
   work_vnet_address_space = ["10.1.0.0/16"]
-  work_vnet_subnets = [
-    {
-      name                      = "WorkSubnet"
-      address_prefixes          = ["10.1.0.0/24"]
-      network_security_group_id = module.work_network_security_groups["work-WorkSubnet-nsg"].id
-      route_table_id            = module.work_route_tables["work-rt"].id
-    },
-    {
-      name                      = "StorageSubnet"
-      address_prefixes          = ["10.1.1.0/24"]
-      network_security_group_id = module.work_network_security_groups["work-StorageSubnet-nsg"].id
-      route_table_id            = module.work_route_tables["work-rt"].id
-    },
-    {
-      name                      = "AKSSubnet"
-      address_prefixes          = ["10.1.2.0/24"]
-      network_security_group_id = module.work_network_security_groups["work-AKSSubnet-nsg"].id
-      route_table_id            = module.work_route_tables["work-rt"].id
+  work_vnet_subnets_map = {
+    WorkSubnet = {
+      address_prefixes       = ["10.1.0.0/24"]
+      network_security_group = "work-WorkSubnet-nsg"
+      route_table            = "work-rt"
     }
+    StorageSubnet = {
+      address_prefixes       = ["10.1.1.0/24"]
+      network_security_group = "work-StorageSubnet-nsg"
+      route_table            = "work-rt"
+    }
+    AKSSubnet = {
+      address_prefixes       = ["10.1.2.0/24"]
+      network_security_group = "work-AKSSubnet-nsg"
+      route_table            = "work-rt"
+    }
+  }
+  work_vnet_subnets = [
+    for name, subnet in local.work_vnet_subnets_map : merge(subnet, {
+      name                               = name
+      network_security_group_id          = can(subnet.network_security_group) ? module.work_network_security_groups[subnet.network_security_group].id : null
+      route_table_id                     = can(subnet.route_table) ? module.work_route_tables[subnet.route_table].id : null
+      network_security_group_association = can(subnet.network_security_group)
+      route_table_association            = can(subnet.route_table)
+    })
   ]
 }
 
@@ -94,7 +99,6 @@ module "work_private_storage" {
   account_tier             = local.hub_storage_account_tier
   account_replication_type = local.hub_storage_account_replication_type
 
-  log_analytics    = true
   log_analytics_id = module.hub_log_analytics.id
 }
 
@@ -124,7 +128,6 @@ module "work_subresources_pes" {
   subnet_id        = module.work_virtual_network.subnet_ids["StorageSubnet"]
   vnet_links       = local.work_storage_vnet_links
 
-  log_analytics    = true
   log_analytics_id = module.hub_log_analytics.id
 }
 
@@ -132,16 +135,11 @@ locals {
   work_aks_name                = "${local.prefix}-work-aks"
   work_aks_node_resource_group = "${local.prefix}-work-aks-rg"
   work_aks_network_plugin      = "azure"
-  work_aks_node_pools = [
-    #TODO move to file after templatefile
-    {
-      name           = "default"
-      node_count     = 1
-      vm_size        = "Standard_B2s"
-      vnet_subnet_id = module.work_virtual_network.subnet_ids["AKSSubnet"]
-      default        = true
+  work_aks_node_pools = jsondecode(templatefile("./objects/work/aks_node_pools.json", {
+    subnet_ids = {
+      aks = module.work_virtual_network.subnet_ids["AKSSubnet"]
     }
-  ]
+  }))
 }
 
 module "work_aks" {
@@ -155,7 +153,6 @@ module "work_aks" {
   container_registry_id = azurerm_container_registry.hub_acr.id
   node_pools            = local.work_aks_node_pools
 
-  log_analytics    = true
   log_analytics_id = module.hub_log_analytics.id
 }
 
@@ -163,16 +160,12 @@ locals {
   work_vm_name     = "${local.prefix}-work-vm"
   work_vm_nic_name = "${local.prefix}-work-vm-nic"
   work_vm_os_disk  = merge(local.vm_os_disk, { name = "${local.prefix}-work-vm-os-disk" })
-  work_vm_role_assignments = [ #TODO move to template file
-    {
-      scope = module.work_aks.id
-      role  = "Azure Kubernetes Service Cluster User Role"
-    },
-    {
-      scope = azurerm_container_registry.hub_acr.id
-      role  = "AcrPush"
+  work_vm_role_assignments = jsondecode(templatefile("./objects/work/vm_role_assignments.json", {
+    resource_ids = {
+      work_aks = module.work_aks.id
+      hub_acr  = azurerm_container_registry.hub_acr.id
     }
-  ]
+  }))
 }
 
 module "work_vm" {
@@ -194,6 +187,5 @@ module "work_vm" {
   identity_type    = local.vm_identity_type
   role_assignments = local.work_vm_role_assignments
 
-  log_analytics    = true
   log_analytics_id = module.hub_log_analytics.id
 }

@@ -12,7 +12,7 @@ resource "azurerm_resource_group" "monitor" {
 }
 
 locals {
-  monitor_network_security_groups     = jsondecode(file("./objects/monitor/network_security_groups.json"))
+  monitor_network_security_groups     = jsondecode(templatefile("./objects/monitor/network_security_groups.json", local.nsg_vars))
   monitor_network_security_groups_map = { for nsg in local.monitor_network_security_groups : nsg.name => nsg }
 }
 
@@ -25,7 +25,6 @@ module "monitor_network_security_groups" {
   resource_group_name    = azurerm_resource_group.monitor.name
   network_security_rules = each.value.network_security_rules
 
-  log_analytics    = true
   log_analytics_id = module.hub_log_analytics.id
 }
 
@@ -48,13 +47,21 @@ module "monitor_route_tables" {
 locals {
   monitor_vnet_name          = "${local.prefix}-monitor-vnet"
   monitor_vnet_address_space = ["10.2.0.0/16"]
-  monitor_vnet_subnets = [
-    {
-      name                      = "MonitorSubnet"
-      address_prefixes          = ["10.2.0.0/24"]
-      network_security_group_id = module.monitor_network_security_groups["monitor-MonitorSubnet-nsg"].id
-      route_table_id            = module.monitor_route_tables["monitor-rt"].id
+  monitor_vnet_subnets_map = {
+    MonitorSubnet = {
+      address_prefixes       = ["10.2.0.0/24"]
+      network_security_group = "monitor-MonitorSubnet-nsg"
+      route_table            = "monitor-rt"
     }
+  }
+  monitor_vnet_subnets = [
+    for name, subnet in local.monitor_vnet_subnets_map : merge(subnet, {
+      name                               = name
+      network_security_group_id          = can(subnet.network_security_group) ? module.monitor_network_security_groups[subnet.network_security_group].id : null
+      route_table_id                     = can(subnet.route_table) ? module.monitor_route_tables[subnet.route_table].id : null
+      network_security_group_association = can(subnet.network_security_group)
+      route_table_association            = can(subnet.route_table)
+    })
   ]
 }
 
@@ -72,16 +79,12 @@ locals {
   monitor_vm_name     = "${local.prefix}-monitor-vm"
   monitor_vm_nic_name = "${local.prefix}-monitor-vm-nic"
   monitor_vm_os_disk  = merge(local.vm_os_disk, { name = "${local.prefix}-monitor-vm-os-disk" })
-  monitor_vm_role_assignments = [ #TODO move to template file
-    {
-      scope = module.hub_log_analytics.id
-      role  = "Reader"
-    },
-    {
-      scope = data.azurerm_log_analytics_workspace.activity_log_analytics.id
-      role  = "Reader"
+  monitor_vm_role_assignments = jsondecode(templatefile("./objects/monitor/vm_role_assignments.json", {
+    resource_ids = {
+      hub_log_analytics      = module.hub_log_analytics.id
+      activity_log_analytics = data.azurerm_log_analytics_workspace.activity_log_analytics.id
     }
-  ]
+  }))
 }
 
 module "monitor_vm" {
@@ -103,17 +106,18 @@ module "monitor_vm" {
   identity_type    = local.vm_identity_type
   role_assignments = local.monitor_vm_role_assignments
 
-  log_analytics    = true
   log_analytics_id = module.hub_log_analytics.id
 }
 
 locals {
   monitor_vm_dns_name    = "monitor.net"
   monitor_vm_record_name = "grafana"
-  monitor_vm_vnet_links = [{
-    vnet_id = module.hub_virtual_network.id
-    name    = "hub-link"
-  }]
+  monitor_vm_vnet_links = [
+    {
+      vnet_id = module.hub_virtual_network.id
+      name    = "hub-link"
+    }
+  ]
 }
 
 module "monitor_vm_record" {

@@ -66,7 +66,6 @@ module "fw_diagnostics" {
   name                       = var.fw_diagnostics_name
   target_resource_id         = azurerm_firewall.fw.id
   log_analytics_workspace_id = var.log_analytics_id
-  enabled                    = var.log_analytics
 }
 
 module "fw_pip_diagnostics" {
@@ -75,14 +74,13 @@ module "fw_pip_diagnostics" {
   name                       = var.pip_diagnostics_name
   target_resource_id         = azurerm_public_ip.fw_pip.id
   log_analytics_workspace_id = var.log_analytics_id
-  enabled                    = var.log_analytics
 }
 
 module "fw_mng_pip_diagnostics" {
   source = "../diagnostic_setting"
+  count  = var.forced_tunneling ? 1 : 0
 
   name                       = var.management_pip_diagnostics_name
   target_resource_id         = azurerm_public_ip.fw_mng_pip[0].id
   log_analytics_workspace_id = var.log_analytics_id
-  enabled                    = var.log_analytics && var.forced_tunneling
 }

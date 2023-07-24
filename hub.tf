@@ -27,7 +27,7 @@ module "hub_log_analytics" {
 }
 
 locals {
-  hub_network_security_groups     = jsondecode(file("./objects/hub/network_security_groups.json"))
+  hub_network_security_groups     = jsondecode(templatefile("./objects/hub/network_security_groups.json", local.nsg_vars))
   hub_network_security_groups_map = { for nsg in local.hub_network_security_groups : nsg.name => nsg }
 }
 
@@ -40,7 +40,6 @@ module "hub_network_security_groups" {
   resource_group_name    = azurerm_resource_group.hub.name
   network_security_rules = each.value.network_security_rules
 
-  log_analytics    = true
   log_analytics_id = module.hub_log_analytics.id
 }
 
@@ -62,31 +61,31 @@ module "hub_route_tables" {
 locals {
   hub_vnet_name          = "${local.prefix}-hub-vnet"
   hub_vnet_address_space = ["10.0.0.0/16"]
-  hub_vnet_subnets = [
-    {
-      name                               = "GatewaySubnet"
-      address_prefixes                   = ["10.0.0.0/24"]
-      route_table_id                     = module.hub_route_tables["hub-gateway-rt"].id
-      network_security_group_association = false
-    },
-    {
-      name                               = "AzureFirewallSubnet"
-      address_prefixes                   = ["10.0.1.0/24"]
-      route_table_association            = false
-      network_security_group_association = false
-    },
-    {
-      name                               = "AzureFirewallManagementSubnet"
-      address_prefixes                   = ["10.0.2.0/24"]
-      route_table_association            = false
-      network_security_group_association = false
-    },
-    {
-      name                      = "ACRSubnet"
-      address_prefixes          = ["10.0.3.0/24"]
-      network_security_group_id = module.hub_network_security_groups["hub-ACRSubnet-nsg"].id
-      route_table_id            = module.hub_route_tables["hub-rt"].id
+  hub_vnet_subnets_map = {
+    GatewaySubnet = {
+      address_prefixes = ["10.0.0.0/24"]
+      route_table      = "hub-gateway-rt"
     }
+    AzureFirewallSubnet = {
+      address_prefixes = ["10.0.1.0/24"]
+    }
+    AzureFirewallManagementSubnet = {
+      address_prefixes = ["10.0.2.0/24"]
+    }
+    ACRSubnet = {
+      address_prefixes       = ["10.0.3.0/24"]
+      network_security_group = "hub-ACRSubnet-nsg"
+      route_table            = "hub-rt"
+    }
+  }
+  hub_vnet_subnets = [
+    for name, subnet in local.hub_vnet_subnets_map : merge(subnet, {
+      name                               = name
+      network_security_group_id          = can(subnet.network_security_group) ? module.hub_network_security_groups[subnet.network_security_group].id : null
+      route_table_id                     = can(subnet.route_table) ? module.hub_route_tables[subnet.route_table].id : null
+      network_security_group_association = can(subnet.network_security_group)
+      route_table_association            = can(subnet.route_table)
+    })
   ]
 }
 
@@ -133,15 +132,29 @@ module "hub_vpn_gateway" {
   aad_tenant        = var.aad_tenant_id
   aad_audience      = local.aad_audience
 
-  log_analytics    = true
   log_analytics_id = module.hub_log_analytics.id
 }
 
 locals {
-  hub_fw_pl_name               = "${local.prefix}-hub-fw-pl"
-  hub_fw_pl_network_groups     = jsondecode(file("./objects/hub/network_rule_collection_groups.json"))
-  hub_fw_pl_application_groups = jsondecode(file("./objects/hub/application_rule_collection_groups.json"))
-  hub_fw_pl_nat_groups         = jsondecode(file("./objects/hub/nat_rule_collection_groups.json"))
+  hub_fw_pl_name = "${local.prefix}-hub-fw-pl"
+  hub_fw_rules_vars = {
+    address_prefixes = {
+      subnets = {
+        hub     = { for name, address_prefix in module.hub_virtual_network.subnet_address_prefixes : name => address_prefix[0] }
+        work    = { for name, address_prefix in module.work_virtual_network.subnet_address_prefixes : name => address_prefix[0] }
+        monitor = { for name, address_prefix in module.monitor_virtual_network.subnet_address_prefixes : name => address_prefix[0] }
+      }
+      vnets = {
+        hub_vnet     = local.hub_vnet_address_space[0]
+        work_vnet    = local.work_vnet_address_space[0]
+        monitor_vnet = local.monitor_vnet_address_space[0]
+      }
+      vpn = local.hub_vng_vpn_address_space[0]
+    }
+  }
+  hub_fw_pl_network_groups     = jsondecode(templatefile("./objects/hub/network_rule_collection_groups.json", local.hub_fw_rules_vars))
+  hub_fw_pl_application_groups = jsondecode(templatefile("./objects/hub/application_rule_collection_groups.json", local.hub_fw_rules_vars))
+  hub_fw_pl_nat_groups         = jsondecode(templatefile("./objects/hub/nat_rule_collection_groups.json", local.hub_fw_rules_vars))
 }
 
 module "hub_firewall_policy" {
@@ -178,7 +191,6 @@ module "hub_firewall" {
   management_public_ip_name = local.hub_fw_management_pip_name
   management_subnet_id      = module.hub_virtual_network.subnet_ids["AzureFirewallManagementSubnet"]
 
-  log_analytics    = true
   log_analytics_id = module.hub_log_analytics.id
 }
 
@@ -230,6 +242,5 @@ module "hub_acr_pe" {
   subnet_id        = module.hub_virtual_network.subnet_ids["ACRSubnet"]
   vnet_links       = local.hub_acr_vnet_links
 
-  log_analytics    = true
   log_analytics_id = module.hub_log_analytics.id
 }

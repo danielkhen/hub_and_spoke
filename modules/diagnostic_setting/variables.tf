@@ -19,10 +19,3 @@ variable "storage_account_id" {
   type        = string
   default     = null
 }
-
-
-variable "enabled" {
-  description = "(Optional) Should the diagnostic setting be enabled."
-  type        = bool
-  default     = true
-}

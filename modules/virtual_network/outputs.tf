@@ -17,3 +17,8 @@ output "subnet_ids" {
   description = "A map for subnet name to id."
   value       = { for subnet in azurerm_subnet.subnets : subnet.name => subnet.id }
 }
+
+output "subnet_address_prefixes" {
+  description = "A map for subnet name to address prefix."
+  value       = { for subnet in azurerm_subnet.subnets : subnet.name => subnet.address_prefixes }
+}

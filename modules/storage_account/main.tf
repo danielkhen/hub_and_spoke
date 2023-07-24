@@ -5,6 +5,8 @@ resource "azurerm_storage_account" "storage" {
 
   account_tier                  = var.account_tier
   account_replication_type      = var.account_replication_type
+  account_kind                  = var.account_kind
+  access_tier                   = var.access_tier
   enable_https_traffic_only     = var.enable_https_traffic_only
   public_network_access_enabled = var.public_network_access_enabled
 
@@ -19,7 +21,6 @@ module "storage_diagnostics" {
   name                       = "storage-diagnostics"
   target_resource_id         = azurerm_storage_account.storage.id
   log_analytics_workspace_id = var.log_analytics_id
-  enabled                    = var.log_analytics
 }
 
 locals {
@@ -37,5 +38,4 @@ module "subresources_diagnostics" {
   name                       = each.value.diagnostics_name
   target_resource_id         = each.value.target_resource_id
   log_analytics_workspace_id = var.log_analytics_id
-  enabled                    = var.log_analytics
 }

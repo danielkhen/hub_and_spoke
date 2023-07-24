@@ -12,18 +12,11 @@ resource "azurerm_log_analytics_workspace" "log_analytics" {
   }
 }
 
-resource "azurerm_monitor_diagnostic_setting" "log_analytics_diagnostics" {
-  count = var.log_analytics ? 1 : 0
+module "log_analytics_diagnostics" {
+  source = "../diagnostic_setting"
+  count  = var.log_analytics ? 1 : 0
 
   name                       = var.diagnostic_settings_name
   target_resource_id         = azurerm_log_analytics_workspace.log_analytics.id
   log_analytics_workspace_id = azurerm_log_analytics_workspace.log_analytics.id
-
-  enabled_log {
-    category_group = "allLogs"
-  }
-
-  metric {
-    category = "AllMetrics"
-  }
 }

@@ -14,8 +14,14 @@ variable "resource_group_name" {
 }
 
 variable "sku" {
-  description = "(Required) The SKU of the log analytics workspace."
+  description = "(Optional) The SKU of the log analytics workspace."
   type        = string
+  default     = "PerGB2018"
+
+  validation {
+    condition     = contains(["Free", "PerNode", "Premium", "Standard", "Standalone", "Unlimited", "CapacityReservation", "PerGB2018"], var.sku)
+    error_message = "SKU possible values are Free, PerNode, Premium, Standard, Standalone, Unlimited, CapacityReservation, and PerGB2018."
+  }
 }
 
 variable "internet_ingestion_enabled" {
@@ -31,7 +37,7 @@ variable "internet_query_enabled" {
 }
 
 variable "log_analytics" {
-  description = "(Optional) Use a log analytics workspace to capture logs and metrics."
+  description = "(Optional) capture logs and metrics."
   type        = bool
   default     = false
 }

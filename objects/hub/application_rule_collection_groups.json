@@ -10,7 +10,7 @@
         "rules": [
           {
             "name": "azure-ubuntu-archive",
-            "source_addresses": ["10.1.0.0/24","10.2.0.0/24"],
+            "source_addresses": ["${address_prefixes.subnets.work.WorkSubnet}", "${address_prefixes.subnets.monitor.MonitorSubnet}"],
             "destination_fqdns": ["azure.archive.ubuntu.com"],
             "protocols": [
               {
@@ -21,7 +21,7 @@
           },
           {
             "name": "google-apis",
-            "source_addresses": ["10.1.0.0/24"],
+            "source_addresses": ["${address_prefixes.subnets.work.WorkSubnet}"],
             "destination_fqdns": ["storage.googleapis.com"],
             "protocols": [
               {
@@ -32,7 +32,7 @@
           },
           {
             "name": "docker",
-            "source_addresses": ["10.1.0.0/24", "10.2.0.0/24"],
+            "source_addresses": ["${address_prefixes.subnets.work.WorkSubnet}", "${address_prefixes.subnets.monitor.MonitorSubnet}"],
             "destination_fqdns": ["auth.docker.io", "registry-1.docker.io", "index.docker.io", "dseasb33srnrn.cloudfront.net", "production.cloudflare.docker.com"],
             "protocols": [
               {
@@ -50,7 +50,7 @@
         "rules": [
           {
             "name": "active-directory",
-            "source_addresses": ["10.1.0.0/24"],
+            "source_addresses": ["${address_prefixes.subnets.work.WorkSubnet}"],
             "destination_fqdns": ["login.microsoftonline.com"],
             "protocols": [
               {
@@ -61,7 +61,7 @@
           },
           {
             "name": "resource-manager-both-vms",
-            "source_addresses": ["10.1.0.0/24"],
+            "source_addresses": ["${address_prefixes.subnets.work.WorkSubnet}", "${address_prefixes.subnets.monitor.MonitorSubnet}"],
             "destination_fqdns": ["management.azure.com"],
             "protocols": [
               {
@@ -79,19 +79,8 @@
         "rules": [
           {
             "name": "active-directory",
-            "source_addresses": ["10.2.0.0/24"],
+            "source_addresses": ["${address_prefixes.subnets.monitor.MonitorSubnet}"],
             "destination_fqdns": ["api.loganalytics.io"],
-            "protocols": [
-              {
-                "type": "Https",
-                "port": 443
-              }
-            ]
-          },
-          {
-            "name": "resource-manager-both-vms",
-            "source_addresses": ["10.2.0.0/24"],
-            "destination_fqdns": ["management.azure.com"],
             "protocols": [
               {
                 "type": "Https",
@@ -108,7 +97,7 @@
         "rules": [
           {
             "name": "acr-access",
-            "source_addresses": ["10.1.0.0/24", "10.1.2.0/24"],
+            "source_addresses": ["${address_prefixes.subnets.work.WorkSubnet}", "${address_prefixes.subnets.work.AKSSubnet}"],
             "destination_fqdns": ["dtfhubacr.azurecr.io", "dtfhubacr.westeurope.data.azurecr.io"],
             "destination_fqdn_tags": [],
             "protocols": [
@@ -127,7 +116,7 @@
         "rules": [
           {
             "name": "aks-fqdn-tags",
-            "source_addresses": ["10.1.2.0/24"],
+            "source_addresses": ["${address_prefixes.subnets.work.AKSSubnet}"],
             "destination_fqdn_tags": ["AzureKubernetesService"],
             "protocols": [
               {
@@ -145,7 +134,7 @@
         "rules": [
           {
             "name": "monitor-logs",
-            "source_addresses": ["10.1.2.0/24"],
+            "source_addresses": ["${address_prefixes.subnets.work.AKSSubnet}"],
             "destination_fqdns": ["196532a9-0816-479d-a9b1-5907fa82fa85.ods.opinsights.azure.com"],
             "protocols": [
               {
@@ -163,7 +152,7 @@
         "rules": [
           {
             "name": "monitor.net",
-            "source_addresses": ["172.0.0.0/16"],
+            "source_addresses": ["${address_prefixes.vpn}"],
             "destination_fqdns": ["grafana.monitor.net"],
             "protocols": [
               {

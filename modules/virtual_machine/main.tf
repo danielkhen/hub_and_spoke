@@ -1,7 +1,6 @@
-#TODO support adding a disk, with its constraints as validations.
 locals {
   ip_allocation_method = "Dynamic"
-  is_windows           = var.os_type == "windows"
+  is_windows           = var.os_type == "Windows"
 }
 
 
@@ -73,7 +72,7 @@ resource "azurerm_windows_virtual_machine" "vms" {
   }
 
   dynamic "identity" { #TODO test identities
-    for_each = var.identity_type == null ? [] : [true]
+    for_each = var.identity_type == "None" ? [] : [true]
 
     content {
       type         = var.identity_type
@@ -130,7 +129,7 @@ resource "azurerm_linux_virtual_machine" "vms" {
   }
 
   dynamic "identity" {
-    for_each = var.identity_type == null ? [] : [true]
+    for_each = var.identity_type == "None" ? [] : [true]
 
     content {
       type         = var.identity_type
@@ -143,6 +142,32 @@ resource "azurerm_linux_virtual_machine" "vms" {
   }
 }
 
+locals {
+  disks_map = merge([
+    for count in range(var.vm_count) : {
+      for disk in var.disks : "${disk.name}-${count}" => merge(disk, {
+        name = var.vm_count == 1 ? disk.name : "${disk.name}-${count}"
+      })
+    }
+  ]...)
+}
+
+resource "azurerm_managed_disk" "disks" { #TODO test me
+  for_each = local.disks_map
+
+  name                   = each.value.name
+  location               = var.location
+  resource_group_name    = var.resource_group_name
+  create_option          = each.value.create_option
+  storage_account_type   = each.value.storage_account_type
+  disk_encryption_set_id = each.value.disk_encryption_set_id
+  disk_iops_read_write   = each.value.disk_iops_read_write
+  disk_mbps_read_write   = each.value.disk_mbps_read_write
+  disk_iops_read_only    = each.value.disk_iops_read_only
+  disk_mbps_read_only    = each.value.disk_mbps_read_only
+  upload_size_bytes      = each.value.upload_size_bytes
+}
+
 module "nic_diagnostics" {
   source = "../diagnostic_setting"
   count  = var.vm_count
@@ -150,7 +175,6 @@ module "nic_diagnostics" {
   name                       = var.nic_diagnostics_name
   target_resource_id         = azurerm_network_interface.nics[count.index].id
   log_analytics_workspace_id = var.log_analytics_id
-  enabled                    = var.log_analytics
 }
 
 locals {

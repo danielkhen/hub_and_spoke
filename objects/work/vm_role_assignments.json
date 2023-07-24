@@ -1,0 +1,10 @@
+[
+  {
+    "scope": "${resource_ids.work_aks}",
+    "role": "Azure Kubernetes Service Cluster User Role"
+  },
+  {
+    "scope": "${resource_ids.hub_acr}",
+    "role": "AcrPush"
+  }
+]

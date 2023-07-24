@@ -1,22 +1,28 @@
 locals {
-  prefix            = "dtf"
-  location          = "westeurope"
+  prefix   = "dtf"
+  location = "westeurope"
 
   route_table_vars = {
     ip_addresses = {
-      firewall = "10.0.1.4"#cidrhost(local.hub_vnet_subnets["AzureFirewallSubnet"], 4)
+      firewall = cidrhost(local.hub_vnet_subnets_map.AzureFirewallSubnet.address_prefixes[0], 4)
     }
     address_prefixes = {
-      hub_vnet = local.hub_vnet_address_space[0]
-      work_vnet = local.work_vnet_address_space[0]
+      hub_vnet     = local.hub_vnet_address_space[0]
+      work_vnet    = local.work_vnet_address_space[0]
       monitor_vnet = local.monitor_vnet_address_space[0]
-      vpn_pool_1 = cidrsubnet(local.hub_vng_vpn_address_space[0], 1, 0)
-      vpn_pool_2 = cidrsubnet(local.hub_vng_vpn_address_space[0], 1, 1)
+      vpn_pool_1   = cidrsubnet(local.hub_vng_vpn_address_space[0], 1, 0)
+      vpn_pool_2   = cidrsubnet(local.hub_vng_vpn_address_space[0], 1, 1)
+    }
+  }
+
+  nsg_vars = {
+    subnets = {
+      WorkSubnet = local.work_vnet_subnets_map.WorkSubnet.address_prefixes[0]
     }
   }
 
   vm_size           = "Standard_B2s"
-  vm_os_type        = "linux"
+  vm_os_type        = "Linux"
   vm_admin_username = "daniel"
   vm_identity_type  = "SystemAssigned"
   vm_os_disk = {

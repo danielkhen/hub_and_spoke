@@ -22,6 +22,10 @@ resource "azurerm_kubernetes_cluster" "aks" {
     enable_auto_scaling   = local.default_node_pool.enable_auto_scaling
     vnet_subnet_id        = local.default_node_pool.vnet_subnet_id
     enable_node_public_ip = local.default_node_pool.enable_node_public_ip
+    max_pods              = local.default_node_pool.max_pods
+    max_count = local.default_node_pool.max_count
+    min_count             = local.default_node_pool.min_count
+    os_sku                = local.default_node_pool.os_sku
   }
 
   dynamic "identity" {
@@ -42,10 +46,10 @@ resource "azurerm_kubernetes_cluster" "aks" {
 }
 
 locals {
-  node_pools_map = { for node_pool in var.node_pools : node_pool.name => node_pool if !node_pool.default }
+  node_pools_map = {for node_pool in var.node_pools : node_pool.name => node_pool if !node_pool.default}
 }
 
-resource "azurerm_kubernetes_cluster_node_pool" "node_pools" { #TODO test me
+resource "azurerm_kubernetes_cluster_node_pool" "node_pools" {
   for_each = local.node_pools_map
 
   name                  = each.value.name
@@ -55,6 +59,11 @@ resource "azurerm_kubernetes_cluster_node_pool" "node_pools" { #TODO test me
   enable_auto_scaling   = each.value.enable_auto_scaling
   vnet_subnet_id        = each.value.vnet_subnet_id
   enable_node_public_ip = each.value.enable_node_public_ip
+  max_pods              = each.value.max_pods
+  max_count = each.value.max_count
+  min_count             = each.value.min_count
+  os_sku                = each.value.os_sku
+  os_type               = each.value.os_type
 }
 
 locals {
@@ -75,5 +84,4 @@ module "aks-diagnostics" {
   name                       = var.diagnostics_name
   target_resource_id         = azurerm_kubernetes_cluster.aks.id
   log_analytics_workspace_id = var.log_analytics_id
-  enabled                    = var.log_analytics
 }

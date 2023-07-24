@@ -1,5 +1,5 @@
 variable "name" {
-  description = "(Required) The name of the firewall policy." #TODO variable validation
+  description = "(Required) The name of the firewall policy."
   type        = string
 }
 
@@ -46,8 +46,8 @@ variable "application_rule_collection_groups" {
       rules = list(object({
         name                  = string
         source_addresses      = list(string)
-        destination_fqdns     = optional(list(string))
-        destination_fqdn_tags = optional(list(string))
+        destination_fqdns     = optional(list(string), [])
+        destination_fqdn_tags = optional(list(string), [])
         protocols = list(object({
           type = string
           port = string
@@ -72,7 +72,7 @@ variable "nat_rule_collection_groups" {
         source_addresses    = list(string)
         protocols           = list(string)
         destination_ports   = list(string)
-        destination_address = list(string)
+        destination_address = string
         translated_address  = string
         translated_port     = string
       }))

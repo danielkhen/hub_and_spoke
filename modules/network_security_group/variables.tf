@@ -13,14 +13,8 @@ variable "resource_group_name" {
   type        = string
 }
 
-variable "log_analytics" {
-  description = "(Optional) Use a log analytics workspace to capture logs and metrics."
-  type        = bool
-  default     = false
-}
-
 variable "log_analytics_id" {
-  description = "(Optional) The id of the log analytics workspace, Required when log analytics enabled."
+  description = "(Optional) The id of the log analytics workspace."
   type        = string
   default     = null
 }

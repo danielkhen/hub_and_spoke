@@ -27,8 +27,6 @@ resource "azurerm_public_ip" "vng_aa_pip" {
 }
 
 locals {
-  openvpn    = ["OpenVPN"] #TODO add those options
-  aad        = ["AAD"]
   aad_tenant = sensitive("https://login.microsoftonline.com/${var.aad_tenant}/")
   aad_issuer = sensitive("https://sts.windows.net/${var.aad_tenant}/")
 }
@@ -66,12 +64,33 @@ resource "azurerm_virtual_network_gateway" "vng" {
 
     content {
       address_space        = var.vpn_address_space
-      vpn_client_protocols = local.openvpn
-      vpn_auth_types       = local.aad
+      vpn_client_protocols = var.vpn_client_protocols
+      vpn_auth_types       = var.vpn_auth_types
 
       aad_tenant   = local.aad_tenant
       aad_audience = var.aad_audience
       aad_issuer   = local.aad_issuer
+
+      radius_server_address = var.radius_server_address
+      radius_server_secret  = var.radius_server_secret
+
+      dynamic "root_certificate" {
+        for_each = var.root_certificate == null ? [] : [true]
+
+        content {
+          name             = var.root_certificate.name
+          public_cert_data = var.root_certificate.public_cert_data
+        }
+      }
+
+      dynamic "revoked_certificate" {
+        for_each = var.revoked_certificate == null ? [] : [true]
+
+        content {
+          name       = var.revoked_certificate.name
+          thumbprint = var.revoked_certificate.thumbprint
+        }
+      }
     }
   }
 
@@ -86,7 +105,6 @@ module "vng_diagnostics" {
   name                       = var.vng_diagnostics_name
   target_resource_id         = azurerm_virtual_network_gateway.vng.id
   log_analytics_workspace_id = var.log_analytics_id
-  enabled                    = var.log_analytics
 }
 
 module "default_pip_diagnostics" {
@@ -95,14 +113,13 @@ module "default_pip_diagnostics" {
   name                       = var.default_pip_diagnostics_name
   target_resource_id         = azurerm_public_ip.vng_default_pip.id
   log_analytics_workspace_id = var.log_analytics_id
-  enabled                    = var.log_analytics
 }
 
 module "aa_pip_diagnostics" {
   source = "../diagnostic_setting"
+  count  = var.active_active ? 1 : 0
 
   name                       = var.aa_pip_diagnostics_name
   target_resource_id         = azurerm_public_ip.vng_aa_pip[0].id
   log_analytics_workspace_id = var.log_analytics_id
-  enabled                    = var.active_active && var.log_analytics
 }

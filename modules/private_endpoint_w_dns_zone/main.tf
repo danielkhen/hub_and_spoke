@@ -54,5 +54,4 @@ module "nic-diagnostics" {
   name                       = var.nic-diagnostics-name
   target_resource_id         = azurerm_private_endpoint.pe.network_interface[0].id
   log_analytics_workspace_id = var.log_analytics_id
-  enabled                    = var.log_analytics
 }

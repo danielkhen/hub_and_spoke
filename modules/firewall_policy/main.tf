@@ -1,6 +1,6 @@
 resource "azurerm_firewall_policy" "fw_pl" {
   name                = var.name
-  location            = var.location         # TODO each module is its own repo on git
+  location            = var.location # TODO each module is its own repo on git
   resource_group_name = var.resource_group_name
 
   lifecycle {
@@ -71,8 +71,8 @@ resource "azurerm_firewall_policy_rule_collection_group" "application_rule_colle
         content {
           name                  = rule.value.name
           source_addresses      = rule.value.source_addresses
-          destination_fqdns     = can(rule.value.destination_fqdns) ? rule.value.destination_fqdns : []
-          destination_fqdn_tags = can(rule.value.destination_fqdn_tags) ? rule.value.destination_fqdn_tags : []
+          destination_fqdns     = rule.value.destination_fqdns
+          destination_fqdn_tags = rule.value.destination_fqdn_tags
 
           dynamic "protocols" {
             for_each = rule.value.protocols
@@ -101,7 +101,7 @@ resource "azurerm_firewall_policy_rule_collection_group" "nat_rule_collection_gr
   firewall_policy_id = azurerm_firewall_policy.fw_pl.id
   priority           = each.value.priority
 
-  dynamic "nat_rule_collection" { #TODO test me
+  dynamic "nat_rule_collection" {
     for_each = each.value.rule_collections
 
     content {
@@ -117,7 +117,7 @@ resource "azurerm_firewall_policy_rule_collection_group" "nat_rule_collection_gr
           source_addresses    = rule.value.source_addresses
           protocols           = rule.value.protocols
           destination_ports   = rule.value.destination_ports
-          destination_address = rule.value.destination_addresses
+          destination_address = rule.value.destination_address
           translated_address  = rule.value.translated_address
           translated_port     = rule.value.translated_port
         }

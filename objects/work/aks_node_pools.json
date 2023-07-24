@@ -1,0 +1,9 @@
+[
+  {
+    "name": "default",
+    "node_count": 1,
+    "vm_size": "Standard_B2s",
+    "vnet_subnet_id": "${subnet_ids.aks}",
+    "default": true
+  }
+]

@@ -15,7 +15,7 @@ variable "resource_group_name" {
 
 variable "node_pools" {
   description = "(Required) A list of node pools, there must be exactly one node pool where the default property is true."
-  type = list(object({
+  type        = list(object({
     name                  = string
     node_count            = number
     vm_size               = string
@@ -23,6 +23,11 @@ variable "node_pools" {
     enable_auto_scaling   = optional(bool, false)
     default               = optional(bool, false)
     enable_node_public_ip = optional(bool, false)
+    max_pods              = optional(number, null)
+    min_count             = optional(number, null)
+    max_count             = optional(number, null)
+    os_sku                = optional(string, "Ubuntu")
+    os_type               = optional(string, "Linux")
   }))
 }
 
@@ -32,14 +37,8 @@ variable "container_registry_id" {
   default     = null
 }
 
-variable "log_analytics" {
-  description = "(Optional) Use a log analytics workspace to capture logs and metrics."
-  type        = bool
-  default     = false
-}
-
 variable "log_analytics_id" {
-  description = "(Optional) The id of the log analytics workspace, Required when log analytics enabled."
+  description = "(Optional) The id of the log analytics workspace."
   type        = string
   default     = null
 }
@@ -54,6 +53,11 @@ variable "network_plugin" {
   description = "(Optional) The network plugin of the aks, azure, kubenet or none."
   type        = string
   default     = "none"
+
+  validation {
+    condition     = contains(["azure", "kubenet", "none"], var.network_plugin)
+    error_message = "Network plugin possible values are azure, kubenet and none."
+  }
 }
 
 variable "private_cluster_enabled" {
