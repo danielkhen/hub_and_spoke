@@ -118,6 +118,7 @@ locals {
       name    = "hub-link"
     }
   ]
+  monitor_vm_record_type = "a"
 }
 
 module "monitor_vm_record" {
@@ -128,5 +129,5 @@ module "monitor_vm_record" {
   name                = local.monitor_vm_record_name
   records             = [module.monitor_vm.private_ips[0]]
   vnet_links          = local.monitor_vm_vnet_links
-  record_type         = "a"
+  record_type         = local.monitor_vm_record_type
 }
