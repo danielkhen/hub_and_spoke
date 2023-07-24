@@ -39,7 +39,7 @@ variable "account_kind" {
   default     = "StorageV2"
 
   validation {
-    condition = contains(["BlobStorage", "BlockBlobStorage", "FileStorage", "Storage", "StorageV2"], var.account_kind)
+    condition     = contains(["BlobStorage", "BlockBlobStorage", "FileStorage", "Storage", "StorageV2"], var.account_kind)
     error_message = "Account kind possible values are BlobStorage, BlockBlobStorage, FileStorage, Storage and StorageV2."
   }
 }

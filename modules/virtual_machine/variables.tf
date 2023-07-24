@@ -47,7 +47,7 @@ variable "identity_type" {
   type        = string
   default     = "None"
   validation {
-    condition = contains(["SystemAssigned", "UserAssigned", "None"], var.identity_type)
+    condition     = contains(["SystemAssigned", "UserAssigned", "None"], var.identity_type)
     error_message = "Identity should be SystemAssigned, UserAssigned or None"
   }
 }
@@ -89,7 +89,7 @@ variable "os_type" {
   type        = string
 
   validation {
-    condition = contains(["Windows", "Linux"], var.os_type)
+    condition     = contains(["Windows", "Linux"], var.os_type)
     error_message = "Os type should be Windows or Linux."
   }
 }

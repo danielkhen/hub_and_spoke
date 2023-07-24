@@ -15,7 +15,7 @@ variable "resource_group_name" {
 
 variable "node_pools" {
   description = "(Required) A list of node pools, there must be exactly one node pool where the default property is true."
-  type        = list(object({
+  type = list(object({
     name                  = string
     node_count            = number
     vm_size               = string

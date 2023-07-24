@@ -121,11 +121,12 @@ locals {
 }
 
 module "monitor_vm_record" {
-  source = "./modules/dns_a_record"
+  source = "./modules/dns_record"
 
   resource_group_name = azurerm_resource_group.monitor.name
   dns_name            = local.monitor_vm_dns_name
   name                = local.monitor_vm_record_name
   records             = [module.monitor_vm.private_ips[0]]
   vnet_links          = local.monitor_vm_vnet_links
+  record_type         = "a"
 }

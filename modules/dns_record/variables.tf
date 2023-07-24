@@ -9,7 +9,18 @@ variable "resource_group_name" {
 }
 
 variable "dns_name" {
-  description = "(Required) The name of the dns zone"
+  description = "(Required) The name of the dns zone."
+  type        = string
+}
+
+variable "record_type" {
+  description = "(Required) The type of the dns record."
+  type        = string
+
+  validation {
+    condition     = contains(["a", "aaaa"], var.record_type)
+    error_message = "Current supported values for record type are a and aaaa."
+  }
 }
 
 variable "is_private" {
