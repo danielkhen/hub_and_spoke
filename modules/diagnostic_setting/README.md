@@ -10,7 +10,6 @@
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_enabled"></a> [enabled](#input\_enabled) | (Optional) Should the diagnostic setting be enabled. | `bool` | `true` | no |
 | <a name="input_log_analytics_workspace_id"></a> [log\_analytics\_workspace\_id](#input\_log\_analytics\_workspace\_id) | (Optional) The log analytics workspace id to send logs to. | `string` | `null` | no |
 | <a name="input_name"></a> [name](#input\_name) | (Required) The name of the diagnostic setting. | `string` | n/a | yes |
 | <a name="input_storage_account_id"></a> [storage\_account\_id](#input\_storage\_account\_id) | (Optional) The storage account id to send logs to. | `string` | `null` | no |

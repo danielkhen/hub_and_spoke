@@ -13,7 +13,7 @@
 | <a name="input_location"></a> [location](#input\_location) | (Required) The location of the route table. | `string` | n/a | yes |
 | <a name="input_name"></a> [name](#input\_name) | (Required) The name of the route table. | `string` | n/a | yes |
 | <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name) | (Required) The resource group name of the route table. | `string` | n/a | yes |
-| <a name="input_routes"></a> [routes](#input\_routes) | (Optional) A list of all the routes | <pre>list(object({<br>    name                   = string<br>    address_prefix         = string<br>    next_hop_type          = string<br>    next_hop_in_ip_address = string<br>  }))</pre> | n/a | yes |
+| <a name="input_routes"></a> [routes](#input\_routes) | (Optional) A list of all the routes | <pre>list(object({<br>    name                   = string<br>    address_prefix         = string<br>    next_hop_type          = string<br>    next_hop_in_ip_address = optional(string, null)<br>  }))</pre> | n/a | yes |
 
 ## Outputs
 

@@ -13,8 +13,7 @@
 | <a name="input_dns_name"></a> [dns\_name](#input\_dns\_name) | (Required) The name of the private dns zone. | `string` | n/a | yes |
 | <a name="input_dns_prefix"></a> [dns\_prefix](#input\_dns\_prefix) | (Optional) The name of the private endpoint in the private dns zone. | `string` | `"pe"` | no |
 | <a name="input_location"></a> [location](#input\_location) | (Required) The location of the private endpoint and private dns zone. | `string` | n/a | yes |
-| <a name="input_log_analytics"></a> [log\_analytics](#input\_log\_analytics) | (Optional) Use a log analytics workspace to capture logs and metrics. | `bool` | `false` | no |
-| <a name="input_log_analytics_id"></a> [log\_analytics\_id](#input\_log\_analytics\_id) | (Optional) The id of the log analytics workspace, Required when log analytics enabled. | `string` | `null` | no |
+| <a name="input_log_analytics_id"></a> [log\_analytics\_id](#input\_log\_analytics\_id) | (Optional) The id of the log analytics workspace. | `string` | `null` | no |
 | <a name="input_nic-diagnostics-name"></a> [nic-diagnostics-name](#input\_nic-diagnostics-name) | (Optional) The name of the diagnostic settings for the network interface. | `string` | `"pe-nic-diagnostics"` | no |
 | <a name="input_nic_name"></a> [nic\_name](#input\_nic\_name) | (Required) The name of the network interface of the private endpoint. | `string` | n/a | yes |
 | <a name="input_pe_name"></a> [pe\_name](#input\_pe\_name) | (Required) The name of the private endpoint. | `string` | n/a | yes |

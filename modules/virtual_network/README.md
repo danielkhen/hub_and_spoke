@@ -24,6 +24,7 @@
 | <a name="output_id"></a> [id](#output\_id) | The id of the virtual network. |
 | <a name="output_name"></a> [name](#output\_name) | The name of the virtual network. |
 | <a name="output_object"></a> [object](#output\_object) | The virtual network object. |
+| <a name="output_subnet_address_prefixes"></a> [subnet\_address\_prefixes](#output\_subnet\_address\_prefixes) | A map for subnet name to address prefix. |
 | <a name="output_subnet_ids"></a> [subnet\_ids](#output\_subnet\_ids) | A map for subnet name to id. |
 
 ## Resources
