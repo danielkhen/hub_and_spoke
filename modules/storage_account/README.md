@@ -41,6 +41,6 @@
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_storage_diagnostics"></a> [storage\_diagnostics](#module\_storage\_diagnostics) | ../diagnostic_setting | n/a |
-| <a name="module_subresources_diagnostics"></a> [subresources\_diagnostics](#module\_subresources\_diagnostics) | ../diagnostic_setting | n/a |
+| <a name="module_storage_diagnostics"></a> [storage\_diagnostics](#module\_storage\_diagnostics) | github.com/danielkhen/diagnostic_setting_module | n/a |
+| <a name="module_subresources_diagnostics"></a> [subresources\_diagnostics](#module\_subresources\_diagnostics) | github.com/danielkhen/diagnostic_setting_module | n/a |
 <!-- END_TF_DOCS -->

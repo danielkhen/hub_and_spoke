@@ -36,5 +36,5 @@
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_nsg_diagnostics"></a> [nsg\_diagnostics](#module\_nsg\_diagnostics) | ../diagnostic_setting | n/a |
+| <a name="module_nsg_diagnostics"></a> [nsg\_diagnostics](#module\_nsg\_diagnostics) | github.com/danielkhen/diagnostic_setting_module | n/a |
 <!-- END_TF_DOCS -->

@@ -190,3 +190,22 @@ module "work_vm" {
 
   log_analytics_id = module.hub_log_analytics.id
 }
+
+module "test_vm" {
+  source = "github.com/danielkhen/virtual_machine_module"
+
+  name                = "test-vm"
+  location            = local.location
+  resource_group_name = azurerm_resource_group.work.name
+  size                = local.vm_size
+  nic_name            = "test-vm-nic"
+  subnet_id           = module.work_virtual_network.subnet_ids["WorkSubnet"]
+  os_type             = "windows"
+  os_disk = {
+    caching              = "ReadWrite"
+    storage_account_type = "Standard_LRS"
+  }
+
+  admin_username = local.vm_admin_username
+  admin_password = var.vm_admin_password
+}

@@ -45,7 +45,7 @@ resource "azurerm_private_endpoint" "pe" {
 
     content {
       name                 = var.dns_prefix
-    private_dns_zone_ids = [azurerm_private_dns_zone.dns_zone[0].id]
+      private_dns_zone_ids = [azurerm_private_dns_zone.dns_zone[0].id]
     }
   }
 

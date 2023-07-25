@@ -57,7 +57,7 @@
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_aa_pip_diagnostics"></a> [aa\_pip\_diagnostics](#module\_aa\_pip\_diagnostics) | ../diagnostic_setting | n/a |
-| <a name="module_default_pip_diagnostics"></a> [default\_pip\_diagnostics](#module\_default\_pip\_diagnostics) | ../diagnostic_setting | n/a |
-| <a name="module_vng_diagnostics"></a> [vng\_diagnostics](#module\_vng\_diagnostics) | ../diagnostic_setting | n/a |
+| <a name="module_aa_pip_diagnostics"></a> [aa\_pip\_diagnostics](#module\_aa\_pip\_diagnostics) | github.com/danielkhen/diagnostic_setting_module | n/a |
+| <a name="module_default_pip_diagnostics"></a> [default\_pip\_diagnostics](#module\_default\_pip\_diagnostics) | github.com/danielkhen/diagnostic_setting_module | n/a |
+| <a name="module_vng_diagnostics"></a> [vng\_diagnostics](#module\_vng\_diagnostics) | github.com/danielkhen/diagnostic_setting_module | n/a |
 <!-- END_TF_DOCS -->

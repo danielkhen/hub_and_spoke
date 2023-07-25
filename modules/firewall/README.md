@@ -47,7 +47,7 @@
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_fw_diagnostics"></a> [fw\_diagnostics](#module\_fw\_diagnostics) | ../diagnostic_setting | n/a |
-| <a name="module_fw_mng_pip_diagnostics"></a> [fw\_mng\_pip\_diagnostics](#module\_fw\_mng\_pip\_diagnostics) | ../diagnostic_setting | n/a |
-| <a name="module_fw_pip_diagnostics"></a> [fw\_pip\_diagnostics](#module\_fw\_pip\_diagnostics) | ../diagnostic_setting | n/a |
+| <a name="module_fw_diagnostics"></a> [fw\_diagnostics](#module\_fw\_diagnostics) | github.com/danielkhen/diagnostic_setting_module | n/a |
+| <a name="module_fw_mng_pip_diagnostics"></a> [fw\_mng\_pip\_diagnostics](#module\_fw\_mng\_pip\_diagnostics) | github.com/danielkhen/diagnostic_setting_module | n/a |
+| <a name="module_fw_pip_diagnostics"></a> [fw\_pip\_diagnostics](#module\_fw\_pip\_diagnostics) | github.com/danielkhen/diagnostic_setting_module | n/a |
 <!-- END_TF_DOCS -->

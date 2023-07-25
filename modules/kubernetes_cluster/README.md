@@ -40,5 +40,5 @@
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_aks-diagnostics"></a> [aks-diagnostics](#module\_aks-diagnostics) | ../diagnostic_setting | n/a |
+| <a name="module_aks-diagnostics"></a> [aks-diagnostics](#module\_aks-diagnostics) | github.com/danielkhen/diagnostic_setting_module | n/a |
 <!-- END_TF_DOCS -->

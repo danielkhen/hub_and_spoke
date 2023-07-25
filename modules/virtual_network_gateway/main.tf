@@ -99,6 +99,7 @@ resource "azurerm_virtual_network_gateway" "vng" {
   }
 }
 
+
 module "vng_diagnostics" {
   source = "github.com/danielkhen/diagnostic_setting_module"
 

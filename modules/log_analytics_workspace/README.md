@@ -37,5 +37,5 @@
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_log_analytics_diagnostics"></a> [log\_analytics\_diagnostics](#module\_log\_analytics\_diagnostics) | ../diagnostic_setting | n/a |
+| <a name="module_log_analytics_diagnostics"></a> [log\_analytics\_diagnostics](#module\_log\_analytics\_diagnostics) | github.com/danielkhen/diagnostic_setting_module | n/a |
 <!-- END_TF_DOCS -->

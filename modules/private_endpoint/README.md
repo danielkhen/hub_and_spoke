@@ -45,5 +45,5 @@
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_nic-diagnostics"></a> [nic-diagnostics](#module\_nic-diagnostics) | ../diagnostic_setting | n/a |
+| <a name="module_nic-diagnostics"></a> [nic-diagnostics](#module\_nic-diagnostics) | github.com/danielkhen/diagnostic_setting_module | n/a |
 <!-- END_TF_DOCS -->
