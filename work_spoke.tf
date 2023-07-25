@@ -12,7 +12,7 @@ resource "azurerm_resource_group" "work" {
 }
 
 locals {
-  work_network_security_groups     = jsondecode(templatefile("./objects/work/network_security_groups.json", local.nsg_vars))
+  work_network_security_groups     = jsondecode(templatefile("./objects/work/network_security_groups.json", local.network_vars))
   work_network_security_groups_map = { for nsg in local.work_network_security_groups : nsg.name => nsg }
 }
 
@@ -30,7 +30,7 @@ module "work_network_security_groups" {
 }
 
 locals {
-  work_route_tables     = jsondecode(templatefile("./objects/work/route_tables.json", local.route_table_vars))
+  work_route_tables     = jsondecode(templatefile("./objects/work/route_tables.json", local.network_vars))
   work_route_tables_map = { for rt in local.work_route_tables : rt.name => rt }
 }
 
@@ -47,23 +47,27 @@ module "work_route_tables" {
 locals {
   work_vnet_name          = "${local.prefix}-work-vnet"
   work_vnet_address_space = ["10.1.0.0/16"]
+
   work_vnet_subnets_map = {
     WorkSubnet = {
       address_prefixes       = ["10.1.0.0/24"]
       network_security_group = "work-WorkSubnet-nsg"
       route_table            = "work-rt"
     }
+
     StorageSubnet = {
       address_prefixes       = ["10.1.1.0/24"]
       network_security_group = "work-StorageSubnet-nsg"
       route_table            = "work-rt"
     }
+
     AKSSubnet = {
       address_prefixes       = ["10.1.2.0/24"]
       network_security_group = "work-AKSSubnet-nsg"
       route_table            = "work-rt"
     }
   }
+
   work_vnet_subnets = [
     for name, subnet in local.work_vnet_subnets_map : merge(subnet, {
       name                               = name

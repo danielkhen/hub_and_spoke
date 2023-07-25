@@ -13,14 +13,14 @@
             "source_addresses": ["${address_prefixes.vpn}"],
             "protocols": ["TCP"],
             "destination_ports":["22"],
-            "destination_addresses": ["${address_prefixes.subnets.work.WorkSubnet}", "${address_prefixes.subnets.monitor.MonitorSubnet}"]
+            "destination_addresses": ["${subnets.work.WorkSubnet}", "${subnets.monitor.MonitorSubnet}"]
           },
           {
             "name": "grafana-monitor",
             "source_addresses": ["${address_prefixes.vpn}"],
             "protocols": ["TCP"],
             "destination_ports":["80"],
-            "destination_addresses": ["${address_prefixes.subnets.monitor.MonitorSubnet}"]
+            "destination_addresses": ["${subnets.monitor.MonitorSubnet}"]
           }
         ]
       }

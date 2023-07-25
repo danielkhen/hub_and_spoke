@@ -12,7 +12,7 @@ resource "azurerm_resource_group" "monitor" {
 }
 
 locals {
-  monitor_network_security_groups     = jsondecode(templatefile("./objects/monitor/network_security_groups.json", local.nsg_vars))
+  monitor_network_security_groups     = jsondecode(templatefile("./objects/monitor/network_security_groups.json", local.network_vars))
   monitor_network_security_groups_map = { for nsg in local.monitor_network_security_groups : nsg.name => nsg }
 }
 
@@ -30,7 +30,7 @@ module "monitor_network_security_groups" {
 }
 
 locals {
-  monitor_route_tables     = jsondecode(templatefile("./objects/monitor/route_tables.json", local.route_table_vars))
+  monitor_route_tables     = jsondecode(templatefile("./objects/monitor/route_tables.json", local.network_vars))
   monitor_route_tables_map = { for rt in local.monitor_route_tables : rt.name => rt }
 }
 
@@ -48,6 +48,7 @@ module "monitor_route_tables" {
 locals {
   monitor_vnet_name          = "${local.prefix}-monitor-vnet"
   monitor_vnet_address_space = ["10.2.0.0/16"]
+
   monitor_vnet_subnets_map = {
     MonitorSubnet = {
       address_prefixes       = ["10.2.0.0/24"]
@@ -55,6 +56,7 @@ locals {
       route_table            = "monitor-rt"
     }
   }
+
   monitor_vnet_subnets = [
     for name, subnet in local.monitor_vnet_subnets_map : merge(subnet, {
       name                               = name

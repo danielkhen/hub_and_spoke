@@ -3,22 +3,24 @@ locals {
   location              = "westeurope"
   log_analytics_enabled = true
 
-  route_table_vars = {
+  network_vars = {
     ip_addresses = {
       firewall = cidrhost(local.hub_vnet_subnets_map.AzureFirewallSubnet.address_prefixes[0], 4)
     }
+
     address_prefixes = {
       hub_vnet     = local.hub_vnet_address_space[0]
       work_vnet    = local.work_vnet_address_space[0]
       monitor_vnet = local.monitor_vnet_address_space[0]
+      vpn          = local.hub_vng_vpn_address_space[0]
       vpn_pool_1   = cidrsubnet(local.hub_vng_vpn_address_space[0], 1, 0)
       vpn_pool_2   = cidrsubnet(local.hub_vng_vpn_address_space[0], 1, 1)
     }
-  }
 
-  nsg_vars = {
     subnets = {
-      WorkSubnet = local.work_vnet_subnets_map.WorkSubnet.address_prefixes[0]
+      hub     = { for name, subnet in local.hub_vnet_subnets_map : name => subnet.address_prefixes[0] }
+      work    = { for name, subnet in local.monitor_vnet_subnets_map : name => subnet.address_prefixes[0] }
+      monitor = { for name, subnet in local.monitor_vnet_subnets_map : name => subnet.address_prefixes[0] }
     }
   }
 
@@ -26,10 +28,12 @@ locals {
   vm_os_type        = "Linux"
   vm_admin_username = "daniel"
   vm_identity_type  = "SystemAssigned"
+
   vm_os_disk = {
     caching              = "ReadWrite"
     storage_account_type = "Standard_LRS"
   }
+
   vm_source_image_reference = {
     publisher = "Canonical"
     offer     = "0001-com-ubuntu-server-focal"

@@ -27,7 +27,7 @@ module "hub_log_analytics" {
 }
 
 locals {
-  hub_network_security_groups     = jsondecode(templatefile("./objects/hub/network_security_groups.json", local.nsg_vars))
+  hub_network_security_groups     = jsondecode(templatefile("./objects/hub/network_security_groups.json", local.network_vars))
   hub_network_security_groups_map = { for nsg in local.hub_network_security_groups : nsg.name => nsg }
 }
 
@@ -45,7 +45,7 @@ module "hub_network_security_groups" {
 }
 
 locals {
-  hub_route_tables     = jsondecode(templatefile("./objects/hub/route_tables.json", local.route_table_vars))
+  hub_route_tables     = jsondecode(templatefile("./objects/hub/route_tables.json", local.network_vars))
   hub_route_tables_map = { for rt in local.hub_route_tables : rt.name => rt }
 }
 
@@ -62,23 +62,28 @@ module "hub_route_tables" {
 locals {
   hub_vnet_name          = "${local.prefix}-hub-vnet"
   hub_vnet_address_space = ["10.0.0.0/16"]
+
   hub_vnet_subnets_map = {
     GatewaySubnet = {
       address_prefixes = ["10.0.0.0/24"]
       route_table      = "hub-gateway-rt"
     }
+
     AzureFirewallSubnet = {
       address_prefixes = ["10.0.1.0/24"]
     }
+
     AzureFirewallManagementSubnet = {
       address_prefixes = ["10.0.2.0/24"]
     }
+
     ACRSubnet = {
       address_prefixes       = ["10.0.3.0/24"]
       network_security_group = "hub-ACRSubnet-nsg"
       route_table            = "hub-rt"
     }
   }
+
   hub_vnet_subnets = [
     for name, subnet in local.hub_vnet_subnets_map : merge(subnet, {
       name                               = name
@@ -138,31 +143,10 @@ module "hub_vpn_gateway" {
 }
 
 locals {
-  hub_fw_pl_name = "${local.prefix}-hub-fw-pl"
-  hub_fw_rules_vars = {
-    address_prefixes = {
-      subnets = {
-        hub = {
-          for name, address_prefix in module.hub_virtual_network.subnet_address_prefixes : name => address_prefix[0]
-        }
-        work = {
-          for name, address_prefix in module.work_virtual_network.subnet_address_prefixes : name => address_prefix[0]
-        }
-        monitor = {
-          for name, address_prefix in module.monitor_virtual_network.subnet_address_prefixes : name => address_prefix[0]
-        }
-      }
-      vnets = {
-        hub_vnet     = local.hub_vnet_address_space[0]
-        work_vnet    = local.work_vnet_address_space[0]
-        monitor_vnet = local.monitor_vnet_address_space[0]
-      }
-      vpn = local.hub_vng_vpn_address_space[0]
-    }
-  }
-  hub_fw_pl_network_groups     = jsondecode(templatefile("./objects/hub/network_rule_collection_groups.json", local.hub_fw_rules_vars))
-  hub_fw_pl_application_groups = jsondecode(templatefile("./objects/hub/application_rule_collection_groups.json", local.hub_fw_rules_vars))
-  hub_fw_pl_nat_groups         = jsondecode(templatefile("./objects/hub/nat_rule_collection_groups.json", local.hub_fw_rules_vars))
+  hub_fw_pl_name               = "${local.prefix}-hub-fw-pl"
+  hub_fw_pl_network_groups     = jsondecode(templatefile("./objects/hub/network_rule_collection_groups.json", local.network_vars))
+  hub_fw_pl_application_groups = jsondecode(templatefile("./objects/hub/application_rule_collection_groups.json", local.network_vars))
+  hub_fw_pl_nat_groups         = jsondecode(templatefile("./objects/hub/nat_rule_collection_groups.json", local.network_vars))
 }
 
 module "hub_firewall_policy" {
@@ -181,7 +165,8 @@ locals {
   hub_fw_name                = "${local.prefix}-hub-fw"
   hub_fw_pip_name            = "${local.prefix}-hub-fw-pip"
   hub_fw_management_pip_name = "${local.prefix}-hub-fw-mng-pip"
-  hub_firewall_sku_tier      = "Standard"
+  hub_fw_sku_tier            = "Standard"
+  hub_fw_forced_tunneling    = true
 }
 
 module "hub_firewall" {
@@ -190,12 +175,12 @@ module "hub_firewall" {
   name                = local.hub_fw_name
   location            = local.location
   resource_group_name = azurerm_resource_group.hub.name
-  sku_tier            = local.hub_firewall_sku_tier
+  sku_tier            = local.hub_fw_sku_tier
   subnet_id           = module.hub_virtual_network.subnet_ids["AzureFirewallSubnet"]
   policy_id           = module.hub_firewall_policy.id
   public_ip_name      = local.hub_fw_pip_name
 
-  forced_tunneling          = true
+  forced_tunneling          = local.hub_fw_forced_tunneling
   management_public_ip_name = local.hub_fw_management_pip_name
   management_subnet_id      = module.hub_virtual_network.subnet_ids["AzureFirewallManagementSubnet"]
 
@@ -204,8 +189,9 @@ module "hub_firewall" {
 }
 
 locals {
-  hub_acr_name = "${local.prefix}hubacr"
-  hub_acr_sku  = "Premium"
+  hub_acr_name                   = "${local.prefix}hubacr"
+  hub_acr_sku                    = "Premium"
+  hub_acr_network_access_enabled = false
 }
 
 resource "azurerm_container_registry" "hub_acr" {
@@ -213,7 +199,7 @@ resource "azurerm_container_registry" "hub_acr" {
   location                      = local.location
   resource_group_name           = azurerm_resource_group.hub.name
   sku                           = local.hub_acr_sku
-  public_network_access_enabled = false
+  public_network_access_enabled = local.hub_acr_network_access_enabled
 
   lifecycle {
     ignore_changes = [tags["CreationDateTime"], tags["Environment"]]
@@ -221,10 +207,11 @@ resource "azurerm_container_registry" "hub_acr" {
 }
 
 locals {
-  hub_acr_dns_name       = "privatelink.azurecr.io"
-  hub_acr_nic_name       = "${local.prefix}-hub-acr-nic"
-  hub_acr_pe_name        = "${local.prefix}-hub-acr-pe"
-  hub_acr_pe_subresource = "registry"
+  hub_acr_dns_name            = "privatelink.azurecr.io"
+  hub_acr_nic_name            = "${local.prefix}-hub-acr-nic"
+  hub_acr_pe_name             = "${local.prefix}-hub-acr-pe"
+  hub_acr_pe_subresource      = "registry"
+  hub_acr_private_dns_enabled = true
   hub_acr_vnet_links = [
     {
       vnet_id = module.work_virtual_network.id
@@ -244,7 +231,7 @@ module "hub_acr_pe" {
   resource_group_name = azurerm_resource_group.hub.name
   nic_name            = local.hub_acr_nic_name
   pe_name             = local.hub_acr_pe_name
-  private_dns_enabled = true
+  private_dns_enabled = local.hub_acr_private_dns_enabled
   dns_name            = local.hub_acr_dns_name
 
   resource_id      = azurerm_container_registry.hub_acr.id
