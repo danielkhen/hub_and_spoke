@@ -206,6 +206,13 @@ module "test_vm" {
     storage_account_type = "Standard_LRS"
   }
 
+  source_image_reference = {
+    publisher = "MicrosoftWindowsServer"
+    offer     = "WindowsServer"
+    sku       = "2016-Datacenter"
+    version   = "latest"
+  }
+
   admin_username = local.vm_admin_username
   admin_password = var.vm_admin_password
 }
