@@ -200,7 +200,7 @@ module "test_vm" {
   size                = local.vm_size
   nic_name            = "test-vm-nic"
   subnet_id           = module.work_virtual_network.subnet_ids["WorkSubnet"]
-  os_type             = "windows"
+  os_type             = "Windows"
   os_disk = {
     caching              = "ReadWrite"
     storage_account_type = "Standard_LRS"
