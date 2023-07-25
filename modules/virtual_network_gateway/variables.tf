@@ -151,8 +151,8 @@ variable "revoked_certificate" {
 
 variable "log_analytics_enabled" {
   description = "(Optional) Should all logs be sent to a log analytics workspace."
-  type = bool
-  default = false
+  type        = bool
+  default     = false
 }
 
 variable "log_analytics_id" {

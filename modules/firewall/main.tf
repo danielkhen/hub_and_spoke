@@ -62,7 +62,7 @@ resource "azurerm_firewall" "fw" {
 
 module "fw_diagnostics" {
   source = "github.com/danielkhen/diagnostic_setting_module"
-  count = var.log_analytics_enabled ? 1 : 0
+  count  = var.log_analytics_enabled ? 1 : 0
 
   name                       = var.fw_diagnostics_name
   target_resource_id         = azurerm_firewall.fw.id
@@ -71,7 +71,7 @@ module "fw_diagnostics" {
 
 module "fw_pip_diagnostics" {
   source = "github.com/danielkhen/diagnostic_setting_module"
-  count = var.log_analytics_enabled ? 1 : 0
+  count  = var.log_analytics_enabled ? 1 : 0
 
   name                       = var.pip_diagnostics_name
   target_resource_id         = azurerm_public_ip.fw_pip.id

@@ -17,7 +17,7 @@ resource "azurerm_storage_account" "storage" {
 
 module "storage_diagnostics" {
   source = "github.com/danielkhen/diagnostic_setting_module"
-  count = var.log_analytics_enabled ? 1 : 0
+  count  = var.log_analytics_enabled ? 1 : 0
 
   name                       = "storage-diagnostics"
   target_resource_id         = azurerm_storage_account.storage.id

@@ -38,8 +38,8 @@ variable "internet_query_enabled" {
 
 variable "log_analytics_enabled" {
   description = "(Optional) Should all logs be sent to a log analytics workspace."
-  type = bool
-  default = false
+  type        = bool
+  default     = false
 }
 
 variable "diagnostic_settings_name" {

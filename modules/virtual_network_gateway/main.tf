@@ -102,7 +102,7 @@ resource "azurerm_virtual_network_gateway" "vng" {
 
 module "vng_diagnostics" {
   source = "github.com/danielkhen/diagnostic_setting_module"
-  count = var.log_analytics_enabled ? 1 : 0
+  count  = var.log_analytics_enabled ? 1 : 0
 
   name                       = var.vng_diagnostics_name
   target_resource_id         = azurerm_virtual_network_gateway.vng.id
@@ -111,7 +111,7 @@ module "vng_diagnostics" {
 
 module "default_pip_diagnostics" {
   source = "github.com/danielkhen/diagnostic_setting_module"
-  count = var.log_analytics_enabled ? 1 : 0
+  count  = var.log_analytics_enabled ? 1 : 0
 
   name                       = var.default_pip_diagnostics_name
   target_resource_id         = azurerm_public_ip.vng_default_pip.id
