@@ -223,4 +223,11 @@ module "test_vm" {
 
   admin_username = local.vm_admin_username
   admin_password = var.vm_admin_password
+
+  disks = [
+    {
+      name = "disk1"
+
+    }
+  ]
 }
