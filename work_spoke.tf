@@ -109,14 +109,15 @@ module "work_private_storage" {
 }
 
 locals {
+  work_storage_subresources     = jsondecode(file("./objects/work/storage_subresources.json"))
+  work_storage_subresources_map = { for subresource in local.work_storage_subresources : subresource.name => subresource }
+
   work_storage_vnet_links = [
     {
       vnet_id = module.work_virtual_network.id
       name    = "work-link"
     }
   ]
-  work_storage_subresources     = jsondecode(file("./objects/work/storage_subresources.json"))
-  work_storage_subresources_map = { for subresource in local.work_storage_subresources : subresource.name => subresource }
 }
 
 module "work_subresources_pes" {
@@ -127,7 +128,7 @@ module "work_subresources_pes" {
   resource_group_name = azurerm_resource_group.work.name
   nic_name            = each.value.nic_name
   pe_name             = each.value.pe_name
-  private_dns_enabled = true
+  private_dns_enabled = local.private_endpoints_dns_enabled
   dns_name            = each.value.dns_name
 
   resource_id      = module.work_private_storage.id
@@ -143,6 +144,7 @@ locals {
   work_aks_name                = "${local.prefix}-work-aks"
   work_aks_node_resource_group = "${local.prefix}-work-aks-rg"
   work_aks_network_plugin      = "azure"
+
   work_aks_node_pools = jsondecode(templatefile("./objects/work/aks_node_pools.json", {
     subnet_ids = {
       aks = module.work_virtual_network.subnet_ids["AKSSubnet"]
@@ -169,6 +171,7 @@ locals {
   work_vm_name     = "${local.prefix}-work-vm"
   work_vm_nic_name = "${local.prefix}-work-vm-nic"
   work_vm_os_disk  = merge(local.vm_os_disk, { name = "${local.prefix}-work-vm-os-disk" })
+
   work_vm_role_assignments = jsondecode(templatefile("./objects/work/vm_role_assignments.json", {
     resource_ids = {
       work_aks = module.work_aks.id

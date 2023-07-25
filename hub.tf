@@ -207,11 +207,11 @@ resource "azurerm_container_registry" "hub_acr" {
 }
 
 locals {
-  hub_acr_dns_name            = "privatelink.azurecr.io"
-  hub_acr_nic_name            = "${local.prefix}-hub-acr-nic"
-  hub_acr_pe_name             = "${local.prefix}-hub-acr-pe"
-  hub_acr_pe_subresource      = "registry"
-  hub_acr_private_dns_enabled = true
+  hub_acr_dns_name       = "privatelink.azurecr.io"
+  hub_acr_nic_name       = "${local.prefix}-hub-acr-nic"
+  hub_acr_pe_name        = "${local.prefix}-hub-acr-pe"
+  hub_acr_pe_subresource = "registry"
+
   hub_acr_vnet_links = [
     {
       vnet_id = module.work_virtual_network.id
@@ -231,7 +231,7 @@ module "hub_acr_pe" {
   resource_group_name = azurerm_resource_group.hub.name
   nic_name            = local.hub_acr_nic_name
   pe_name             = local.hub_acr_pe_name
-  private_dns_enabled = local.hub_acr_private_dns_enabled
+  private_dns_enabled = local.private_endpoints_dns_enabled
   dns_name            = local.hub_acr_dns_name
 
   resource_id      = azurerm_container_registry.hub_acr.id

@@ -116,13 +116,14 @@ module "monitor_vm" {
 locals {
   monitor_vm_dns_name    = "monitor.net"
   monitor_vm_record_name = "grafana"
+  monitor_vm_record_type = "a"
+
   monitor_vm_vnet_links = [
     {
       vnet_id = module.hub_virtual_network.id
       name    = "hub-link"
     }
   ]
-  monitor_vm_record_type = "a"
 }
 
 module "monitor_vm_record" {

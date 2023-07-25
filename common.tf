@@ -1,7 +1,8 @@
 locals {
-  prefix                = "dtf"
-  location              = "westeurope"
-  log_analytics_enabled = true
+  prefix                        = "dtf"
+  location                      = "westeurope"
+  log_analytics_enabled         = true
+  private_endpoints_dns_enabled = true
 
   network_vars = {
     ip_addresses = {
@@ -19,7 +20,7 @@ locals {
 
     subnets = {
       hub     = { for name, subnet in local.hub_vnet_subnets_map : name => subnet.address_prefixes[0] }
-      work    = { for name, subnet in local.monitor_vnet_subnets_map : name => subnet.address_prefixes[0] }
+      work    = { for name, subnet in local.work_vnet_subnets_map : name => subnet.address_prefixes[0] }
       monitor = { for name, subnet in local.monitor_vnet_subnets_map : name => subnet.address_prefixes[0] }
     }
   }
