@@ -79,7 +79,7 @@ resource "azurerm_role_assignment" "acr_role" {
 }
 
 module "aks-diagnostics" {
-  source = "../diagnostic_setting"
+  source = "github.com/danielkhen/diagnostic_setting_module"
 
   name                       = var.diagnostics_name
   target_resource_id         = azurerm_kubernetes_cluster.aks.id

@@ -17,7 +17,7 @@ locals {
 }
 
 module "work_network_security_groups" {
-  source   = "./modules/network_security_group"
+  source   = "github.com/danielkhen/network_security_group_module"
   for_each = local.work_network_security_groups_map
 
   name                   = each.value.name
@@ -34,7 +34,7 @@ locals {
 }
 
 module "work_route_tables" {
-  source   = "./modules/route_table"
+  source   = "github.com/danielkhen/route_table_module"
   for_each = local.work_route_tables_map
 
   name                = each.value.name
@@ -75,7 +75,7 @@ locals {
 }
 
 module "work_virtual_network" {
-  source = "./modules/virtual_network"
+  source = "github.com/danielkhen/virtual_network_module"
 
   name                = local.work_vnet_name
   location            = local.location
@@ -91,7 +91,7 @@ locals {
 }
 
 module "work_private_storage" {
-  source = "./modules/storage_account"
+  source = "github.com/danielkhen/storage_account_module"
 
   name                     = local.work_storage_name
   location                 = local.location
@@ -114,7 +114,7 @@ locals {
 }
 
 module "work_subresources_pes" {
-  source   = "./modules/private_endpoint"
+  source   = "github.com/danielkhen/private_endpoint_module"
   for_each = local.work_storage_subresources_map
 
   location            = local.location
@@ -144,7 +144,7 @@ locals {
 }
 
 module "work_aks" {
-  source = "./modules/kubernetes_cluster"
+  source = "github.com/danielkhen/kubernetes_cluster_module"
 
   name                  = local.work_aks_name
   location              = local.location
@@ -170,7 +170,7 @@ locals {
 }
 
 module "work_vm" {
-  source = "./modules/virtual_machine"
+  source = "github.com/danielkhen/virtual_machine_module"
 
   name                   = local.work_vm_name
   location               = local.location

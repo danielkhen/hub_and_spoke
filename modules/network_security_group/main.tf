@@ -30,7 +30,7 @@ resource "azurerm_network_security_rule" "rules" {
 }
 
 module "nsg_diagnostics" {
-  source = "../diagnostic_setting"
+  source = "github.com/danielkhen/diagnostic_setting_module"
 
   name                       = var.diagnostic_settings_name
   target_resource_id         = azurerm_network_security_group.nsg.id

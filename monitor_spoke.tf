@@ -17,7 +17,7 @@ locals {
 }
 
 module "monitor_network_security_groups" {
-  source   = "./modules/network_security_group"
+  source   = "github.com/danielkhen/network_security_group_module"
   for_each = local.monitor_network_security_groups_map
 
   name                   = each.value.name
@@ -34,7 +34,7 @@ locals {
 }
 
 module "monitor_route_tables" {
-  source   = "./modules/route_table"
+  source   = "github.com/danielkhen/route_table_module"
   for_each = local.monitor_route_tables_map
 
   name                = each.value.name
@@ -66,7 +66,7 @@ locals {
 }
 
 module "monitor_virtual_network" {
-  source = "./modules/virtual_network"
+  source = "github.com/danielkhen/virtual_network_module"
 
   name                = local.monitor_vnet_name
   location            = local.location
@@ -88,7 +88,7 @@ locals {
 }
 
 module "monitor_vm" {
-  source = "./modules/virtual_machine"
+  source = "github.com/danielkhen/virtual_machine_module"
 
   name                   = local.monitor_vm_name
   location               = local.location
@@ -122,7 +122,7 @@ locals {
 }
 
 module "monitor_vm_record" {
-  source = "./modules/dns_record"
+  source = "github.com/danielkhen/dns_record_module"
 
   resource_group_name = azurerm_resource_group.monitor.name
   dns_name            = local.monitor_vm_dns_name

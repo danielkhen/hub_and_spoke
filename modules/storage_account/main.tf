@@ -16,7 +16,7 @@ resource "azurerm_storage_account" "storage" {
 }
 
 module "storage_diagnostics" {
-  source = "../diagnostic_setting"
+  source = "github.com/danielkhen/diagnostic_setting_module"
 
   name                       = "storage-diagnostics"
   target_resource_id         = azurerm_storage_account.storage.id
@@ -32,7 +32,7 @@ locals {
 }
 
 module "subresources_diagnostics" {
-  source   = "../diagnostic_setting"
+  source   = "github.com/danielkhen/diagnostic_setting_module"
   for_each = local.subresources_diagnostics_map
 
   name                       = each.value.diagnostics_name

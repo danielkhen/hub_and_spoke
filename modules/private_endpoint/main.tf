@@ -55,7 +55,7 @@ resource "azurerm_private_endpoint" "pe" {
 }
 
 module "nic-diagnostics" {
-  source = "../diagnostic_setting"
+  source = "github.com/danielkhen/diagnostic_setting_module"
 
   name                       = var.nic-diagnostics-name
   target_resource_id         = azurerm_private_endpoint.pe.network_interface[0].id

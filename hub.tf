@@ -17,7 +17,7 @@ locals {
 }
 
 module "hub_log_analytics" {
-  source = "./modules/log_analytics_workspace"
+  source = "github.com/danielkhen/log_analytics_workspace_module"
 
   name                = "${local.prefix}-hub-log-analytics-workspace"
   location            = local.location
@@ -32,7 +32,7 @@ locals {
 }
 
 module "hub_network_security_groups" {
-  source   = "./modules/network_security_group"
+  source   = "github.com/danielkhen/network_security_group_module"
   for_each = local.hub_network_security_groups_map
 
   name                   = each.value.name
@@ -49,7 +49,7 @@ locals {
 }
 
 module "hub_route_tables" {
-  source   = "./modules/route_table"
+  source   = "github.com/danielkhen/route_table_module"
   for_each = local.hub_route_tables_map
 
   name                = each.value.name
@@ -90,7 +90,7 @@ locals {
 }
 
 module "hub_virtual_network" {
-  source = "./modules/virtual_network"
+  source = "github.com/danielkhen/virtual_network_module"
 
   name                = local.hub_vnet_name
   location            = local.location
@@ -113,7 +113,7 @@ locals {
 }
 
 module "hub_vpn_gateway" {
-  source = "./modules/virtual_network_gateway"
+  source = "github.com/danielkhen/virtual_network_gateway_module"
 
   name                = local.hub_vng_name
   location            = local.location
@@ -164,7 +164,7 @@ locals {
 }
 
 module "hub_firewall_policy" {
-  source = "./modules/firewall_policy"
+  source = "github.com/danielkhen/firewall_policy_module"
 
   name                = local.hub_fw_pl_name
   location            = local.location
@@ -183,7 +183,7 @@ locals {
 }
 
 module "hub_firewall" {
-  source = "./modules/firewall"
+  source = "github.com/danielkhen/firewall_module"
 
   name                = local.hub_fw_name
   location            = local.location
@@ -235,7 +235,7 @@ locals {
 }
 
 module "hub_acr_pe" {
-  source = "./modules/private_endpoint"
+  source = "github.com/danielkhen/private_endpoint_module"
 
   location            = local.location
   resource_group_name = azurerm_resource_group.hub.name
