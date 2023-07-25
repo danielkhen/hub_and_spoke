@@ -9,7 +9,7 @@ resource "azurerm_monitor_diagnostic_setting" "diagnostics" {
   storage_account_id         = var.storage_account_id
 
   dynamic "enabled_log" {
-    for_each = toset(data.azurerm_monitor_diagnostic_categories.categories[0].log_category_types)
+    for_each = toset(data.azurerm_monitor_diagnostic_categories.categories.log_category_types)
 
     content {
       category = enabled_log.value
@@ -17,7 +17,7 @@ resource "azurerm_monitor_diagnostic_setting" "diagnostics" {
   }
 
   dynamic "metric" {
-    for_each = toset(data.azurerm_monitor_diagnostic_categories.categories[0].metrics)
+    for_each = toset(data.azurerm_monitor_diagnostic_categories.categories.metrics)
 
     content {
       category = metric.value
