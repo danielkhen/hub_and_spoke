@@ -226,8 +226,21 @@ module "test_vm" {
 
   disks = [
     {
-      name = "disk1"
-
+      name                 = "disk1"
+      storage_account_type = "Standard_LRS"
+      create_option        = "Empty"
+      lun                  = 1
+      caching              = "ReadWrite"
+      disk_size_gb         = 1
+    },
+    {
+      name                 = "disk2"
+      storage_account_type = "Standard_LRS"
+      create_option        = "Empty"
+      lun                  = 2
+      caching              = "ReadWrite"
+      disk_size_gb         = 5
+      upload_size_bytes    = 100
     }
   ]
 }
