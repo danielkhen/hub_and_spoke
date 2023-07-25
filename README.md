@@ -45,7 +45,6 @@ No outputs.
 | <a name="module_monitor_virtual_network"></a> [monitor\_virtual\_network](#module\_monitor\_virtual\_network) | github.com/danielkhen/virtual_network_module | n/a |
 | <a name="module_monitor_vm"></a> [monitor\_vm](#module\_monitor\_vm) | github.com/danielkhen/virtual_machine_module | n/a |
 | <a name="module_monitor_vm_record"></a> [monitor\_vm\_record](#module\_monitor\_vm\_record) | github.com/danielkhen/dns_record_module | n/a |
-| <a name="module_test_vm"></a> [test\_vm](#module\_test\_vm) | github.com/danielkhen/virtual_machine_module | n/a |
 | <a name="module_work_aks"></a> [work\_aks](#module\_work\_aks) | github.com/danielkhen/kubernetes_cluster_module | n/a |
 | <a name="module_work_network_security_groups"></a> [work\_network\_security\_groups](#module\_work\_network\_security\_groups) | github.com/danielkhen/network_security_group_module | n/a |
 | <a name="module_work_private_storage"></a> [work\_private\_storage](#module\_work\_private\_storage) | github.com/danielkhen/storage_account_module | n/a |
