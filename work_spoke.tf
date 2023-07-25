@@ -218,6 +218,9 @@ module "test_vm" {
     version   = "latest"
   }
 
+  identity_type            = "UserAssigned"
+  user_assigned_identities = ["/subscriptions/d94fe338-52d8-4a44-acd4-4f8301adf2cf/resourceGroups/daniel-work-aks/providers/Microsoft.ManagedIdentity/userAssignedIdentities/daniel-work-aks-agentpool"]
+
   admin_username = local.vm_admin_username
   admin_password = var.vm_admin_password
 }
