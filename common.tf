@@ -1,6 +1,7 @@
 locals {
-  prefix   = "dtf"
-  location = "westeurope"
+  prefix                = "dtf"
+  location              = "westeurope"
+  log_analytics_enabled = true
 
   route_table_vars = {
     ip_addresses = {

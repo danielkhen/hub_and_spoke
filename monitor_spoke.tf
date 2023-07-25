@@ -25,7 +25,8 @@ module "monitor_network_security_groups" {
   resource_group_name    = azurerm_resource_group.monitor.name
   network_security_rules = each.value.network_security_rules
 
-  log_analytics_id = module.hub_log_analytics.id
+  log_analytics_enabled = local.log_analytics_enabled
+  log_analytics_id      = module.hub_log_analytics.id
 }
 
 locals {
@@ -106,7 +107,8 @@ module "monitor_vm" {
   identity_type    = local.vm_identity_type
   role_assignments = local.monitor_vm_role_assignments
 
-  log_analytics_id = module.hub_log_analytics.id
+  log_analytics_enabled = local.log_analytics_enabled
+  log_analytics_id      = module.hub_log_analytics.id
 }
 
 locals {

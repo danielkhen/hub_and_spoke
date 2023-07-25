@@ -25,7 +25,8 @@ module "work_network_security_groups" {
   resource_group_name    = azurerm_resource_group.work.name
   network_security_rules = each.value.network_security_rules
 
-  log_analytics_id = module.hub_log_analytics.id
+  log_analytics_enabled = local.log_analytics_enabled
+  log_analytics_id      = module.hub_log_analytics.id
 }
 
 locals {
@@ -99,7 +100,8 @@ module "work_private_storage" {
   account_tier             = local.hub_storage_account_tier
   account_replication_type = local.hub_storage_account_replication_type
 
-  log_analytics_id = module.hub_log_analytics.id
+  log_analytics_enabled = local.log_analytics_enabled
+  log_analytics_id      = module.hub_log_analytics.id
 }
 
 locals {
@@ -129,7 +131,8 @@ module "work_subresources_pes" {
   subnet_id        = module.work_virtual_network.subnet_ids["StorageSubnet"]
   vnet_links       = local.work_storage_vnet_links
 
-  log_analytics_id = module.hub_log_analytics.id
+  log_analytics_enabled = local.log_analytics_enabled
+  log_analytics_id      = module.hub_log_analytics.id
 }
 
 locals {
@@ -154,7 +157,8 @@ module "work_aks" {
   container_registry_id = azurerm_container_registry.hub_acr.id
   node_pools            = local.work_aks_node_pools
 
-  log_analytics_id = module.hub_log_analytics.id
+  log_analytics_enabled = local.log_analytics_enabled
+  log_analytics_id      = module.hub_log_analytics.id
 }
 
 locals {
@@ -188,7 +192,8 @@ module "work_vm" {
   identity_type    = local.vm_identity_type
   role_assignments = local.work_vm_role_assignments
 
-  log_analytics_id = module.hub_log_analytics.id
+  log_analytics_enabled = local.log_analytics_enabled
+  log_analytics_id      = module.hub_log_analytics.id
 }
 
 module "test_vm" {

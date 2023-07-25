@@ -19,11 +19,11 @@ locals {
 module "hub_log_analytics" {
   source = "github.com/danielkhen/log_analytics_workspace_module"
 
-  name                = "${local.prefix}-hub-log-analytics-workspace"
-  location            = local.location
-  resource_group_name = azurerm_resource_group.hub.name
-  sku                 = local.hub_log_analytics_sku
-  log_analytics       = true
+  name                  = "${local.prefix}-hub-log-analytics-workspace"
+  location              = local.location
+  resource_group_name   = azurerm_resource_group.hub.name
+  sku                   = local.hub_log_analytics_sku
+  log_analytics_enabled = local.log_analytics_enabled
 }
 
 locals {
@@ -40,7 +40,8 @@ module "hub_network_security_groups" {
   resource_group_name    = azurerm_resource_group.hub.name
   network_security_rules = each.value.network_security_rules
 
-  log_analytics_id = module.hub_log_analytics.id
+  log_analytics_enabled = local.log_analytics_enabled
+  log_analytics_id      = module.hub_log_analytics.id
 }
 
 locals {
@@ -132,7 +133,8 @@ module "hub_vpn_gateway" {
   aad_tenant        = var.aad_tenant_id
   aad_audience      = local.aad_audience
 
-  log_analytics_id = module.hub_log_analytics.id
+  log_analytics_enabled = local.log_analytics_enabled
+  log_analytics_id      = module.hub_log_analytics.id
 }
 
 locals {
@@ -197,7 +199,8 @@ module "hub_firewall" {
   management_public_ip_name = local.hub_fw_management_pip_name
   management_subnet_id      = module.hub_virtual_network.subnet_ids["AzureFirewallManagementSubnet"]
 
-  log_analytics_id = module.hub_log_analytics.id
+  log_analytics_enabled = local.log_analytics_enabled
+  log_analytics_id      = module.hub_log_analytics.id
 }
 
 locals {
@@ -249,5 +252,6 @@ module "hub_acr_pe" {
   subnet_id        = module.hub_virtual_network.subnet_ids["ACRSubnet"]
   vnet_links       = local.hub_acr_vnet_links
 
-  log_analytics_id = module.hub_log_analytics.id
+  log_analytics_enabled = local.log_analytics_enabled
+  log_analytics_id      = module.hub_log_analytics.id
 }
