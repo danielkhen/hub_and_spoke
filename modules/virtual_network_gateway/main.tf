@@ -100,7 +100,7 @@ resource "azurerm_virtual_network_gateway" "vng" {
 }
 
 module "vng_diagnostics" {
-  source = "../diagnostic_setting"
+  source = "github.com/danielkhen/diagnostic_setting_module"
 
   name                       = var.vng_diagnostics_name
   target_resource_id         = azurerm_virtual_network_gateway.vng.id
@@ -108,7 +108,7 @@ module "vng_diagnostics" {
 }
 
 module "default_pip_diagnostics" {
-  source = "../diagnostic_setting"
+  source = "github.com/danielkhen/diagnostic_setting_module"
 
   name                       = var.default_pip_diagnostics_name
   target_resource_id         = azurerm_public_ip.vng_default_pip.id
@@ -116,7 +116,7 @@ module "default_pip_diagnostics" {
 }
 
 module "aa_pip_diagnostics" {
-  source = "../diagnostic_setting"
+  source = "github.com/danielkhen/diagnostic_setting_module"
   count  = var.active_active ? 1 : 0
 
   name                       = var.aa_pip_diagnostics_name
