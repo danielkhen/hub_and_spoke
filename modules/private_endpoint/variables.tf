@@ -8,9 +8,16 @@ variable "resource_group_name" {
   type        = string
 }
 
+variable "private_dns_enabled" {
+  description = "(Optional) Should a private dns zone be included."
+  type        = bool
+  default     = false
+}
+
 variable "dns_name" {
-  description = "(Required) The name of the private dns zone."
+  description = "(Optional) The name of the private dns zone, Required if private dns is enabled."
   type        = string
+  default     = null
 }
 
 variable "vnet_links" {

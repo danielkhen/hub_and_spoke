@@ -114,14 +114,15 @@ locals {
 }
 
 module "work_subresources_pes" {
-  source   = "./modules/private_endpoint_w_dns_zone"
+  source   = "./modules/private_endpoint"
   for_each = local.work_storage_subresources_map
 
   location            = local.location
   resource_group_name = azurerm_resource_group.work.name
-  dns_name            = each.value.dns_name
   nic_name            = each.value.nic_name
   pe_name             = each.value.pe_name
+  private_dns_enabled = true
+  dns_name            = each.value.dns_name
 
   resource_id      = module.work_private_storage.id
   subresource_name = each.value.name

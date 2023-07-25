@@ -1,4 +1,6 @@
 resource "azurerm_private_dns_zone" "dns_zone" {
+  count = var.private_dns_enabled ? 1 : 0
+
   name                = var.dns_name
   resource_group_name = var.resource_group_name
 
@@ -12,11 +14,11 @@ locals {
 }
 
 resource "azurerm_private_dns_zone_virtual_network_link" "vnet_links" {
-  for_each = local.vnet_links_map
+  for_each = var.private_dns_enabled ? local.vnet_links_map : {}
 
   name                  = each.value.name
   resource_group_name   = var.resource_group_name
-  private_dns_zone_name = azurerm_private_dns_zone.dns_zone.name
+  private_dns_zone_name = azurerm_private_dns_zone.dns_zone[0].name
   virtual_network_id    = each.value.vnet_id
 
   lifecycle {
@@ -38,9 +40,13 @@ resource "azurerm_private_endpoint" "pe" {
     subresource_names              = [var.subresource_name]
   }
 
-  private_dns_zone_group {
-    name                 = var.dns_prefix
-    private_dns_zone_ids = [azurerm_private_dns_zone.dns_zone.id]
+  dynamic "private_dns_zone_group" {
+    for_each = var.private_dns_enabled ? [true] : []
+
+    content {
+      name                 = var.dns_prefix
+    private_dns_zone_ids = [azurerm_private_dns_zone.dns_zone[0].id]
+    }
   }
 
   lifecycle {

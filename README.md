@@ -30,7 +30,7 @@ No outputs.
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_hub_acr_pe"></a> [hub\_acr\_pe](#module\_hub\_acr\_pe) | ./modules/private_endpoint_w_dns_zone | n/a |
+| <a name="module_hub_acr_pe"></a> [hub\_acr\_pe](#module\_hub\_acr\_pe) | ./modules/private_endpoint | n/a |
 | <a name="module_hub_firewall"></a> [hub\_firewall](#module\_hub\_firewall) | ./modules/firewall | n/a |
 | <a name="module_hub_firewall_policy"></a> [hub\_firewall\_policy](#module\_hub\_firewall\_policy) | ./modules/firewall_policy | n/a |
 | <a name="module_hub_log_analytics"></a> [hub\_log\_analytics](#module\_hub\_log\_analytics) | ./modules/log_analytics_workspace | n/a |
@@ -49,7 +49,7 @@ No outputs.
 | <a name="module_work_network_security_groups"></a> [work\_network\_security\_groups](#module\_work\_network\_security\_groups) | ./modules/network_security_group | n/a |
 | <a name="module_work_private_storage"></a> [work\_private\_storage](#module\_work\_private\_storage) | ./modules/storage_account | n/a |
 | <a name="module_work_route_tables"></a> [work\_route\_tables](#module\_work\_route\_tables) | ./modules/route_table | n/a |
-| <a name="module_work_subresources_pes"></a> [work\_subresources\_pes](#module\_work\_subresources\_pes) | ./modules/private_endpoint_w_dns_zone | n/a |
+| <a name="module_work_subresources_pes"></a> [work\_subresources\_pes](#module\_work\_subresources\_pes) | ./modules/private_endpoint | n/a |
 | <a name="module_work_virtual_network"></a> [work\_virtual\_network](#module\_work\_virtual\_network) | ./modules/virtual_network | n/a |
 | <a name="module_work_vm"></a> [work\_vm](#module\_work\_vm) | ./modules/virtual_machine | n/a |
 <!-- END_TF_DOCS -->

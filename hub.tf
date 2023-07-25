@@ -140,9 +140,15 @@ locals {
   hub_fw_rules_vars = {
     address_prefixes = {
       subnets = {
-        hub     = { for name, address_prefix in module.hub_virtual_network.subnet_address_prefixes : name => address_prefix[0] }
-        work    = { for name, address_prefix in module.work_virtual_network.subnet_address_prefixes : name => address_prefix[0] }
-        monitor = { for name, address_prefix in module.monitor_virtual_network.subnet_address_prefixes : name => address_prefix[0] }
+        hub = {
+          for name, address_prefix in module.hub_virtual_network.subnet_address_prefixes : name => address_prefix[0]
+        }
+        work = {
+          for name, address_prefix in module.work_virtual_network.subnet_address_prefixes : name => address_prefix[0]
+        }
+        monitor = {
+          for name, address_prefix in module.monitor_virtual_network.subnet_address_prefixes : name => address_prefix[0]
+        }
       }
       vnets = {
         hub_vnet     = local.hub_vnet_address_space[0]
@@ -229,13 +235,14 @@ locals {
 }
 
 module "hub_acr_pe" {
-  source = "./modules/private_endpoint_w_dns_zone"
+  source = "./modules/private_endpoint"
 
   location            = local.location
   resource_group_name = azurerm_resource_group.hub.name
-  dns_name            = local.hub_acr_dns_name
   nic_name            = local.hub_acr_nic_name
   pe_name             = local.hub_acr_pe_name
+  private_dns_enabled = true
+  dns_name            = local.hub_acr_dns_name
 
   resource_id      = azurerm_container_registry.hub_acr.id
   subresource_name = local.hub_acr_pe_subresource
