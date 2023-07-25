@@ -13,6 +13,12 @@ variable "resource_group_name" {
   type        = string
 }
 
+variable "log_analytics_enabled" {
+  description = "(Optional) Should all logs be sent to a log analytics workspace."
+  type = bool
+  default = false
+}
+
 variable "log_analytics_id" {
   description = "(Optional) The id of the log analytics workspace."
   type        = string

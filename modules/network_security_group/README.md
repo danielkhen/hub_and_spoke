@@ -12,6 +12,7 @@
 |------|-------------|------|---------|:--------:|
 | <a name="input_diagnostic_settings_name"></a> [diagnostic\_settings\_name](#input\_diagnostic\_settings\_name) | (Optional) The name of the diagnostic settings. | `string` | `"network-security-group-diagnostics"` | no |
 | <a name="input_location"></a> [location](#input\_location) | (Required) The location of the network security group. | `string` | n/a | yes |
+| <a name="input_log_analytics_enabled"></a> [log\_analytics\_enabled](#input\_log\_analytics\_enabled) | (Optional) Should all logs be sent to a log analytics workspace. | `bool` | `false` | no |
 | <a name="input_log_analytics_id"></a> [log\_analytics\_id](#input\_log\_analytics\_id) | (Optional) The id of the log analytics workspace. | `string` | `null` | no |
 | <a name="input_name"></a> [name](#input\_name) | (Required) The name of the network security group. | `string` | n/a | yes |
 | <a name="input_network_security_rules"></a> [network\_security\_rules](#input\_network\_security\_rules) | (Optional) A list of network security rules. | <pre>list(object({<br>    name                       = string<br>    access                     = string<br>    direction                  = string<br>    priority                   = number<br>    protocol                   = string<br>    source_address_prefix      = string<br>    source_port_range          = string<br>    destination_address_prefix = string<br>    destination_port_range     = string<br>  }))</pre> | `[]` | no |

@@ -21,6 +21,7 @@
 | <a name="input_default_pip_name"></a> [default\_pip\_name](#input\_default\_pip\_name) | (Required) The name for the public ip of the default ip configuration. | `string` | n/a | yes |
 | <a name="input_generation"></a> [generation](#input\_generation) | (Optional) The generation of the virtual network gateway. | `string` | `"None"` | no |
 | <a name="input_location"></a> [location](#input\_location) | (Required) The location of the virtual network gateway. | `string` | n/a | yes |
+| <a name="input_log_analytics_enabled"></a> [log\_analytics\_enabled](#input\_log\_analytics\_enabled) | (Optional) Should all logs be sent to a log analytics workspace. | `bool` | `false` | no |
 | <a name="input_log_analytics_id"></a> [log\_analytics\_id](#input\_log\_analytics\_id) | (Optional) The id of the log analytics workspace. | `string` | `null` | no |
 | <a name="input_name"></a> [name](#input\_name) | (Required) The name for the virtual network gateway. | `string` | n/a | yes |
 | <a name="input_radius_server_address"></a> [radius\_server\_address](#input\_radius\_server\_address) | (Optional) The address of the radius server, Required for radius authentication. | `string` | `null` | no |

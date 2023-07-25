@@ -14,6 +14,7 @@
 | <a name="input_fw_diagnostics_name"></a> [fw\_diagnostics\_name](#input\_fw\_diagnostics\_name) | (Optional) The name of the diagnostic settings of the firewall. | `string` | `"fw-diagnostics"` | no |
 | <a name="input_ip_configuration_name"></a> [ip\_configuration\_name](#input\_ip\_configuration\_name) | (Optional) The name of the default ip configuration. | `string` | `"fw-pip"` | no |
 | <a name="input_location"></a> [location](#input\_location) | (Required) The location of the firewall. | `string` | n/a | yes |
+| <a name="input_log_analytics_enabled"></a> [log\_analytics\_enabled](#input\_log\_analytics\_enabled) | (Optional) Should all logs be sent to a log analytics workspace. | `bool` | `false` | no |
 | <a name="input_log_analytics_id"></a> [log\_analytics\_id](#input\_log\_analytics\_id) | (Optional) The id of the log analytics workspace. | `string` | `null` | no |
 | <a name="input_management_ip_configuration_name"></a> [management\_ip\_configuration\_name](#input\_management\_ip\_configuration\_name) | (Optional) The name of the management ip configuration. | `string` | `"fw-mng-pip"` | no |
 | <a name="input_management_pip_diagnostics_name"></a> [management\_pip\_diagnostics\_name](#input\_management\_pip\_diagnostics\_name) | (Optional) The name of the diagnostic settings of the management public ip. | `string` | `"fw-management-pip-diagnostics"` | no |

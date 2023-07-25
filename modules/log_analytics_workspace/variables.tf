@@ -36,10 +36,10 @@ variable "internet_query_enabled" {
   default     = "true"
 }
 
-variable "log_analytics" {
-  description = "(Optional) capture logs and metrics."
-  type        = bool
-  default     = false
+variable "log_analytics_enabled" {
+  description = "(Optional) Should all logs be sent to a log analytics workspace."
+  type = bool
+  default = false
 }
 
 variable "diagnostic_settings_name" {

@@ -80,6 +80,7 @@ resource "azurerm_role_assignment" "acr_role" {
 
 module "aks-diagnostics" {
   source = "github.com/danielkhen/diagnostic_setting_module"
+  count = var.log_analytics_enabled ? 1 : 0
 
   name                       = var.diagnostics_name
   target_resource_id         = azurerm_kubernetes_cluster.aks.id

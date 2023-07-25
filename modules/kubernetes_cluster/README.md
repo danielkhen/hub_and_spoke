@@ -14,6 +14,7 @@
 | <a name="input_diagnostics_name"></a> [diagnostics\_name](#input\_diagnostics\_name) | (Optional) The name of the diagnostic setting of the kubernetes cluster. | `string` | `"aks-diagnostics"` | no |
 | <a name="input_dns_prefix"></a> [dns\_prefix](#input\_dns\_prefix) | (Optional) The dns prefix for the kuberenetes api. | `string` | `null` | no |
 | <a name="input_location"></a> [location](#input\_location) | (Required) The location of the kubernetes cluster. | `string` | n/a | yes |
+| <a name="input_log_analytics_enabled"></a> [log\_analytics\_enabled](#input\_log\_analytics\_enabled) | (Optional) Should all logs be sent to a log analytics workspace. | `bool` | `false` | no |
 | <a name="input_log_analytics_id"></a> [log\_analytics\_id](#input\_log\_analytics\_id) | (Optional) The id of the log analytics workspace. | `string` | `null` | no |
 | <a name="input_name"></a> [name](#input\_name) | (Required) The name of the kubernetes cluster. | `string` | n/a | yes |
 | <a name="input_network_plugin"></a> [network\_plugin](#input\_network\_plugin) | (Optional) The network plugin of the aks, azure, kubenet or none. | `string` | `"none"` | no |

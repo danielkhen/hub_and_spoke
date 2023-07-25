@@ -17,6 +17,7 @@ resource "azurerm_storage_account" "storage" {
 
 module "storage_diagnostics" {
   source = "github.com/danielkhen/diagnostic_setting_module"
+  count = var.log_analytics_enabled ? 1 : 0
 
   name                       = "storage-diagnostics"
   target_resource_id         = azurerm_storage_account.storage.id
@@ -33,7 +34,7 @@ locals {
 
 module "subresources_diagnostics" {
   source   = "github.com/danielkhen/diagnostic_setting_module"
-  for_each = local.subresources_diagnostics_map
+  for_each = var.log_analytics_enabled ? local.subresources_diagnostics_map : {}
 
   name                       = each.value.diagnostics_name
   target_resource_id         = each.value.target_resource_id

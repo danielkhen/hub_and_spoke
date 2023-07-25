@@ -31,6 +31,7 @@ resource "azurerm_network_security_rule" "rules" {
 
 module "nsg_diagnostics" {
   source = "github.com/danielkhen/diagnostic_setting_module"
+  count = var.log_analytics_enabled ? 1 : 0
 
   name                       = var.diagnostic_settings_name
   target_resource_id         = azurerm_network_security_group.nsg.id

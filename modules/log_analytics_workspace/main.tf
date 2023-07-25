@@ -14,7 +14,7 @@ resource "azurerm_log_analytics_workspace" "log_analytics" {
 
 module "log_analytics_diagnostics" {
   source = "github.com/danielkhen/diagnostic_setting_module"
-  count  = var.log_analytics ? 1 : 0
+  count  = var.log_analytics_enabled ? 1 : 0
 
   name                       = var.diagnostic_settings_name
   target_resource_id         = azurerm_log_analytics_workspace.log_analytics.id
