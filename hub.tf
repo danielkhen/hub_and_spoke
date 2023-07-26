@@ -147,6 +147,7 @@ locals {
   hub_fw_pl_network_groups     = jsondecode(templatefile("./objects/hub/network_rule_collection_groups.json", local.network_vars))
   hub_fw_pl_application_groups = jsondecode(templatefile("./objects/hub/application_rule_collection_groups.json", local.network_vars))
   hub_fw_pl_nat_groups         = jsondecode(templatefile("./objects/hub/nat_rule_collection_groups.json", local.network_vars))
+  hub_fw_pl_dns_proxy          = true
 }
 
 module "hub_firewall_policy" {
@@ -155,6 +156,7 @@ module "hub_firewall_policy" {
   name                = local.hub_fw_pl_name
   location            = local.location
   resource_group_name = azurerm_resource_group.hub.name
+  dns_proxy_enabled   = local.hub_fw_pl_dns_proxy
 
   network_rule_collection_groups     = local.hub_fw_pl_network_groups
   application_rule_collection_groups = local.hub_fw_pl_application_groups
