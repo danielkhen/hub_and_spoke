@@ -60,7 +60,7 @@ module "private_endpoint" {
 
   name                = local.private_endpoint_name
   location            = local.location
-  resource_group_name = azurerm_resource_group.test_rg
+  resource_group_name = azurerm_resource_group.test_rg.name
   subnet_id           = module.vnet.subnet_ids["PESubnet"]
   resource_id         = module.storage_account.id
   subresource_name    = local.storage_subresource_name

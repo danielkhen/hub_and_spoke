@@ -28,7 +28,7 @@ resource "azurerm_private_dns_zone_virtual_network_link" "vnet_links" {
 
 resource "azurerm_private_endpoint" "pe" {
   location                      = var.location
-  name                          = var.pe_name
+  name                          = var.name
   resource_group_name           = var.resource_group_name
   subnet_id                     = var.subnet_id
   custom_network_interface_name = var.nic_name
