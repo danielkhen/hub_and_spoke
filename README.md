@@ -15,9 +15,7 @@
 
 ## Outputs
 
-| Name | Description |
-|------|-------------|
-| <a name="output_monitor_dns_resolver_ip"></a> [monitor\_dns\_resolver\_ip](#output\_monitor\_dns\_resolver\_ip) | The private ip address of the inbound endpoint of the private dns resolver in the monitor virtual network. |
+No outputs.
 
 ## Resources
 

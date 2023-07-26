@@ -80,3 +80,15 @@ variable "nat_rule_collection_groups" {
   }))
   default = []
 }
+
+variable "dns_proxy_enabled" {
+  description = "(Optional) Should dns proxy be enabled on linked firewalls."
+  type        = bool
+  default     = false
+}
+
+variable "dns_servers" {
+  description = "(Optional) A list of dns servers ip addresses."
+  type        = list(string)
+  default     = null
+}

@@ -3,6 +3,15 @@ resource "azurerm_firewall_policy" "fw_pl" {
   location            = var.location
   resource_group_name = var.resource_group_name
 
+  dynamic "dns" {
+    for_each = var.dns_proxy_enabled ? [true] : []
+
+    content {
+      proxy_enabled = var.dns_proxy_enabled
+      servers       = var.dns_servers
+    }
+  }
+
   lifecycle {
     ignore_changes = [tags["CreationDateTime"], tags["Environment"]]
   }
