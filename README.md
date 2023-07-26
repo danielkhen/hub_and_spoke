@@ -15,7 +15,9 @@
 
 ## Outputs
 
-No outputs.
+| Name | Description |
+|------|-------------|
+| <a name="output_monitor_dns_resolver_ip"></a> [monitor\_dns\_resolver\_ip](#output\_monitor\_dns\_resolver\_ip) | The private ip address of the inbound endpoint of the private dns resolver in the monitor virtual network. |
 
 ## Resources
 
@@ -41,6 +43,7 @@ No outputs.
 | <a name="module_hub_virtual_network"></a> [hub\_virtual\_network](#module\_hub\_virtual\_network) | github.com/danielkhen/virtual_network_module | n/a |
 | <a name="module_hub_vpn_gateway"></a> [hub\_vpn\_gateway](#module\_hub\_vpn\_gateway) | github.com/danielkhen/virtual_network_gateway_module | n/a |
 | <a name="module_monitor_network_security_groups"></a> [monitor\_network\_security\_groups](#module\_monitor\_network\_security\_groups) | github.com/danielkhen/network_security_group_module | n/a |
+| <a name="module_monitor_private_dns_resolver"></a> [monitor\_private\_dns\_resolver](#module\_monitor\_private\_dns\_resolver) | ./modules/private_dns_resolver | n/a |
 | <a name="module_monitor_route_tables"></a> [monitor\_route\_tables](#module\_monitor\_route\_tables) | github.com/danielkhen/route_table_module | n/a |
 | <a name="module_monitor_virtual_network"></a> [monitor\_virtual\_network](#module\_monitor\_virtual\_network) | github.com/danielkhen/virtual_network_module | n/a |
 | <a name="module_monitor_vm"></a> [monitor\_vm](#module\_monitor\_vm) | github.com/danielkhen/virtual_machine_module | n/a |

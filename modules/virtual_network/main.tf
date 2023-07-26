@@ -16,6 +16,11 @@ locals {
   subnets_route_tables_map           = { for subnet in var.subnets : subnet.name => subnet if subnet.route_table_association }
 }
 
+locals {
+  dns_resolver_service_delegation_name    = "Microsoft.Network/dnsResolvers"
+  dns_resolver_service_delegation_actions = ["Microsoft.Network/virtualNetworks/subnets/join/action"]
+}
+
 resource "azurerm_subnet" "subnets" {
   for_each = local.subnets_map
 
@@ -23,6 +28,20 @@ resource "azurerm_subnet" "subnets" {
   resource_group_name  = var.resource_group_name
   virtual_network_name = azurerm_virtual_network.vnet.name
   address_prefixes     = each.value.address_prefixes
+
+  dynamic "delegation" {
+    for_each = each.value.dns_resolver_link ? [true] : []
+
+    content {
+      name = each.value.dns_resolver_delegation_name
+
+      service_delegation {
+        name    = local.dns_resolver_service_delegation_name
+        actions = local.dns_resolver_service_delegation_actions
+      }
+    }
+
+  }
 }
 
 resource "azurerm_subnet_network_security_group_association" "nsg_association" {

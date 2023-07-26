@@ -15,7 +15,7 @@
 | <a name="input_location"></a> [location](#input\_location) | (Required) The location of the virtual network. | `string` | n/a | yes |
 | <a name="input_name"></a> [name](#input\_name) | (Required) The name of the virtual network. | `string` | n/a | yes |
 | <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name) | (Required) The resource group name of the virtual network. | `string` | n/a | yes |
-| <a name="input_subnets"></a> [subnets](#input\_subnets) | (Required) A list of all of the subnets in the virtual network. | <pre>list(object({<br>    name                               = string<br>    address_prefixes                   = list(string)<br>    network_security_group_id          = optional(string)<br>    network_security_group_association = optional(bool, true)<br>    route_table_id                     = optional(string)<br>    route_table_association            = optional(bool, true)<br>  }))</pre> | n/a | yes |
+| <a name="input_subnets"></a> [subnets](#input\_subnets) | (Required) A list of all of the subnets in the virtual network. | <pre>list(object({<br>    name                               = string<br>    address_prefixes                   = list(string)<br>    network_security_group_id          = optional(string)<br>    network_security_group_association = optional(bool, true)<br>    route_table_id                     = optional(string)<br>    route_table_association            = optional(bool, true)<br>    dns_resolver_link                  = optional(bool, false)<br>    dns_resolver_delegation_name       = optional(string, "Microsoft.Network.dnsResolvers")<br>  }))</pre> | n/a | yes |
 
 ## Outputs
 

@@ -33,5 +33,7 @@ variable "subnets" {
     network_security_group_association = optional(bool, true)
     route_table_id                     = optional(string)
     route_table_association            = optional(bool, true)
+    dns_resolver_link                  = optional(bool, false)
+    dns_resolver_delegation_name       = optional(string, "Microsoft.Network.dnsResolvers")
   }))
 }
