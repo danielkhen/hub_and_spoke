@@ -35,6 +35,7 @@ variable "allow_forwarded_traffic" {
 }
 
 variable "use_local_gateway" {
-  description = "(Required) Use the local virtual network gateway for the peering."
+  description = "(Optional) Use the local virtual network gateway for the peering."
   type        = bool
+  default     = false
 }

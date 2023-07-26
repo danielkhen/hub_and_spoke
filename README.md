@@ -30,7 +30,7 @@ No outputs.
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_hub_acr_pe"></a> [hub\_acr\_pe](#module\_hub\_acr\_pe) | github.com/danielkhen/private_endpoint_module | n/a |
+| <a name="module_hub_acr_private_endpoint"></a> [hub\_acr\_private\_endpoint](#module\_hub\_acr\_private\_endpoint) | github.com/danielkhen/private_endpoint_module | n/a |
 | <a name="module_hub_firewall"></a> [hub\_firewall](#module\_hub\_firewall) | github.com/danielkhen/firewall_module | n/a |
 | <a name="module_hub_firewall_policy"></a> [hub\_firewall\_policy](#module\_hub\_firewall\_policy) | github.com/danielkhen/firewall_policy_module | n/a |
 | <a name="module_hub_log_analytics"></a> [hub\_log\_analytics](#module\_hub\_log\_analytics) | github.com/danielkhen/log_analytics_workspace_module | n/a |
@@ -49,7 +49,7 @@ No outputs.
 | <a name="module_work_network_security_groups"></a> [work\_network\_security\_groups](#module\_work\_network\_security\_groups) | github.com/danielkhen/network_security_group_module | n/a |
 | <a name="module_work_private_storage"></a> [work\_private\_storage](#module\_work\_private\_storage) | github.com/danielkhen/storage_account_module | n/a |
 | <a name="module_work_route_tables"></a> [work\_route\_tables](#module\_work\_route\_tables) | github.com/danielkhen/route_table_module | n/a |
-| <a name="module_work_subresources_pes"></a> [work\_subresources\_pes](#module\_work\_subresources\_pes) | github.com/danielkhen/private_endpoint_module | n/a |
+| <a name="module_work_subresources_private_endpoints"></a> [work\_subresources\_private\_endpoints](#module\_work\_subresources\_private\_endpoints) | github.com/danielkhen/private_endpoint_module | n/a |
 | <a name="module_work_virtual_network"></a> [work\_virtual\_network](#module\_work\_virtual\_network) | github.com/danielkhen/virtual_network_module | n/a |
 | <a name="module_work_vm"></a> [work\_vm](#module\_work\_vm) | github.com/danielkhen/virtual_machine_module | n/a |
 <!-- END_TF_DOCS -->

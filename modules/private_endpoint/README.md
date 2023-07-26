@@ -11,13 +11,13 @@
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_dns_name"></a> [dns\_name](#input\_dns\_name) | (Optional) The name of the private dns zone, Required if private dns is enabled. | `string` | `null` | no |
-| <a name="input_dns_prefix"></a> [dns\_prefix](#input\_dns\_prefix) | (Optional) The name of the private endpoint in the private dns zone. | `string` | `"pe"` | no |
+| <a name="input_dns_prefix"></a> [dns\_prefix](#input\_dns\_prefix) | (Optional) The name of the private endpoint in the private dns zone. | `string` | `"private-endpoint"` | no |
 | <a name="input_location"></a> [location](#input\_location) | (Required) The location of the private endpoint and private dns zone. | `string` | n/a | yes |
 | <a name="input_log_analytics_enabled"></a> [log\_analytics\_enabled](#input\_log\_analytics\_enabled) | (Optional) Should all logs be sent to a log analytics workspace. | `bool` | `false` | no |
 | <a name="input_log_analytics_id"></a> [log\_analytics\_id](#input\_log\_analytics\_id) | (Optional) The id of the log analytics workspace. | `string` | `null` | no |
+| <a name="input_name"></a> [name](#input\_name) | (Required) The name of the private endpoint. | `string` | n/a | yes |
 | <a name="input_nic-diagnostics-name"></a> [nic-diagnostics-name](#input\_nic-diagnostics-name) | (Optional) The name of the diagnostic settings for the network interface. | `string` | `"pe-nic-diagnostics"` | no |
-| <a name="input_nic_name"></a> [nic\_name](#input\_nic\_name) | (Required) The name of the network interface of the private endpoint. | `string` | n/a | yes |
-| <a name="input_pe_name"></a> [pe\_name](#input\_pe\_name) | (Required) The name of the private endpoint. | `string` | n/a | yes |
+| <a name="input_nic_name"></a> [nic\_name](#input\_nic\_name) | (Optional) The name of the network interface of the private endpoint. | `string` | `null` | no |
 | <a name="input_private_dns_enabled"></a> [private\_dns\_enabled](#input\_private\_dns\_enabled) | (Optional) Should a private dns zone be included. | `bool` | `false` | no |
 | <a name="input_private_service_connection_name"></a> [private\_service\_connection\_name](#input\_private\_service\_connection\_name) | (Optional) The name of the private service connection. | `string` | `"private-connection"` | no |
 | <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name) | (Required) The name of the resource group. | `string` | n/a | yes |
@@ -47,4 +47,25 @@
 | Name | Source | Version |
 |------|--------|---------|
 | <a name="module_nic-diagnostics"></a> [nic-diagnostics](#module\_nic-diagnostics) | github.com/danielkhen/diagnostic_setting_module | n/a |
+
+## Example Code
+
+```hcl
+module "private_endpoint" {
+  source = "github.com/danielkhen/private_endpoint_module"
+
+  name                = "example-pe"
+  location            = "westeurope"
+  resource_group_name = azurerm_resource_group.example.name
+  resource_id         = azurerm_storage_account.example.id
+  subnet_id           = azurerm_subnet.example.id
+  subresource_name    = "blob"
+
+  private_dns_enabled = true
+  dns_name            = "privatelink.blob.core.windows.net"
+
+  log_analytics_enabled = true
+  log_analytics_id      = azurerm_log_analytics_workspace.example.id
+}
+```
 <!-- END_TF_DOCS -->

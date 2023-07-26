@@ -6,8 +6,6 @@ sections:
     - inputs
     - outputs
     - resources
-    - modules
-    - requirements
 
 content: |-
   
@@ -19,10 +17,11 @@ content: |-
   
   {{ .Resources }}
   
-  {{ .Modules }}
-
-recursive:
-  enabled: true
+  ## Example Code
+  
+  ```hcl
+  {{ include "examples/main.tf" }}
+  ```
 
 output:
   file: "README.md"

@@ -23,20 +23,6 @@
             "destination_addresses": ["${subnets.monitor.MonitorSubnet}"]
           }
         ]
-      },
-      {
-        "name": "private-dns-resolvers",
-        "action": "Allow",
-        "priority": 1100,
-        "rules": [
-          {
-            "name": "monitor-dns-resolver",
-            "source_addresses": ["${address_prefixes.vpn}"],
-            "protocols": ["UDP"],
-            "destination_ports":["53"],
-            "destination_addresses": ["${subnets.monitor.ResolverSubnet}"]
-          }
-        ]
       }
     ]
   }

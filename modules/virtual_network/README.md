@@ -15,7 +15,7 @@
 | <a name="input_location"></a> [location](#input\_location) | (Required) The location of the virtual network. | `string` | n/a | yes |
 | <a name="input_name"></a> [name](#input\_name) | (Required) The name of the virtual network. | `string` | n/a | yes |
 | <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name) | (Required) The resource group name of the virtual network. | `string` | n/a | yes |
-| <a name="input_subnets"></a> [subnets](#input\_subnets) | (Required) A list of all of the subnets in the virtual network. | <pre>list(object({<br>    name                               = string<br>    address_prefixes                   = list(string)<br>    network_security_group_id          = optional(string)<br>    network_security_group_association = optional(bool, true)<br>    route_table_id                     = optional(string)<br>    route_table_association            = optional(bool, true)<br>  }))</pre> | n/a | yes |
+| <a name="input_subnets"></a> [subnets](#input\_subnets) | (Required) A list of all of the subnets in the virtual network. | <pre>list(object({<br>    name                               = string<br>    address_prefixes                   = list(string)<br>    network_security_group_id          = optional(string)<br>    network_security_group_association = optional(bool, false)<br>    route_table_id                     = optional(string)<br>    route_table_association            = optional(bool, false)<br>  }))</pre> | n/a | yes |
 
 ## Outputs
 
@@ -36,7 +36,18 @@
 | [azurerm_subnet_route_table_association.rt_association](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet_route_table_association) | resource |
 | [azurerm_virtual_network.vnet](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_network) | resource |
 
-## Modules
+## Example Code
 
-No modules.
+```hcl
+module "vnet" {
+  source = "github.com/danielkhen/virtual_network_module"
+
+  name                = "example-vnet"
+  location            = "westeurope"
+  resource_group_name = azurerm_resource_group.example.name
+  address_space       = ["10.0.0.0/16"]
+  dns_servers         = ["11.0.0.10"]
+  subnets             = local.vnet_subnets # View variable documentation
+}
+```
 <!-- END_TF_DOCS -->

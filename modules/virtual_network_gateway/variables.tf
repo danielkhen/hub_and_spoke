@@ -39,8 +39,10 @@ variable "sku" {
   type        = string
 
   validation {
-    condition = contains(["Basic", "Standard", "HighPerformance", "UltraPerformance", "ErGw1AZ", "ErGw2AZ", "ErGw3AZ",
-    "VpnGw1", "VpnGw2", "VpnGw3", "VpnGw4", "VpnGw5", "VpnGw1AZ", "VpnGw2AZ", "VpnGw3AZ", "VpnGw4AZ", "VpnGw5AZ"], var.sku)
+    condition = contains([
+      "Basic", "Standard", "HighPerformance", "UltraPerformance", "ErGw1AZ", "ErGw2AZ", "ErGw3AZ",
+      "VpnGw1", "VpnGw2", "VpnGw3", "VpnGw4", "VpnGw5", "VpnGw1AZ", "VpnGw2AZ", "VpnGw3AZ", "VpnGw4AZ", "VpnGw5AZ"
+    ], var.sku)
     error_message = "SKU not valid."
   }
 }
@@ -61,17 +63,18 @@ variable "subnet_id" {
   type        = string
 }
 
-variable "default_pip_name" {
+variable "default_ip_name" {
   description = "(Required) The name for the public ip of the default ip configuration."
   type        = string
 }
 
 variable "active_active" {
-  description = "(Required) Is the virtual network gateway in active active mode."
+  description = "(Optional) Is the virtual network gateway in active active mode."
   type        = bool
+  default     = false
 }
 
-variable "aa_pip_name" {
+variable "active_active_ip_name" {
   description = "(Optional) The name for the public ip of the active active ip configuration, Required if active-active mode is enabled."
   type        = string
   default     = null
@@ -89,7 +92,9 @@ variable "vpn_client_protocols" {
   default     = ["OpenVPN"]
 
   validation {
-    condition     = alltrue([for protocol in var.vpn_client_protocols : contains(["OpenVPN", "SSTP", "IkeV2"], protocol)])
+    condition = alltrue([
+      for protocol in var.vpn_client_protocols : contains(["OpenVPN", "SSTP", "IkeV2"], protocol)
+    ])
     error_message = "Vpn protocols supported values are OpenVPN, SSTP or IkeV2."
   }
 }
@@ -108,14 +113,14 @@ variable "vpn_auth_types" {
 variable "aad_tenant" {
   description = "(Optional) The aad tenant id, Required for AAD authentication."
   type        = string
-  default     = null
+  default     = ""
   sensitive   = true
 }
 
 variable "aad_audience" {
   description = "(Optional) The aad audience id, Required For aad authentication."
   type        = string
-  default     = null
+  default     = ""
 }
 
 variable "radius_server_address" {
@@ -167,13 +172,13 @@ variable "vng_diagnostics_name" {
   default     = "vng-diagnostics"
 }
 
-variable "default_pip_diagnostics_name" {
+variable "default_ip_diagnostics_name" {
   description = "(Optional) The name of the diagnostic settings of the default public ip."
   type        = string
   default     = "default-pip-diagnostics"
 }
 
-variable "aa_pip_diagnostics_name" {
+variable "active_active_ip_diagnostics_name" {
   description = "(Optional) The name of the diagnostic settings of the active-active public ip."
   type        = string
   default     = "aa-pip-diagnostics"
@@ -185,7 +190,7 @@ variable "default_ip_configuration_name" {
   default     = "default"
 }
 
-variable "aa_ip_configuration_name" {
+variable "active_active_ip_configuration_name" {
   description = "(Optional) The name of the active-active ip configuration."
   type        = string
   default     = "active-active"

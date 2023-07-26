@@ -106,16 +106,16 @@ module "hub_virtual_network" {
 }
 
 locals {
-  hub_vng_name              = "${local.prefix}-hub-vpn"
-  hub_vng_type              = "Vpn"
-  hub_vng_vpn_type          = "RouteBased"
-  hub_vng_default_pip_name  = "${local.prefix}-hub-vpn-default-pip"
-  hub_vng_aa_pip_name       = "${local.prefix}-hub-vpn-aa-pip"
-  hub_vng_active_active     = true
-  hub_vng_vpn_address_space = ["172.0.0.0/16"]
-  hub_vng_sku               = "VpnGw1"
-  hub_vng_generation        = "Generation1"
-  aad_audience              = "41b23e61-6c1e-4545-b367-cd054e0ed4b4"
+  hub_vng_name                  = "${local.prefix}-hub-vpn"
+  hub_vng_type                  = "Vpn"
+  hub_vng_vpn_type              = "RouteBased"
+  hub_vng_default_ip_name       = "${local.prefix}-hub-vpn-default-ip"
+  hub_vng_active_active_ip_name = "${local.prefix}-hub-vpn-aa-ip"
+  hub_vng_active_active         = true
+  hub_vng_vpn_address_space     = ["172.0.0.0/16"]
+  hub_vng_sku                   = "VpnGw1"
+  hub_vng_generation            = "Generation1"
+  aad_audience                  = "41b23e61-6c1e-4545-b367-cd054e0ed4b4"
 }
 
 module "hub_vpn_gateway" {
@@ -129,10 +129,10 @@ module "hub_vpn_gateway" {
   type                = local.hub_vng_type
   vpn_type            = local.hub_vng_vpn_type
 
-  default_pip_name = local.hub_vng_default_pip_name
-  subnet_id        = module.hub_virtual_network.subnet_ids["GatewaySubnet"]
-  active_active    = local.hub_vng_active_active
-  aa_pip_name      = local.hub_vng_aa_pip_name
+  default_ip_name       = local.hub_vng_default_ip_name
+  subnet_id             = module.hub_virtual_network.subnet_ids["GatewaySubnet"]
+  active_active         = local.hub_vng_active_active
+  active_active_ip_name = local.hub_vng_active_active_ip_name
 
   vpn_address_space = local.hub_vng_vpn_address_space
   aad_tenant        = var.aad_tenant_id
@@ -143,47 +143,47 @@ module "hub_vpn_gateway" {
 }
 
 locals {
-  hub_fw_pl_name               = "${local.prefix}-hub-fw-pl"
-  hub_fw_pl_network_groups     = jsondecode(templatefile("./objects/hub/network_rule_collection_groups.json", local.network_vars))
-  hub_fw_pl_application_groups = jsondecode(templatefile("./objects/hub/application_rule_collection_groups.json", local.network_vars))
-  hub_fw_pl_nat_groups         = jsondecode(templatefile("./objects/hub/nat_rule_collection_groups.json", local.network_vars))
-  hub_fw_pl_dns_proxy          = true
+  hub_firewall_policy_name               = "${local.prefix}-hub-fw-pl"
+  hub_firewall_policy_network_groups     = jsondecode(templatefile("./objects/hub/network_rule_collection_groups.json", local.network_vars))
+  hub_firewall_policy_application_groups = jsondecode(templatefile("./objects/hub/application_rule_collection_groups.json", local.network_vars))
+  hub_firewall_policy_nat_groups         = jsondecode(templatefile("./objects/hub/nat_rule_collection_groups.json", local.network_vars))
+  hub_firewall_policy_dns_proxy          = true
 }
 
 module "hub_firewall_policy" {
   source = "github.com/danielkhen/firewall_policy_module"
 
-  name                = local.hub_fw_pl_name
+  name                = local.hub_firewall_policy_name
   location            = local.location
   resource_group_name = azurerm_resource_group.hub.name
-  dns_proxy_enabled   = local.hub_fw_pl_dns_proxy
+  dns_proxy_enabled   = local.hub_firewall_policy_dns_proxy
 
-  network_rule_collection_groups     = local.hub_fw_pl_network_groups
-  application_rule_collection_groups = local.hub_fw_pl_application_groups
-  nat_rule_collection_groups         = local.hub_fw_pl_nat_groups
+  network_rule_collection_groups     = local.hub_firewall_policy_network_groups
+  application_rule_collection_groups = local.hub_firewall_policy_application_groups
+  nat_rule_collection_groups         = local.hub_firewall_policy_nat_groups
 }
 
 locals {
-  hub_fw_name                = "${local.prefix}-hub-fw"
-  hub_fw_pip_name            = "${local.prefix}-hub-fw-pip"
-  hub_fw_management_pip_name = "${local.prefix}-hub-fw-mng-pip"
-  hub_fw_sku_tier            = "Standard"
-  hub_fw_forced_tunneling    = true
+  hub_firewall_name               = "${local.prefix}-hub-fw"
+  hub_firewall_ip_name            = "${local.prefix}-hub-fw-ip"
+  hub_firewall_management_ip_name = "${local.prefix}-hub-fw-mng-ip"
+  hub_firewall_sku_tier           = "Standard"
+  hub_firewall_forced_tunneling   = true
 }
 
 module "hub_firewall" {
   source = "github.com/danielkhen/firewall_module"
 
-  name                = local.hub_fw_name
+  name                = local.hub_firewall_name
   location            = local.location
   resource_group_name = azurerm_resource_group.hub.name
-  sku_tier            = local.hub_fw_sku_tier
+  sku_tier            = local.hub_firewall_sku_tier
   subnet_id           = module.hub_virtual_network.subnet_ids["AzureFirewallSubnet"]
   policy_id           = module.hub_firewall_policy.id
-  public_ip_name      = local.hub_fw_pip_name
+  public_ip_name      = local.hub_firewall_ip_name
 
-  forced_tunneling          = local.hub_fw_forced_tunneling
-  management_public_ip_name = local.hub_fw_management_pip_name
+  forced_tunneling          = local.hub_firewall_forced_tunneling
+  management_public_ip_name = local.hub_firewall_management_ip_name
   management_subnet_id      = module.hub_virtual_network.subnet_ids["AzureFirewallManagementSubnet"]
 
   log_analytics_enabled = local.log_analytics_enabled
@@ -209,10 +209,10 @@ resource "azurerm_container_registry" "hub_acr" {
 }
 
 locals {
-  hub_acr_dns_name       = "privatelink.azurecr.io"
-  hub_acr_nic_name       = "${local.prefix}-hub-acr-nic"
-  hub_acr_pe_name        = "${local.prefix}-hub-acr-pe"
-  hub_acr_pe_subresource = "registry"
+  hub_acr_dns_name                     = "privatelink.azurecr.io"
+  hub_acr_nic_name                     = "${local.prefix}-hub-acr-nic"
+  hub_acr_private_endpoint_name        = "${local.prefix}-hub-acr-pe"
+  hub_acr_private_endpoint_subresource = "registry"
 
   hub_acr_vnet_links = [
     {
@@ -226,18 +226,18 @@ locals {
   ]
 }
 
-module "hub_acr_pe" {
+module "hub_acr_private_endpoint" {
   source = "github.com/danielkhen/private_endpoint_module"
 
   location            = local.location
   resource_group_name = azurerm_resource_group.hub.name
   nic_name            = local.hub_acr_nic_name
-  pe_name             = local.hub_acr_pe_name
+  name                = local.hub_acr_private_endpoint_name
   private_dns_enabled = local.private_endpoints_dns_enabled
   dns_name            = local.hub_acr_dns_name
 
   resource_id      = azurerm_container_registry.hub_acr.id
-  subresource_name = local.hub_acr_pe_subresource
+  subresource_name = local.hub_acr_private_endpoint_subresource
   subnet_id        = module.hub_virtual_network.subnet_ids["ACRSubnet"]
   vnet_links       = local.hub_acr_vnet_links
 

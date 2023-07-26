@@ -39,9 +39,8 @@ variable "vnet_links" {
 }
 
 variable "records" {
-  description = "(Optional) List of ipv4 addresses."
+  description = "(Required) List of ipv4 addresses."
   type        = list(string)
-  default     = null
 }
 
 variable "ttl" {

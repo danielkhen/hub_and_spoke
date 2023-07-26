@@ -30,8 +30,8 @@ variable "subnets" {
     name                               = string
     address_prefixes                   = list(string)
     network_security_group_id          = optional(string)
-    network_security_group_association = optional(bool, true)
+    network_security_group_association = optional(bool, false)
     route_table_id                     = optional(string)
-    route_table_association            = optional(bool, true)
+    route_table_association            = optional(bool, false)
   }))
 }

@@ -1,3 +1,8 @@
+variable "name" {
+  description = "(Required) The name of the private endpoint."
+  type        = string
+}
+
 variable "location" {
   description = "(Required) The location of the private endpoint and private dns zone."
   type        = string
@@ -29,10 +34,6 @@ variable "vnet_links" {
   default = []
 }
 
-variable "pe_name" {
-  description = "(Required) The name of the private endpoint."
-  type        = string
-}
 
 variable "subnet_id" {
   description = "(Required) The subnet id for the private endpoint."
@@ -40,8 +41,9 @@ variable "subnet_id" {
 }
 
 variable "nic_name" {
-  description = "(Required) The name of the network interface of the private endpoint."
+  description = "(Optional) The name of the network interface of the private endpoint."
   type        = string
+  default     = null
 }
 
 variable "private_service_connection_name" {
@@ -63,7 +65,7 @@ variable "subresource_name" {
 variable "dns_prefix" {
   description = "(Optional) The name of the private endpoint in the private dns zone."
   type        = string
-  default     = "pe"
+  default     = "private-endpoint"
 }
 
 variable "log_analytics_enabled" {

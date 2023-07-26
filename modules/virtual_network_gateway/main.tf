@@ -4,7 +4,7 @@ locals {
 
 resource "azurerm_public_ip" "vng_default_pip" {
   location            = var.location
-  name                = var.default_pip_name
+  name                = var.default_ip_name
   resource_group_name = var.resource_group_name
   allocation_method   = local.ip_allocation_method
 
@@ -17,7 +17,7 @@ resource "azurerm_public_ip" "vng_aa_pip" {
   count = var.active_active ? 1 : 0
 
   location            = var.location
-  name                = var.aa_pip_name
+  name                = var.active_active_ip_name
   resource_group_name = var.resource_group_name
   allocation_method   = local.ip_allocation_method
 
@@ -52,7 +52,7 @@ resource "azurerm_virtual_network_gateway" "vng" {
     for_each = var.active_active ? [true] : []
 
     content {
-      name                          = var.aa_ip_configuration_name
+      name                          = var.active_active_ip_configuration_name
       private_ip_address_allocation = local.ip_allocation_method
       subnet_id                     = var.subnet_id
       public_ip_address_id          = azurerm_public_ip.vng_aa_pip[0].id
@@ -113,7 +113,7 @@ module "default_pip_diagnostics" {
   source = "github.com/danielkhen/diagnostic_setting_module"
   count  = var.log_analytics_enabled ? 1 : 0
 
-  name                       = var.default_pip_diagnostics_name
+  name                       = var.default_ip_diagnostics_name
   target_resource_id         = azurerm_public_ip.vng_default_pip.id
   log_analytics_workspace_id = var.log_analytics_id
 }
@@ -122,7 +122,7 @@ module "aa_pip_diagnostics" {
   source = "github.com/danielkhen/diagnostic_setting_module"
   count  = var.active_active && var.log_analytics_enabled ? 1 : 0
 
-  name                       = var.aa_pip_diagnostics_name
+  name                       = var.active_active_ip_diagnostics_name
   target_resource_id         = azurerm_public_ip.vng_aa_pip[0].id
   log_analytics_workspace_id = var.log_analytics_id
 }

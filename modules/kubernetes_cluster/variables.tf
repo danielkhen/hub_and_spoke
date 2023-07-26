@@ -19,7 +19,7 @@ variable "node_pools" {
     name                  = string
     node_count            = number
     vm_size               = string
-    vnet_subnet_id        = string
+    vnet_subnet_id        = optional(string, null)
     enable_auto_scaling   = optional(bool, false)
     default               = optional(bool, false)
     enable_node_public_ip = optional(bool, false)
@@ -73,12 +73,25 @@ variable "private_cluster_enabled" {
 }
 
 variable "node_resource_group" {
-  description = "(Required) The resource group name where all the components of the kubernetes cluster reside."
+  description = "(Optional) The resource group name where all the components of the kubernetes cluster reside."
   type        = string
+  default     = null
 }
 
 variable "dns_prefix" {
   description = "(Optional) The dns prefix for the kuberenetes api."
+  type        = string
+  default     = null
+}
+
+variable "service_cidr" {
+  description = "(Optional) The range of ip addresses assigned to services."
+  type        = string
+  default     = null
+}
+
+variable "dns_service_ip" {
+  description = "(Optional) The ip address of the dns service."
   type        = string
   default     = null
 }

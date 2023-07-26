@@ -120,14 +120,13 @@ locals {
   ]
 }
 
-module "work_subresources_pes" {
+module "work_subresources_private_endpoints" {
   source   = "github.com/danielkhen/private_endpoint_module"
   for_each = local.work_storage_subresources_map
 
+  name                = each.value.private_endpoint_name
   location            = local.location
   resource_group_name = azurerm_resource_group.work.name
-  nic_name            = each.value.nic_name
-  pe_name             = each.value.pe_name
   private_dns_enabled = local.private_endpoints_dns_enabled
   dns_name            = each.value.dns_name
 

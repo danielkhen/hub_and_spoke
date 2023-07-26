@@ -15,7 +15,7 @@
 | <a name="input_remote_vnet_id"></a> [remote\_vnet\_id](#input\_remote\_vnet\_id) | The id of the remote vnet | `string` | n/a | yes |
 | <a name="input_remote_vnet_name"></a> [remote\_vnet\_name](#input\_remote\_vnet\_name) | The name of the remote vnet | `string` | n/a | yes |
 | <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name) | The local resource group name for the peerings | `string` | n/a | yes |
-| <a name="input_use_local_gateway"></a> [use\_local\_gateway](#input\_use\_local\_gateway) | (Required) Use the local virtual network gateway for the peering. | `bool` | n/a | yes |
+| <a name="input_use_local_gateway"></a> [use\_local\_gateway](#input\_use\_local\_gateway) | (Optional) Use the local virtual network gateway for the peering. | `bool` | `false` | no |
 | <a name="input_vnet_id"></a> [vnet\_id](#input\_vnet\_id) | The id of the local vnet with the gateway | `string` | n/a | yes |
 | <a name="input_vnet_name"></a> [vnet\_name](#input\_vnet\_name) | The name of the local vnet with the gateway | `string` | n/a | yes |
 
@@ -37,7 +37,21 @@
 | [azurerm_virtual_network_peering.ingoing_peering](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_network_peering) | resource |
 | [azurerm_virtual_network_peering.outgoing_peering](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_network_peering) | resource |
 
-## Modules
+## Example Code
 
-No modules.
+```hcl
+module "virtual_network_peerings" {
+  source = "../"
+
+  vnet_name                  = azurerm_virtual_network.example_local.name
+  vnet_id                    = azurerm_virtual_network.example_local.id
+  resource_group_name        = azurerm_resource_group.example_local.name
+  remote_vnet_name           = azurerm_virtual_network.example_remote.name
+  remote_vnet_id             = azurerm_virtual_network.example_remote.id
+  remote_resource_group_name = azurerm_resource_group.example_remote.name
+
+  allow_forwarded_traffic = false
+  use_local_gateway       = true # Use a gateway in the example local vnet.
+}
+```
 <!-- END_TF_DOCS -->

@@ -24,8 +24,9 @@ variable "sku_tier" {
 }
 
 variable "policy_id" {
-  description = "(Required) The id of the firewall policy."
+  description = "(Optional) The id of the firewall policy."
   type        = string
+  default     = null
 }
 
 variable "subnet_id" {

@@ -135,9 +135,9 @@ locals {
 module "monitor_vm_record" {
   source = "github.com/danielkhen/dns_record_module"
 
+  name                = local.monitor_vm_record_name
   resource_group_name = azurerm_resource_group.monitor.name
   dns_name            = local.monitor_vm_dns_name
-  name                = local.monitor_vm_record_name
   records             = [module.monitor_vm.private_ips[0]]
   vnet_links          = local.monitor_vm_vnet_links
   record_type         = local.monitor_vm_record_type

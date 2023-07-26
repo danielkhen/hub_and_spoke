@@ -22,7 +22,7 @@
 | <a name="input_management_subnet_id"></a> [management\_subnet\_id](#input\_management\_subnet\_id) | (Optional) The id of the firewall management subnet, Required if forced tunneling is enabled. | `string` | `null` | no |
 | <a name="input_name"></a> [name](#input\_name) | (Required) The name of the firewall. | `string` | n/a | yes |
 | <a name="input_pip_diagnostics_name"></a> [pip\_diagnostics\_name](#input\_pip\_diagnostics\_name) | (Optional) The name of the diagnostic settings of the default public ip. | `string` | `"fw-pip-diagnostics"` | no |
-| <a name="input_policy_id"></a> [policy\_id](#input\_policy\_id) | (Required) The id of the firewall policy. | `string` | n/a | yes |
+| <a name="input_policy_id"></a> [policy\_id](#input\_policy\_id) | (Optional) The id of the firewall policy. | `string` | `null` | no |
 | <a name="input_public_ip_name"></a> [public\_ip\_name](#input\_public\_ip\_name) | (Required) The name for the regular public ip. | `string` | n/a | yes |
 | <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name) | (Required) The resource group name of the firewall. | `string` | n/a | yes |
 | <a name="input_sku_tier"></a> [sku\_tier](#input\_sku\_tier) | (Required) The SKU tier of the firewall, Basic, Standard or Premium. | `string` | n/a | yes |
@@ -51,4 +51,27 @@
 | <a name="module_fw_diagnostics"></a> [fw\_diagnostics](#module\_fw\_diagnostics) | github.com/danielkhen/diagnostic_setting_module | n/a |
 | <a name="module_fw_mng_pip_diagnostics"></a> [fw\_mng\_pip\_diagnostics](#module\_fw\_mng\_pip\_diagnostics) | github.com/danielkhen/diagnostic_setting_module | n/a |
 | <a name="module_fw_pip_diagnostics"></a> [fw\_pip\_diagnostics](#module\_fw\_pip\_diagnostics) | github.com/danielkhen/diagnostic_setting_module | n/a |
+
+## Example Code
+
+```hcl
+module "firewall" {
+  source = "github.com/danielkhen/firewall_module"
+
+  name                = "example-firewall"
+  location            = "westeurope"
+  resource_group_name = azurerm_resource_group.example.name
+  policy_id           = azurerm_firewall_policy.example.id
+  public_ip_name      = "example-public-ip"
+  sku_tier            = "Standard"
+  subnet_id           = azurerm_subnet.firewall_example.id
+
+  forced_tunneling          = true # Forced tunneling requires another public ip
+  management_public_ip_name = "example-management-public-ip"
+  management_subnet_id      = azurerm_subnet.firewall_management_example.id
+
+  log_analytics_enabled = true
+  log_analytics_id      = azurerm_log_analytics_workspace.example.id
+}
+```
 <!-- END_TF_DOCS -->

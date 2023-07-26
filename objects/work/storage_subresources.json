@@ -2,25 +2,25 @@
   {
     "name": "blob",
     "dns_name": "privatelink.blob.core.windows.net",
-    "pe_name": "dtf-work-blob-pe",
+    "private_endpoint_name": "dtf-work-blob-pe",
     "nic_name": "dtf-work-blob-nic"
   },
   {
     "name": "file",
     "dns_name": "privatelink.file.core.windows.net",
-    "pe_name": "dtf-work-file-pe",
+    "private_endpoint_name": "dtf-work-file-pe",
     "nic_name": "dtf-work-file-nic"
   },
   {
     "name": "queue",
     "dns_name": "privatelink.queue.core.windows.net",
-    "pe_name": "dtf-work-queue-pe",
+    "private_endpoint_name": "dtf-work-queue-pe",
     "nic_name": "dtf-work-queue-nic"
   },
   {
     "name": "table",
     "dns_name": "privatelink.table.core.windows.net",
-    "pe_name": "dtf-work-table-pe",
+    "private_endpoint_name": "dtf-work-table-pe",
     "nic_name": "dtf-work-table-nic"
   }
 ]

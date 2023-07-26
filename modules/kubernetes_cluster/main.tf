@@ -13,6 +13,8 @@ resource "azurerm_kubernetes_cluster" "aks" {
 
   network_profile {
     network_plugin = var.network_plugin
+    service_cidr   = var.service_cidr
+    dns_service_ip = var.dns_service_ip
   }
 
   default_node_pool {
@@ -28,16 +30,16 @@ resource "azurerm_kubernetes_cluster" "aks" {
     os_sku                = local.default_node_pool.os_sku
   }
 
-  dynamic "identity" {
-    for_each = var.container_registry_id == null ? [] : [true]
-
-    content {
-      type = local.identity_type
-    }
+  identity {
+    type = local.identity_type
   }
 
-  oms_agent {
-    log_analytics_workspace_id = var.log_analytics_id
+  dynamic "oms_agent" {
+    for_each = var.log_analytics_enabled ? [true] : []
+
+    content {
+      log_analytics_workspace_id = var.log_analytics_id
+    }
   }
 
   lifecycle {
