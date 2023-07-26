@@ -60,7 +60,6 @@ locals {
       address_prefixes       = ["10.2.1.0/24"]
       network_security_group = "monitor-ResolverSubnet-nsg"
       route_table            = "monitor-rt"
-      dns_resolver_link      = true
     }
   }
 
@@ -142,18 +141,4 @@ module "monitor_vm_record" {
   records             = [module.monitor_vm.private_ips[0]]
   vnet_links          = local.monitor_vm_vnet_links
   record_type         = local.monitor_vm_record_type
-}
-
-locals {
-  monitor_dns_resolver_name = "${local.prefix}-monitor-dns-resolver"
-}
-
-module "monitor_private_dns_resolver" {
-  source = "./modules/private_dns_resolver"
-
-  name                       = local.monitor_dns_resolver_name
-  location                   = local.location
-  resource_group_name        = azurerm_resource_group.monitor.name
-  inbound_endpoint_subnet_id = module.monitor_virtual_network.subnet_ids["ResolverSubnet"]
-  virtual_network_id         = module.monitor_virtual_network.id
 }
