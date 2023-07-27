@@ -26,7 +26,7 @@ resource "azurerm_private_dns_zone_virtual_network_link" "vnet_links" {
   }
 }
 
-resource "azurerm_private_endpoint" "pe" {
+resource "azurerm_private_endpoint" "private_endpoint" {
   location                      = var.location
   name                          = var.name
   resource_group_name           = var.resource_group_name

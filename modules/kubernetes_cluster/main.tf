@@ -80,7 +80,7 @@ resource "azurerm_role_assignment" "acr_role" {
   scope                = var.container_registry_id
 }
 
-module "aks-diagnostics" {
+module "aks_diagnostics" {
   source = "github.com/danielkhen/diagnostic_setting_module"
   count  = var.log_analytics_enabled ? 1 : 0
 

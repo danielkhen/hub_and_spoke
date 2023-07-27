@@ -9,7 +9,7 @@ resource "azurerm_dns_zone" "dns_zone" {
   }
 }
 
-resource "azurerm_private_dns_zone" "dns_zone" {
+resource "azurerm_private_dns_zone" "private_dns_zone" {
   count = var.is_private ? 1 : 0
 
   name                = var.dns_name
@@ -38,7 +38,7 @@ resource "azurerm_private_dns_zone_virtual_network_link" "vnet_links" {
 }
 
 
-resource "azurerm_dns_a_record" "record" {
+resource "azurerm_dns_a_record" "a_record" {
   count = !var.is_private && var.record_type == "a" ? 1 : 0
 
   name                = var.name
@@ -53,11 +53,11 @@ resource "azurerm_dns_a_record" "record" {
 }
 
 
-resource "azurerm_private_dns_a_record" "record" {
+resource "azurerm_private_dns_a_record" "private_a_record" {
   count = var.is_private && var.record_type == "a" ? 1 : 0
 
   name                = var.name
-  zone_name           = azurerm_private_dns_zone.dns_zone[0].name
+  zone_name           = azurerm_private_dns_zone.private_dns_zone[0].name
   resource_group_name = var.resource_group_name
   ttl                 = var.ttl
   records             = var.records
@@ -67,7 +67,7 @@ resource "azurerm_private_dns_a_record" "record" {
   }
 }
 
-resource "azurerm_dns_aaaa_record" "record" {
+resource "azurerm_dns_aaaa_record" "aaaa_record" {
   count = !var.is_private && var.record_type == "aaaa" ? 1 : 0
 
   name                = var.name
@@ -82,11 +82,11 @@ resource "azurerm_dns_aaaa_record" "record" {
 }
 
 
-resource "azurerm_private_dns_aaaa_record" "record" {
+resource "azurerm_private_dns_aaaa_record" "private_aaaa_record" {
   count = var.is_private && var.record_type == "aaaa" ? 1 : 0
 
   name                = var.name
-  zone_name           = azurerm_private_dns_zone.dns_zone[0].name
+  zone_name           = azurerm_private_dns_zone.private_dns_zone[0].name
   resource_group_name = var.resource_group_name
   ttl                 = var.ttl
   records             = var.records

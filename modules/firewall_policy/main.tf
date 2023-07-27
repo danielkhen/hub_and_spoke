@@ -1,4 +1,4 @@
-resource "azurerm_firewall_policy" "fw_pl" {
+resource "azurerm_firewall_policy" "policy" {
   name                = var.name
   location            = var.location
   resource_group_name = var.resource_group_name
@@ -27,7 +27,7 @@ resource "azurerm_firewall_policy_rule_collection_group" "network_rule_collectio
   for_each = local.network_rule_collection_groups_map
 
   name               = each.value.name
-  firewall_policy_id = azurerm_firewall_policy.fw_pl.id
+  firewall_policy_id = azurerm_firewall_policy.policy.id
   priority           = each.value.priority
 
   dynamic "network_rule_collection" {
@@ -63,7 +63,7 @@ resource "azurerm_firewall_policy_rule_collection_group" "application_rule_colle
   for_each = local.application_rule_collection_groups_map
 
   name               = each.value.name
-  firewall_policy_id = azurerm_firewall_policy.fw_pl.id
+  firewall_policy_id = azurerm_firewall_policy.policy.id
   priority           = each.value.priority
 
   dynamic "application_rule_collection" {
@@ -107,7 +107,7 @@ resource "azurerm_firewall_policy_rule_collection_group" "nat_rule_collection_gr
   for_each = local.nat_rule_collection_groups_map
 
   name               = each.value.name
-  firewall_policy_id = azurerm_firewall_policy.fw_pl.id
+  firewall_policy_id = azurerm_firewall_policy.policy.id
   priority           = each.value.priority
 
   dynamic "nat_rule_collection" {
