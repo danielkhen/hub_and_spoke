@@ -1,0 +1,33 @@
+{
+  "contentVersion": "1.0.0.0",
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "parameters": {
+    "vnet_name": {
+      "type": "String"
+    },
+    "subnet_name": {
+      "type": "String"
+    },
+    "subnet_address_prefix": {
+      "type": "String"
+    },
+    "network_security_group_id": {
+      "type": "String"
+    },
+    "route_table_id": {
+      "type": "String"
+    }
+  },
+  "resources": [
+    {
+      "apiVersion": "2022-11-01",
+      "type": "Microsoft.Network/virtualNetworks/subnets",
+      "name": "[concat(parameters('vnet_name'), '/', parameters('subnet_name'))]",
+      "properties": {
+        "addressPrefix": "[parameters('subnet_address_prefix')]",
+        "networkSecurityGroup": "[if(equals(parameters('network_security_group_id'),''), json('null'), json(concat('{\"id\": \"', parameters('network_security_group_id'), '\"}')))]",
+        "routeTable": "[if(equals(parameters('route_table_id'),''), json('null'), json(concat('{\"id\": \"', parameters('route_table_id'), '\"}')))]"
+      }
+    }
+  ]
+}

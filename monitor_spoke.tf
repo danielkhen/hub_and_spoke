@@ -51,25 +51,17 @@ locals {
 
   monitor_vnet_subnets_map = {
     MonitorSubnet = {
-      address_prefixes       = ["10.2.0.0/24"]
+      address_prefix         = "10.2.0.0/24"
       network_security_group = "monitor-MonitorSubnet-nsg"
-      route_table            = "monitor-rt"
-    }
-
-    ResolverSubnet = {
-      address_prefixes       = ["10.2.1.0/24"]
-      network_security_group = "monitor-ResolverSubnet-nsg"
       route_table            = "monitor-rt"
     }
   }
 
   monitor_vnet_subnets = [
     for name, subnet in local.monitor_vnet_subnets_map : merge(subnet, {
-      name                               = name
-      network_security_group_id          = can(subnet.network_security_group) ? module.monitor_network_security_groups[subnet.network_security_group].id : null
-      route_table_id                     = can(subnet.route_table) ? module.monitor_route_tables[subnet.route_table].id : null
-      network_security_group_association = can(subnet.network_security_group)
-      route_table_association            = can(subnet.route_table)
+      name                      = name
+      network_security_group_id = can(subnet.network_security_group) ? module.monitor_network_security_groups[subnet.network_security_group].id : ""
+      route_table_id            = can(subnet.route_table) ? module.monitor_route_tables[subnet.route_table].id : ""
     })
   ]
 }

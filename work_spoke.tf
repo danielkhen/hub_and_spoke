@@ -50,19 +50,19 @@ locals {
 
   work_vnet_subnets_map = {
     WorkSubnet = {
-      address_prefixes       = ["10.1.0.0/24"]
+      address_prefix         = "10.1.0.0/24"
       network_security_group = "work-WorkSubnet-nsg"
       route_table            = "work-rt"
     }
 
     StorageSubnet = {
-      address_prefixes       = ["10.1.1.0/24"]
+      address_prefix         = "10.1.1.0/24"
       network_security_group = "work-StorageSubnet-nsg"
       route_table            = "work-rt"
     }
 
     AKSSubnet = {
-      address_prefixes       = ["10.1.2.0/24"]
+      address_prefix         = "10.1.2.0/24"
       network_security_group = "work-AKSSubnet-nsg"
       route_table            = "work-rt"
     }
@@ -70,11 +70,9 @@ locals {
 
   work_vnet_subnets = [
     for name, subnet in local.work_vnet_subnets_map : merge(subnet, {
-      name                               = name
-      network_security_group_id          = can(subnet.network_security_group) ? module.work_network_security_groups[subnet.network_security_group].id : null
-      route_table_id                     = can(subnet.route_table) ? module.work_route_tables[subnet.route_table].id : null
-      network_security_group_association = can(subnet.network_security_group)
-      route_table_association            = can(subnet.route_table)
+      name                      = name
+      network_security_group_id = can(subnet.network_security_group) ? module.work_network_security_groups[subnet.network_security_group].id : ""
+      route_table_id            = can(subnet.route_table) ? module.work_route_tables[subnet.route_table].id : ""
     })
   ]
 }

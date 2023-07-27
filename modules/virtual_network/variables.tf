@@ -27,11 +27,9 @@ variable "dns_servers" {
 variable "subnets" {
   description = "(Required) A list of all of the subnets in the virtual network."
   type = list(object({
-    name                               = string
-    address_prefixes                   = list(string)
-    network_security_group_id          = optional(string)
-    network_security_group_association = optional(bool, false)
-    route_table_id                     = optional(string)
-    route_table_association            = optional(bool, false)
+    name                      = string
+    address_prefix            = string
+    network_security_group_id = optional(string, "")
+    route_table_id            = optional(string, "")
   }))
 }

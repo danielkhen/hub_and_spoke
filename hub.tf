@@ -65,20 +65,20 @@ locals {
 
   hub_vnet_subnets_map = {
     GatewaySubnet = {
-      address_prefixes = ["10.0.0.0/24"]
-      route_table      = "hub-gateway-rt"
+      address_prefix = "10.0.0.0/24"
+      route_table    = "hub-gateway-rt"
     }
 
     AzureFirewallSubnet = {
-      address_prefixes = ["10.0.1.0/24"]
+      address_prefix = "10.0.1.0/24"
     }
 
     AzureFirewallManagementSubnet = {
-      address_prefixes = ["10.0.2.0/24"]
+      address_prefix = "10.0.2.0/24"
     }
 
     ACRSubnet = {
-      address_prefixes       = ["10.0.3.0/24"]
+      address_prefix         = "10.0.3.0/24"
       network_security_group = "hub-ACRSubnet-nsg"
       route_table            = "hub-rt"
     }
@@ -86,11 +86,9 @@ locals {
 
   hub_vnet_subnets = [
     for name, subnet in local.hub_vnet_subnets_map : merge(subnet, {
-      name                               = name
-      network_security_group_id          = can(subnet.network_security_group) ? module.hub_network_security_groups[subnet.network_security_group].id : null
-      route_table_id                     = can(subnet.route_table) ? module.hub_route_tables[subnet.route_table].id : null
-      network_security_group_association = can(subnet.network_security_group)
-      route_table_association            = can(subnet.route_table)
+      name                      = name
+      network_security_group_id = can(subnet.network_security_group) ? module.hub_network_security_groups[subnet.network_security_group].id : ""
+      route_table_id            = can(subnet.route_table) ? module.hub_route_tables[subnet.route_table].id : ""
     })
   ]
 }
