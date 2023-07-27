@@ -48,7 +48,7 @@ locals {
   activity_log_analytics_resource_group = "dor-hub-n-spoke"
 }
 
-data "azurerm_log_analytics_workspace" "activity_log_analytics" {
+data "azurerm_log_analytics_workspace" "activity" {
 
   name                = local.activity_log_analytics_name
   resource_group_name = local.activity_log_analytics_resource_group

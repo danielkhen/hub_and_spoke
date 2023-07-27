@@ -41,16 +41,16 @@
 | Name | Type |
 |------|------|
 | [azurerm_firewall.fw](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/firewall) | resource |
-| [azurerm_public_ip.fw_mng_pip](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/public_ip) | resource |
-| [azurerm_public_ip.fw_pip](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/public_ip) | resource |
+| [azurerm_public_ip.fw_ip](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/public_ip) | resource |
+| [azurerm_public_ip.fw_management_ip](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/public_ip) | resource |
 
 ## Modules
 
 | Name | Source | Version |
 |------|--------|---------|
 | <a name="module_fw_diagnostics"></a> [fw\_diagnostics](#module\_fw\_diagnostics) | github.com/danielkhen/diagnostic_setting_module | n/a |
-| <a name="module_fw_mng_pip_diagnostics"></a> [fw\_mng\_pip\_diagnostics](#module\_fw\_mng\_pip\_diagnostics) | github.com/danielkhen/diagnostic_setting_module | n/a |
-| <a name="module_fw_pip_diagnostics"></a> [fw\_pip\_diagnostics](#module\_fw\_pip\_diagnostics) | github.com/danielkhen/diagnostic_setting_module | n/a |
+| <a name="module_fw_ip_diagnostics"></a> [fw\_ip\_diagnostics](#module\_fw\_ip\_diagnostics) | github.com/danielkhen/diagnostic_setting_module | n/a |
+| <a name="module_fw_management_ip_diagnostics"></a> [fw\_management\_ip\_diagnostics](#module\_fw\_management\_ip\_diagnostics) | github.com/danielkhen/diagnostic_setting_module | n/a |
 
 ## Example Code
 

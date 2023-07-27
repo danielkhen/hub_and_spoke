@@ -4,7 +4,7 @@ locals {
   ip_sku               = "Standard"
 }
 
-resource "azurerm_public_ip" "fw_pip" {
+resource "azurerm_public_ip" "fw_ip" {
   name                = var.public_ip_name
   location            = var.location
   resource_group_name = var.resource_group_name
@@ -16,7 +16,7 @@ resource "azurerm_public_ip" "fw_pip" {
   }
 }
 
-resource "azurerm_public_ip" "fw_mng_pip" {
+resource "azurerm_public_ip" "fw_management_ip" {
   count = var.forced_tunneling ? 1 : 0
 
   name                = var.management_public_ip_name
@@ -41,7 +41,7 @@ resource "azurerm_firewall" "fw" {
 
   ip_configuration {
     name                 = var.ip_configuration_name
-    public_ip_address_id = azurerm_public_ip.fw_pip.id
+    public_ip_address_id = azurerm_public_ip.fw_ip.id
     subnet_id            = var.subnet_id
   }
 
@@ -50,7 +50,7 @@ resource "azurerm_firewall" "fw" {
 
     content {
       name                 = var.management_ip_configuration_name
-      public_ip_address_id = azurerm_public_ip.fw_mng_pip[0].id
+      public_ip_address_id = azurerm_public_ip.fw_management_ip[0].id
       subnet_id            = var.management_subnet_id
     }
   }
@@ -69,20 +69,20 @@ module "fw_diagnostics" {
   log_analytics_workspace_id = var.log_analytics_id
 }
 
-module "fw_pip_diagnostics" {
+module "fw_ip_diagnostics" {
   source = "github.com/danielkhen/diagnostic_setting_module"
   count  = var.log_analytics_enabled ? 1 : 0
 
   name                       = var.pip_diagnostics_name
-  target_resource_id         = azurerm_public_ip.fw_pip.id
+  target_resource_id         = azurerm_public_ip.fw_ip.id
   log_analytics_workspace_id = var.log_analytics_id
 }
 
-module "fw_mng_pip_diagnostics" {
+module "fw_management_ip_diagnostics" {
   source = "github.com/danielkhen/diagnostic_setting_module"
   count  = var.log_analytics_enabled && var.forced_tunneling ? 1 : 0
 
   name                       = var.management_pip_diagnostics_name
-  target_resource_id         = azurerm_public_ip.fw_mng_pip[0].id
+  target_resource_id         = azurerm_public_ip.fw_management_ip[0].id
   log_analytics_workspace_id = var.log_analytics_id
 }

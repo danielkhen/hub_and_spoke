@@ -91,7 +91,7 @@ locals {
   monitor_vm_role_assignments = jsondecode(templatefile("./objects/monitor/vm_role_assignments.json", {
     resource_ids = {
       hub_log_analytics      = module.hub_log_analytics.id
-      activity_log_analytics = data.azurerm_log_analytics_workspace.activity_log_analytics.id
+      activity_log_analytics = data.azurerm_log_analytics_workspace.activity.id
     }
   }))
 }

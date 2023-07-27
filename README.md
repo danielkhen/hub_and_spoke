@@ -4,7 +4,7 @@
 
 | Name | Version |
 |------|---------|
-| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 3.65.0 |
+| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 3.66.0 |
 
 ## Inputs
 
