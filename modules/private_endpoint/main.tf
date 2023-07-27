@@ -59,6 +59,6 @@ module "nic-diagnostics" {
   count  = var.log_analytics_enabled ? 1 : 0
 
   name                       = var.nic-diagnostics-name
-  target_resource_id         = azurerm_private_endpoint.pe.network_interface[0].id
+  target_resource_id         = azurerm_private_endpoint.private_endpoint.network_interface[0].id
   log_analytics_workspace_id = var.log_analytics_id
 }
