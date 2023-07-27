@@ -28,7 +28,6 @@ resource "azurerm_subnet" "subnets" {
   resource_group_name  = var.resource_group_name
   virtual_network_name = azurerm_virtual_network.vnet.name
   address_prefixes     = each.value.address_prefixes
-
 }
 
 resource "azurerm_subnet_network_security_group_association" "nsg_association" {

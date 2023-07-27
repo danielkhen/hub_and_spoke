@@ -27,13 +27,13 @@ variable "sku" {
 variable "internet_ingestion_enabled" {
   description = "(Optional) Should the log analytics workspace support ingestion over the public internet."
   type        = bool
-  default     = false
+  default     = true
 }
 
 variable "internet_query_enabled" {
   description = "(Optional) Should the log analytics workspace support querying over the public internet."
   type        = bool
-  default     = false
+  default     = true
 }
 
 variable "log_analytics_enabled" {
