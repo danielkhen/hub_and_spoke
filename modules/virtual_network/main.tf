@@ -15,7 +15,7 @@ locals {
   subnets_network_security_group_map = { for subnet in var.subnets : subnet.name => subnet if subnet.network_security_group_association }
   subnets_route_tables_map           = { for subnet in var.subnets : subnet.name => subnet if subnet.route_table_association }
   subnet_deployment_mode             = "Incrementaly"
-  subnet_template_content            = file("./subnet_template.json")
+  subnet_template_content            = file("${path.module}/subnet_template.json")
 }
 
 #resource "azurerm_resource_group_template_deployment" "subnets" {
