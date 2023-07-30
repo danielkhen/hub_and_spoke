@@ -47,8 +47,6 @@ locals {
       address_prefix                     = "10.0.0.0/24"
       network_security_group_id          = module.nsg.id
       route_table_id                     = module.route_table.id
-      network_security_group_association = true
-      route_table_association            = true
     }
   ]
 }
