@@ -35,10 +35,11 @@ module "vnet" {
 }
 
 locals {
-  virtual_network_gateway_name = "vng"
-  virtual_network_gateway_ip   = "vng-ip"
-  virtual_network_gateway_sku  = "VpnGw1"
-  virtual_network_gateway_type = "Vpn"
+  virtual_network_gateway_name       = "vng"
+  virtual_network_gateway_ip         = "vng-ip"
+  virtual_network_gateway_sku        = "VpnGw1"
+  virtual_network_gateway_type       = "Vpn"
+  virtual_network_gateway_generation = "Generation1"
 }
 
 module "virtual_network_gateway" {
@@ -50,5 +51,6 @@ module "virtual_network_gateway" {
   default_ip_name     = local.virtual_network_gateway_ip
   sku                 = local.virtual_network_gateway_sku
   type                = local.virtual_network_gateway_type
+  generation          = local.virtual_network_gateway_generation
   subnet_id           = module.vnet.subnet_ids["GatewaySubnet"]
 }

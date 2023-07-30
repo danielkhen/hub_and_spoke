@@ -1,11 +1,10 @@
 #!/bin/bash
 
+cd ..
+
 for module in modules/*/;
 do
-  cd $module
-  pwd
-  terraform-docs -c ./terraform_docs_config.yml .
-  cd ../..
+  terraform-docs -c $module/terraform_docs_config.yml $module
 done
 
 pwd

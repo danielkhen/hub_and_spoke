@@ -13,7 +13,7 @@ resource "azurerm_resource_group" "work" {
 
 locals {
   work_network_security_groups     = jsondecode(templatefile("./objects/work/network_security_groups.json", local.network_vars))
-  work_network_security_groups_map = { for nsg in local.work_network_security_groups : nsg.name => nsg }
+  work_network_security_groups_map = {for nsg in local.work_network_security_groups : nsg.name => nsg}
 }
 
 module "work_network_security_groups" {
@@ -31,7 +31,7 @@ module "work_network_security_groups" {
 
 locals {
   work_route_tables     = jsondecode(templatefile("./objects/work/route_tables.json", local.network_vars))
-  work_route_tables_map = { for rt in local.work_route_tables : rt.name => rt }
+  work_route_tables_map = {for rt in local.work_route_tables : rt.name => rt}
 }
 
 module "work_route_tables" {
@@ -108,7 +108,7 @@ module "work_private_storage" {
 
 locals {
   work_storage_subresources     = jsondecode(file("./objects/work/storage_subresources.json"))
-  work_storage_subresources_map = { for subresource in local.work_storage_subresources : subresource.name => subresource }
+  work_storage_subresources_map = {for subresource in local.work_storage_subresources : subresource.name => subresource}
 
   work_storage_vnet_links = [
     {
@@ -166,6 +166,9 @@ module "work_aks" {
 
   log_analytics_enabled = local.log_analytics_enabled
   log_analytics_id      = module.hub_log_analytics.id
+
+  # Depends on the firewall to allow Azure Kubernetes Services and the peerings to pass the traffic
+  depends_on = [module.hub_firewall, module.hub_to_work_peerings]
 }
 
 locals {

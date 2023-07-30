@@ -186,6 +186,8 @@ module "hub_firewall" {
 
   log_analytics_enabled = local.log_analytics_enabled
   log_analytics_id      = module.hub_log_analytics.id
+
+  depends_on = [module.hub_virtual_network] # Sometimes the firewall blocks creation of other subnets
 }
 
 locals {

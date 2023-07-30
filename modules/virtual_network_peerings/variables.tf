@@ -28,11 +28,18 @@ variable "remote_vnet_id" {
   type        = string
 }
 
-variable "allow_forwarded_traffic" {
-  description = "(Optional) Allow forwarded traffic through an nva."
+variable "local_forwarded_traffic" {
+  description = "(Optional) Allow forwarded traffic to the local virtual network."
   type        = bool
   default     = false
 }
+
+variable "remote_forwarded_traffic" {
+  description = "(Optional) Allow forwarded traffic to the remote virtual network."
+  type        = bool
+  default     = false
+}
+
 
 variable "use_local_gateway" {
   description = "(Optional) Use the local virtual network gateway for the peering."

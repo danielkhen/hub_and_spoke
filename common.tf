@@ -19,9 +19,9 @@ locals {
     }
 
     subnets = {
-      hub     = { for name, subnet in local.hub_vnet_subnets_map : name => subnet.address_prefix }
-      work    = { for name, subnet in local.work_vnet_subnets_map : name => subnet.address_prefix }
-      monitor = { for name, subnet in local.monitor_vnet_subnets_map : name => subnet.address_prefix }
+      hub     = {for name, subnet in local.hub_vnet_subnets_map : name => subnet.address_prefix}
+      work    = {for name, subnet in local.work_vnet_subnets_map : name => subnet.address_prefix}
+      monitor = {for name, subnet in local.monitor_vnet_subnets_map : name => subnet.address_prefix}
     }
   }
 
@@ -55,7 +55,9 @@ data "azurerm_log_analytics_workspace" "activity" {
 }
 
 locals {
-  peering_use_local_gateway = true
+  peering_use_local_gateway        = true
+  peering_local_forwarded_traffic  = false
+  peering_remote_forwarded_traffic = true
 }
 
 module "hub_to_work_peerings" {
@@ -68,7 +70,10 @@ module "hub_to_work_peerings" {
   remote_resource_group_name = azurerm_resource_group.work.name
   remote_vnet_name           = module.work_virtual_network.name
   remote_vnet_id             = module.work_virtual_network.id
-  use_local_gateway          = local.peering_use_local_gateway
+
+  use_local_gateway        = local.peering_use_local_gateway
+  local_forwarded_traffic  = local.peering_local_forwarded_traffic
+  remote_forwarded_traffic = local.peering_remote_forwarded_traffic
 
   depends_on = [module.hub_vpn_gateway]
 }

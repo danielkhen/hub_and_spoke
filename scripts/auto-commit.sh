@@ -1,6 +1,8 @@
 #!/bin/bash
 message="Auto-Commit: $1"
 
+cd ..
+
 for module in modules/*/;
 do
   cd $module
