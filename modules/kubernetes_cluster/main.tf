@@ -36,9 +36,6 @@ resource "azurerm_kubernetes_cluster" "aks" {
       type = local.identity_type
     }
   }
-  identity {
-    type = local.identity_type
-  }
 
   dynamic "oms_agent" {
     for_each = var.log_analytics_enabled ? [true] : []

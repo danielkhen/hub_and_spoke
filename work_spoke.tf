@@ -161,7 +161,7 @@ module "work_aks" {
   node_resource_group     = local.work_aks_node_resource_group
   network_plugin          = local.work_aks_network_plugin
   default_node_pool       = local.work_aks_default_node_pool
-  container_registry_role = local.work_aks_container_registry_role
+  container_registry_link = local.work_aks_container_registry_role
   container_registry_id   = azurerm_container_registry.hub_acr.id
 
   log_analytics_enabled = local.log_analytics_enabled

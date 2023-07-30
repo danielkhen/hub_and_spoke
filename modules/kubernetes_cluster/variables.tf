@@ -48,7 +48,7 @@ variable "node_pools" {
   default = []
 }
 
-variable "container_registry_role" {
+variable "container_registry_link" {
   description = "(Optional) Should there be a role assignment to a container registry."
   type        = bool
   default     = false
