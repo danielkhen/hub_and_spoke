@@ -18,8 +18,8 @@ locals {
 
   vnet_subnets = [
     {
-      name             = "GatewaySubnet"
-      address_prefixes = ["10.0.0.0/24"]
+      name           = "GatewaySubnet"
+      address_prefix = "10.0.0.0/24"
     }
   ]
 }

@@ -18,10 +18,17 @@ locals {
   aks_service_cidr   = "172.0.0.0/16"
   aks_dns_service_ip = "172.0.0.10"
 
-  aks_node_pools = [
+  default_node_pool = {
+    name       = "default"
+    node_count = 1
+    vm_size    = "Standard_B2s"
+    default    = true
+  }
+
+  node_pools = [
     {
-      name       = "default"
-      node_count = 1
+      name       = "test"
+      node_count = 3
       vm_size    = "Standard_B2s"
       default    = true
     }
@@ -37,5 +44,6 @@ module "aks" {
   network_plugin      = local.aks_network_plugin
   service_cidr        = local.aks_service_cidr
   dns_service_ip      = local.aks_dns_service_ip
-  node_pools          = local.aks_node_pools
+  default_node_pool   = local.default_node_pool
+  node_pools          = local.node_pools
 }

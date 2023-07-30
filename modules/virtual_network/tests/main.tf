@@ -44,7 +44,7 @@ locals {
   vnet_subnets = [
     {
       name                               = "TestSubnet"
-      address_prefixes                   = ["10.0.0.0/24"]
+      address_prefix                     = "10.0.0.0/24"
       network_security_group_id          = module.nsg.id
       route_table_id                     = module.route_table.id
       network_security_group_association = true

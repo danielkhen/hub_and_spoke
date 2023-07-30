@@ -15,5 +15,5 @@ output "object" {
 
 output "subnet_ids" {
   description = "A map for subnet name to id."
-  value       = { for subnet in var.subnets : subnet.name => jsondecode(azurerm_resource_group_template_deployment.subnets[subnet.name].output_content).subnet_id }
+  value       = { for subnet in var.subnets : subnet.name => jsondecode(azurerm_resource_group_template_deployment.subnets[subnet.name].output_content).subnet_id.value }
 }

@@ -18,8 +18,8 @@ locals {
 
   vnet_subnets = [
     {
-      name             = "AzureFirewallSubnet"
-      address_prefixes = ["10.0.0.0/24"]
+      name           = "AzureFirewallSubnet"
+      address_prefix = "10.0.0.0/24"
     }
   ]
 }

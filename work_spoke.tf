@@ -146,7 +146,7 @@ locals {
     name           = "default"
     node_count     = 1
     vm_size        = "Standard_B2s"
-    vnet_subnet_id = module.hub_virtual_network.subnet_ids["AKSSubnet"]
+    vnet_subnet_id = module.work_virtual_network.subnet_ids["AKSSubnet"]
     default        = true
   }
 }

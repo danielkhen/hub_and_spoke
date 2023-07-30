@@ -11,7 +11,10 @@ module "aks" {
   service_cidr            = "172.0.0.0/16"
   dns_service_ip          = "172.0.0.10"
   container_registry_id   = azurerm_container_registry.example.id
-  node_pools              = local.aks_node_pools # View variable documentation
+
+  # View variable documentation
+  default_node_pool = local.default_node_pool
+  node_pools        = local.node_pools
 
   log_analytics_enabled = true
   log_analytics_id      = azurerm_log_analytics_workspace.example.id
