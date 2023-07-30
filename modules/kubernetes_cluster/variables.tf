@@ -48,8 +48,14 @@ variable "node_pools" {
   default = []
 }
 
+variable "container_registry_role" {
+  description = "(Optional) Should there be a role assignment to a container registry."
+  type        = bool
+  default     = false
+}
+
 variable "container_registry_id" {
-  description = "(Optional) The id of the azure container registry to assign access to the cluster."
+  description = "(Optional) The id of the azure container registry to assign access to the."
   type        = string
   default     = null
 }

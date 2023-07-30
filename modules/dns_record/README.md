@@ -23,23 +23,20 @@
 
 | Name | Description |
 |------|-------------|
-| <a name="output_dns_id"></a> [dns\_id](#output\_dns\_id) | The id of the dns zone. |
-| <a name="output_dns_name"></a> [dns\_name](#output\_dns\_name) | The name of the dns zone. |
-| <a name="output_dns_object"></a> [dns\_object](#output\_dns\_object) | The dns zone object. |
-| <a name="output_record_id"></a> [record\_id](#output\_record\_id) | The id of the dns record. |
-| <a name="output_record_name"></a> [record\_name](#output\_record\_name) | The name of the dns record. |
-| <a name="output_record_object"></a> [record\_object](#output\_record\_object) | The dns record object. |
+| <a name="output_id"></a> [id](#output\_id) | The id of the dns zone. |
+| <a name="output_name"></a> [name](#output\_name) | The name of the dns zone. |
+| <a name="output_object"></a> [object](#output\_object) | The dns zone object. |
 
 ## Resources
 
 | Name | Type |
 |------|------|
-| [azurerm_dns_a_record.record](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/dns_a_record) | resource |
-| [azurerm_dns_aaaa_record.record](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/dns_aaaa_record) | resource |
+| [azurerm_dns_a_record.a_record](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/dns_a_record) | resource |
+| [azurerm_dns_aaaa_record.aaaa_record](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/dns_aaaa_record) | resource |
 | [azurerm_dns_zone.dns_zone](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/dns_zone) | resource |
-| [azurerm_private_dns_a_record.record](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_dns_a_record) | resource |
-| [azurerm_private_dns_aaaa_record.record](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_dns_aaaa_record) | resource |
-| [azurerm_private_dns_zone.dns_zone](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_dns_zone) | resource |
+| [azurerm_private_dns_a_record.private_a_record](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_dns_a_record) | resource |
+| [azurerm_private_dns_aaaa_record.private_aaaa_record](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_dns_aaaa_record) | resource |
+| [azurerm_private_dns_zone.private_dns_zone](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_dns_zone) | resource |
 | [azurerm_private_dns_zone_virtual_network_link.vnet_links](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_dns_zone_virtual_network_link) | resource |
 
 ## Example Code

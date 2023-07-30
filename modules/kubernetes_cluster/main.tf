@@ -1,5 +1,5 @@
 locals {
-  identity_type     = "SystemAssigned"
+  identity_type = "SystemAssigned"
 }
 
 resource "azurerm_kubernetes_cluster" "aks" {
@@ -29,6 +29,13 @@ resource "azurerm_kubernetes_cluster" "aks" {
     os_sku                = var.default_node_pool.os_sku
   }
 
+  dynamic "identity" {
+    for_each = var.container_registry_role ? [true] : []
+
+    content {
+      type = local.identity_type
+    }
+  }
   identity {
     type = local.identity_type
   }
@@ -72,7 +79,7 @@ locals {
 }
 
 resource "azurerm_role_assignment" "acr_role" {
-  count = var.container_registry_id == null ? 0 : 1
+  count = var.container_registry_role ? 1 : 0
 
   principal_id         = azurerm_kubernetes_cluster.aks.kubelet_identity[0].object_id
   role_definition_name = local.role_definition_name

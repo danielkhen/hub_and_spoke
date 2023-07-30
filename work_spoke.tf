@@ -13,7 +13,7 @@ resource "azurerm_resource_group" "work" {
 
 locals {
   work_network_security_groups     = jsondecode(templatefile("./objects/work/network_security_groups.json", local.network_vars))
-  work_network_security_groups_map = {for nsg in local.work_network_security_groups : nsg.name => nsg}
+  work_network_security_groups_map = { for nsg in local.work_network_security_groups : nsg.name => nsg }
 }
 
 module "work_network_security_groups" {
@@ -31,7 +31,7 @@ module "work_network_security_groups" {
 
 locals {
   work_route_tables     = jsondecode(templatefile("./objects/work/route_tables.json", local.network_vars))
-  work_route_tables_map = {for rt in local.work_route_tables : rt.name => rt}
+  work_route_tables_map = { for rt in local.work_route_tables : rt.name => rt }
 }
 
 module "work_route_tables" {
@@ -108,7 +108,7 @@ module "work_private_storage" {
 
 locals {
   work_storage_subresources     = jsondecode(file("./objects/work/storage_subresources.json"))
-  work_storage_subresources_map = {for subresource in local.work_storage_subresources : subresource.name => subresource}
+  work_storage_subresources_map = { for subresource in local.work_storage_subresources : subresource.name => subresource }
 
   work_storage_vnet_links = [
     {
@@ -138,9 +138,10 @@ module "work_subresources_private_endpoints" {
 }
 
 locals {
-  work_aks_name                = "${local.prefix}-work-aks"
-  work_aks_node_resource_group = "${local.prefix}-work-aks-rg"
-  work_aks_network_plugin      = "azure"
+  work_aks_name                    = "${local.prefix}-work-aks"
+  work_aks_node_resource_group     = "${local.prefix}-work-aks-rg"
+  work_aks_network_plugin          = "azure"
+  work_aks_container_registry_role = true
 
   work_aks_default_node_pool = {
     name           = "default"
@@ -154,13 +155,14 @@ locals {
 module "work_aks" {
   source = "github.com/danielkhen/kubernetes_cluster_module"
 
-  name                  = local.work_aks_name
-  location              = local.location
-  resource_group_name   = azurerm_resource_group.work.name
-  node_resource_group   = local.work_aks_node_resource_group
-  network_plugin        = local.work_aks_network_plugin
-  container_registry_id = azurerm_container_registry.hub_acr.id
-  default_node_pool     = local.work_aks_default_node_pool
+  name                    = local.work_aks_name
+  location                = local.location
+  resource_group_name     = azurerm_resource_group.work.name
+  node_resource_group     = local.work_aks_node_resource_group
+  network_plugin          = local.work_aks_network_plugin
+  default_node_pool       = local.work_aks_default_node_pool
+  container_registry_role = local.work_aks_container_registry_role
+  container_registry_id   = azurerm_container_registry.hub_acr.id
 
   log_analytics_enabled = local.log_analytics_enabled
   log_analytics_id      = module.hub_log_analytics.id

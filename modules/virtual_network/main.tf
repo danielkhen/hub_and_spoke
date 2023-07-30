@@ -11,9 +11,9 @@ resource "azurerm_virtual_network" "vnet" {
 }
 
 locals {
-  subnets_map                        = { for subnet in var.subnets : subnet.name => subnet }
-  subnet_deployment_mode             = "Incremental"
-  subnet_template_content            = file("${path.module}/subnet_template.json")
+  subnets_map             = { for subnet in var.subnets : subnet.name => subnet }
+  subnet_deployment_mode  = "Incremental"
+  subnet_template_content = file("${path.module}/subnet_template.json")
 }
 
 resource "azurerm_resource_group_template_deployment" "subnets" {

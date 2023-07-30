@@ -31,7 +31,7 @@
 
 | Name | Type |
 |------|------|
-| [azurerm_firewall_policy.fw_pl](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/firewall_policy) | resource |
+| [azurerm_firewall_policy.policy](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/firewall_policy) | resource |
 | [azurerm_firewall_policy_rule_collection_group.application_rule_collection_groups](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/firewall_policy_rule_collection_group) | resource |
 | [azurerm_firewall_policy_rule_collection_group.nat_rule_collection_groups](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/firewall_policy_rule_collection_group) | resource |
 | [azurerm_firewall_policy_rule_collection_group.network_rule_collection_groups](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/firewall_policy_rule_collection_group) | resource |
