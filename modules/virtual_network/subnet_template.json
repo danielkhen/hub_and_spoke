@@ -29,5 +29,11 @@
         "routeTable": "[if(equals(parameters('route_table_id'),''), json('null'), json(concat('{\"id\": \"', parameters('route_table_id'), '\"}')))]"
       }
     }
-  ]
+  ],
+  "outputs": {
+    "subnet_id": {
+      "type": "string",
+      "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('vnet_name'), parameters('subnet_name'))]"
+    }
+  }
 }

@@ -94,7 +94,7 @@ locals {
 }
 
 module "hub_virtual_network" {
-  source = "github.com/danielkhen/virtual_network_module"
+  source = "./modules/virtual_network"
 
   name                = local.hub_vnet_name
   location            = local.location

@@ -1,9 +1,11 @@
 [
   {
+    "name": "hub-logs-role",
     "scope": "${resource_ids.hub_log_analytics}",
     "role": "Reader"
   },
   {
+    "name": "activity-logs-role",
     "scope": "${resource_ids.activity_log_analytics}",
     "role": "Reader"
   }
