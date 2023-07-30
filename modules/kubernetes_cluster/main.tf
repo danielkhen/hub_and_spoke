@@ -76,7 +76,7 @@ locals {
 }
 
 resource "azurerm_role_assignment" "acr_role" {
-  count = var.container_registry_role ? 1 : 0
+  count = var.container_registry_link ? 1 : 0
 
   principal_id         = azurerm_kubernetes_cluster.aks.kubelet_identity[0].object_id
   role_definition_name = local.role_definition_name
