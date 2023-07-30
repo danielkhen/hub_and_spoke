@@ -1,5 +1,4 @@
 locals {
-  default_node_pool = [for node_pool in var.node_pools : node_pool if node_pool.default][0]
   identity_type     = "SystemAssigned"
 }
 
@@ -18,16 +17,16 @@ resource "azurerm_kubernetes_cluster" "aks" {
   }
 
   default_node_pool {
-    name                  = local.default_node_pool.name
-    node_count            = local.default_node_pool.node_count
-    vm_size               = local.default_node_pool.vm_size
-    enable_auto_scaling   = local.default_node_pool.enable_auto_scaling
-    vnet_subnet_id        = local.default_node_pool.vnet_subnet_id
-    enable_node_public_ip = local.default_node_pool.enable_node_public_ip
-    max_pods              = local.default_node_pool.max_pods
-    max_count             = local.default_node_pool.max_count
-    min_count             = local.default_node_pool.min_count
-    os_sku                = local.default_node_pool.os_sku
+    name                  = var.default_node_pool.name
+    node_count            = var.default_node_pool.node_count
+    vm_size               = var.default_node_pool.vm_size
+    enable_auto_scaling   = var.default_node_pool.enable_auto_scaling
+    vnet_subnet_id        = var.default_node_pool.vnet_subnet_id
+    enable_node_public_ip = var.default_node_pool.enable_node_public_ip
+    max_pods              = var.default_node_pool.max_pods
+    max_count             = var.default_node_pool.max_count
+    min_count             = var.default_node_pool.min_count
+    os_sku                = var.default_node_pool.os_sku
   }
 
   identity {
@@ -48,7 +47,7 @@ resource "azurerm_kubernetes_cluster" "aks" {
 }
 
 locals {
-  node_pools_map = { for node_pool in var.node_pools : node_pool.name => node_pool if !node_pool.default }
+  node_pools_map = { for node_pool in var.node_pools : node_pool.name => node_pool }
 }
 
 resource "azurerm_kubernetes_cluster_node_pool" "node_pools" {

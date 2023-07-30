@@ -13,15 +13,31 @@ variable "resource_group_name" {
   type        = string
 }
 
+variable "default_node_pool" {
+  description = "(Required) The default node pool of the kubernetes cluster."
+  type = object({
+    name                  = string
+    node_count            = number
+    vm_size               = string
+    vnet_subnet_id        = optional(string, null)
+    enable_auto_scaling   = optional(bool, false)
+    enable_node_public_ip = optional(bool, false)
+    max_pods              = optional(number, null)
+    min_count             = optional(number, null)
+    max_count             = optional(number, null)
+    os_sku                = optional(string, "Ubuntu")
+    os_type               = optional(string, "Linux")
+  })
+}
+
 variable "node_pools" {
-  description = "(Required) A list of node pools, there must be exactly one node pool where the default property is true."
+  description = "(Optional) A list of node pools."
   type = list(object({
     name                  = string
     node_count            = number
     vm_size               = string
     vnet_subnet_id        = optional(string, null)
     enable_auto_scaling   = optional(bool, false)
-    default               = optional(bool, false)
     enable_node_public_ip = optional(bool, false)
     max_pods              = optional(number, null)
     min_count             = optional(number, null)
@@ -29,6 +45,7 @@ variable "node_pools" {
     os_sku                = optional(string, "Ubuntu")
     os_type               = optional(string, "Linux")
   }))
+  default = []
 }
 
 variable "container_registry_id" {

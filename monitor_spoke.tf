@@ -13,7 +13,7 @@ resource "azurerm_resource_group" "monitor" {
 
 locals {
   monitor_network_security_groups     = jsondecode(templatefile("./objects/monitor/network_security_groups.json", local.network_vars))
-  monitor_network_security_groups_map = { for nsg in local.monitor_network_security_groups : nsg.name => nsg }
+  monitor_network_security_groups_map = {for nsg in local.monitor_network_security_groups : nsg.name => nsg}
 }
 
 module "monitor_network_security_groups" {
@@ -31,7 +31,7 @@ module "monitor_network_security_groups" {
 
 locals {
   monitor_route_tables     = jsondecode(templatefile("./objects/monitor/route_tables.json", local.network_vars))
-  monitor_route_tables_map = { for rt in local.monitor_route_tables : rt.name => rt }
+  monitor_route_tables_map = {for rt in local.monitor_route_tables : rt.name => rt}
 }
 
 module "monitor_route_tables" {
@@ -77,15 +77,21 @@ module "monitor_virtual_network" {
 }
 
 locals {
-  monitor_vm_name     = "${local.prefix}-monitor-vm"
-  monitor_vm_nic_name = "${local.prefix}-monitor-vm-nic"
-  monitor_vm_os_disk  = merge(local.vm_os_disk, { name = "${local.prefix}-monitor-vm-os-disk" })
-  monitor_vm_role_assignments = jsondecode(templatefile("./objects/monitor/vm_role_assignments.json", {
-    resource_ids = {
-      hub_log_analytics      = module.hub_log_analytics.id
-      activity_log_analytics = data.azurerm_log_analytics_workspace.activity.id
+  monitor_vm_name             = "${local.prefix}-monitor-vm"
+  monitor_vm_nic_name         = "${local.prefix}-monitor-vm-nic"
+  monitor_vm_os_disk          = merge(local.vm_os_disk, { name = "${local.prefix}-monitor-vm-os-disk" })
+  monitor_vm_role_assignments = [
+    {
+      name  = "hub-logs-role"
+      scope = module.hub_log_analytics.id
+      role  = "Reader"
+    },
+    {
+      name  = "activity-logs-role"
+      scope = data.azurerm_log_analytics_workspace.activity.id
+      role  = "Reader"
     }
-  }))
+  ]
 }
 
 module "monitor_vm" {
