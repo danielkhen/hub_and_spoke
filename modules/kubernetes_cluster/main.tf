@@ -30,7 +30,7 @@ resource "azurerm_kubernetes_cluster" "aks" {
   }
 
   dynamic "identity" {
-    for_each = var.container_registry_role ? [true] : []
+    for_each = var.container_registry_link  ? [true] : []
 
     content {
       type = local.identity_type
