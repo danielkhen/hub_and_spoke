@@ -28,7 +28,7 @@ variable "subnets" {
   description = "(Required) A list of all of the subnets in the virtual network."
   type = list(object({
     name                      = string
-    address_prefix            = string
+    address_prefixes            = list(string)
     network_security_group_id = optional(string, "")
     route_table_id            = optional(string, "")
   }))
