@@ -19,9 +19,9 @@ locals {
     }
 
     subnets = {
-      hub     = {for name, subnet in local.hub_vnet_subnets_map : name => subnet.address_prefix}
-      work    = {for name, subnet in local.work_vnet_subnets_map : name => subnet.address_prefix}
-      monitor = {for name, subnet in local.monitor_vnet_subnets_map : name => subnet.address_prefix}
+      hub     = { for name, subnet in local.hub_vnet_subnets_map : name => subnet.address_prefix }
+      work    = { for name, subnet in local.work_vnet_subnets_map : name => subnet.address_prefix }
+      monitor = { for name, subnet in local.monitor_vnet_subnets_map : name => subnet.address_prefix }
     }
   }
 
@@ -89,7 +89,7 @@ module "hub_to_monitor_peerings" {
   remote_vnet_name           = module.monitor_virtual_network.name
   remote_vnet_id             = module.monitor_virtual_network.id
 
-  use_local_gateway          = local.peering_use_local_gateway
+  use_local_gateway = local.peering_use_local_gateway
   # TODO add forwarded traffic configurations
 
   depends_on = [module.hub_vpn_gateway]

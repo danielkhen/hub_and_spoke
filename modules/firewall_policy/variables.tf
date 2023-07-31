@@ -23,9 +23,9 @@ variable "network_rule_collection_groups" {
       action   = string
       priority = number
       rules = list(object({
-        name                  = string
-        source_addresses      = list(string)
-        protocols             = list(string)
+        name             = string
+        source_addresses = list(string)
+        protocols        = list(string)
         # TODO add all options for addresses (ip, fqdn) and make them optional
         destination_ports     = list(string)
         destination_addresses = list(string)

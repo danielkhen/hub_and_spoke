@@ -197,7 +197,7 @@ module "hub_firewall" {
 }
 
 locals {
-  hub_acr_name                   = "${local.prefix}hubacr"
+  hub_acr_name = "${local.prefix}hubacr"
   # TODO check if premium is needed
   hub_acr_sku                    = "Premium"
   hub_acr_network_access_enabled = false

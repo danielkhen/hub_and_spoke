@@ -43,10 +43,10 @@ locals {
 
   vnet_subnets = [
     {
-      name                               = "TestSubnet"
-      address_prefix                     = "10.0.0.0/24"
-      network_security_group_id          = module.nsg.id
-      route_table_id                     = module.route_table.id
+      name                      = "TestSubnet"
+      address_prefix            = "10.0.0.0/24"
+      network_security_group_id = module.nsg.id
+      route_table_id            = module.route_table.id
     }
   ]
 }
