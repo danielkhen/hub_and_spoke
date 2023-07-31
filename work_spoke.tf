@@ -78,7 +78,7 @@ locals {
 }
 
 module "work_virtual_network" {
-  source = "./modules/virtual_network"
+  source = "github.com/danielkhen/virtual_network_module"
 
   name                = local.work_vnet_name
   location            = local.location
@@ -139,10 +139,11 @@ module "work_subresources_private_endpoints" {
 }
 
 locals {
-  work_aks_name                    = "${local.prefix}-work-aks"
-  work_aks_node_resource_group     = "${local.prefix}-work-aks-rg"
-  work_aks_network_plugin          = "azure"
-  work_aks_container_registry_role = true
+  work_aks_name                       = "${local.prefix}-work-aks"
+  work_aks_node_resource_group        = "${local.prefix}-work-aks-rg"
+  work_aks_network_plugin             = "azure"
+  work_aks_container_registry_role    = true
+  work_aks_max_node_provisioning_time = "60m"
 
   work_aks_default_node_pool = {
     name           = "default"
@@ -157,14 +158,15 @@ locals {
 module "work_aks" {
   source = "github.com/danielkhen/kubernetes_cluster_module"
 
-  name                    = local.work_aks_name
-  location                = local.location
-  resource_group_name     = azurerm_resource_group.work.name
-  node_resource_group     = local.work_aks_node_resource_group
-  network_plugin          = local.work_aks_network_plugin
-  default_node_pool       = local.work_aks_default_node_pool
-  container_registry_link = local.work_aks_container_registry_role
-  container_registry_id   = azurerm_container_registry.hub_acr.id
+  name                       = local.work_aks_name
+  location                   = local.location
+  resource_group_name        = azurerm_resource_group.work.name
+  node_resource_group        = local.work_aks_node_resource_group
+  network_plugin             = local.work_aks_network_plugin
+  default_node_pool          = local.work_aks_default_node_pool
+  container_registry_link    = local.work_aks_container_registry_role
+  container_registry_id      = azurerm_container_registry.hub_acr.id
+  max_node_provisioning_time = local.work_aks_max_node_provisioning_time
 
   log_analytics_enabled = local.log_analytics_enabled
   log_analytics_id      = module.hub_log_analytics.id

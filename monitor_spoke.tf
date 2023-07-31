@@ -67,7 +67,7 @@ locals {
 }
 
 module "monitor_virtual_network" {
-  source = "./modules/virtual_network"
+  source = "github.com/danielkhen/virtual_network_module"
 
   name                = local.monitor_vnet_name
   location            = local.location
