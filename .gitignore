@@ -1,6 +1,4 @@
 .idea/
 .git/
 **/.terraform/
-terraform.tfstate
-.terraform*
-modules
+modules/

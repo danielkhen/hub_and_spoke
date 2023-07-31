@@ -88,7 +88,9 @@ module "hub_to_monitor_peerings" {
   remote_resource_group_name = azurerm_resource_group.monitor.name
   remote_vnet_name           = module.monitor_virtual_network.name
   remote_vnet_id             = module.monitor_virtual_network.id
+
   use_local_gateway          = local.peering_use_local_gateway
+  # TODO add forwarded traffic configurations
 
   depends_on = [module.hub_vpn_gateway]
 }

@@ -93,6 +93,7 @@ locals {
   hub_storage_account_replication_type = "LRS"
 }
 
+# TODO change name
 module "work_private_storage" {
   source = "github.com/danielkhen/storage_account_module"
 
@@ -152,6 +153,7 @@ locals {
   }
 }
 
+# TODO diagnostic settings and acr for aks should be required
 module "work_aks" {
   source = "github.com/danielkhen/kubernetes_cluster_module"
 

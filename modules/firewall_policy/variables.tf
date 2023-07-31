@@ -9,7 +9,7 @@ variable "location" {
 }
 
 variable "resource_group_name" {
-  description = "(Required) The resource group name for the firewall policy"
+  description = "(Required) The resource group name for the firewall policy."
   type        = string
 }
 
@@ -26,6 +26,7 @@ variable "network_rule_collection_groups" {
         name                  = string
         source_addresses      = list(string)
         protocols             = list(string)
+        # TODO add all options for addresses (ip, fqdn) and make them optional
         destination_ports     = list(string)
         destination_addresses = list(string)
       }))

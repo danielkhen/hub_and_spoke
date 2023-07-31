@@ -166,6 +166,7 @@ variable "log_analytics_id" {
   default     = null
 }
 
+# TODO create name inside the module using the name of the created resource
 variable "vng_diagnostics_name" {
   description = "(Optional) The name of the diagnostic settings of the virtual network gateway."
   type        = string
@@ -184,6 +185,7 @@ variable "active_active_ip_diagnostics_name" {
   default     = "aa-pip-diagnostics"
 }
 
+# TODO use static names in module for ip configurations
 variable "default_ip_configuration_name" {
   description = "(Optional) The name of the default ip configuration."
   type        = string

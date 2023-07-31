@@ -94,6 +94,7 @@ locals {
   ]
 }
 
+# TODO in module vm, use an incremental lun number for data disks
 module "monitor_vm" {
   source = "github.com/danielkhen/virtual_machine_module"
 
@@ -130,6 +131,7 @@ locals {
   ]
 }
 
+# TODO change DNS record module to DNS Zone module that can create multiple records
 module "monitor_vm_record" {
   source = "github.com/danielkhen/dns_record_module"
 

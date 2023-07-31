@@ -1,4 +1,5 @@
 locals {
+  # TODO add rg in name suffix
   hub_rg_name = "${local.prefix}-hub"
 }
 
@@ -19,6 +20,7 @@ locals {
 module "hub_log_analytics" {
   source = "github.com/danielkhen/log_analytics_workspace_module"
 
+  # TODO use the local
   name                  = "${local.prefix}-hub-log-analytics-workspace"
   location              = local.location
   resource_group_name   = azurerm_resource_group.hub.name
@@ -65,6 +67,7 @@ locals {
 
   hub_vnet_subnets_map = {
     GatewaySubnet = {
+      # TODO use cidrsubnet to get the subnet addresses
       address_prefix = "10.0.0.0/24"
       route_table    = "hub-gateway-rt"
     }
@@ -94,6 +97,7 @@ locals {
 }
 
 module "hub_virtual_network" {
+  # TODO use github repository
   source = "./modules/virtual_network"
 
   name                = local.hub_vnet_name
@@ -104,6 +108,7 @@ module "hub_virtual_network" {
 }
 
 locals {
+  # TODO remove the vng shortcut (vnet gateway)
   hub_vng_name                  = "${local.prefix}-hub-vpn"
   hub_vng_type                  = "Vpn"
   hub_vng_vpn_type              = "RouteBased"
@@ -156,6 +161,8 @@ module "hub_firewall_policy" {
   resource_group_name = azurerm_resource_group.hub.name
   dns_proxy_enabled   = local.hub_firewall_policy_dns_proxy
 
+  # TODO remove temp rules
+  # TODO check the aks rule (weird DNS)
   network_rule_collection_groups     = local.hub_firewall_policy_network_groups
   application_rule_collection_groups = local.hub_firewall_policy_application_groups
   nat_rule_collection_groups         = local.hub_firewall_policy_nat_groups
@@ -192,10 +199,12 @@ module "hub_firewall" {
 
 locals {
   hub_acr_name                   = "${local.prefix}hubacr"
+  # TODO check if premium is needed
   hub_acr_sku                    = "Premium"
   hub_acr_network_access_enabled = false
 }
 
+# TODO create module acr and create acr and endpoint in it
 resource "azurerm_container_registry" "hub_acr" {
   name                          = local.hub_acr_name
   location                      = local.location
