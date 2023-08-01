@@ -21,7 +21,6 @@ No outputs.
 
 | Name | Type |
 |------|------|
-| [azurerm_container_registry.hub_acr](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/container_registry) | resource |
 | [azurerm_resource_group.hub](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/resource_group) | resource |
 | [azurerm_resource_group.monitor](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/resource_group) | resource |
 | [azurerm_resource_group.work](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/resource_group) | resource |
@@ -30,7 +29,7 @@ No outputs.
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_hub_acr_private_endpoint"></a> [hub\_acr\_private\_endpoint](#module\_hub\_acr\_private\_endpoint) | github.com/danielkhen/private_endpoint_module | n/a |
+| <a name="module_hub_acr"></a> [hub\_acr](#module\_hub\_acr) | github.com/danielkhen/container_registry_module | n/a |
 | <a name="module_hub_firewall"></a> [hub\_firewall](#module\_hub\_firewall) | github.com/danielkhen/firewall_module | n/a |
 | <a name="module_hub_firewall_policy"></a> [hub\_firewall\_policy](#module\_hub\_firewall\_policy) | github.com/danielkhen/firewall_policy_module | n/a |
 | <a name="module_hub_log_analytics"></a> [hub\_log\_analytics](#module\_hub\_log\_analytics) | github.com/danielkhen/log_analytics_workspace_module | n/a |
@@ -49,7 +48,6 @@ No outputs.
 | <a name="module_work_network_security_groups"></a> [work\_network\_security\_groups](#module\_work\_network\_security\_groups) | github.com/danielkhen/network_security_group_module | n/a |
 | <a name="module_work_route_tables"></a> [work\_route\_tables](#module\_work\_route\_tables) | github.com/danielkhen/route_table_module | n/a |
 | <a name="module_work_storage_account"></a> [work\_storage\_account](#module\_work\_storage\_account) | github.com/danielkhen/storage_account_module | n/a |
-| <a name="module_work_subresources_private_endpoints"></a> [work\_subresources\_private\_endpoints](#module\_work\_subresources\_private\_endpoints) | github.com/danielkhen/private_endpoint_module | n/a |
 | <a name="module_work_virtual_network"></a> [work\_virtual\_network](#module\_work\_virtual\_network) | github.com/danielkhen/virtual_network_module | n/a |
 | <a name="module_work_vm"></a> [work\_vm](#module\_work\_vm) | github.com/danielkhen/virtual_machine_module | n/a |
 <!-- END_TF_DOCS -->

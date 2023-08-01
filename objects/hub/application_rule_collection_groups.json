@@ -6,7 +6,7 @@
       {
         "name": "vms-limited-downloads",
         "action": "Allow",
-        "priority": 300,
+        "priority": 2300,
         "rules": [
           {
             "name": "azure-ubuntu-archive",
@@ -46,7 +46,7 @@
       {
         "name": "work-vm-azure-access",
         "action": "Allow",
-        "priority": 400,
+        "priority": 2400,
         "rules": [
           {
             "name": "active-directory",
@@ -75,7 +75,7 @@
       {
         "name": "monitor-vm-azure-access",
         "action": "Allow",
-        "priority": 500,
+        "priority": 2500,
         "rules": [
           {
             "name": "active-directory",
@@ -93,7 +93,7 @@
       {
         "name": "acr-access",
         "action": "Allow",
-        "priority": 600,
+        "priority": 2600,
         "rules": [
           {
             "name": "acr-access",
@@ -112,7 +112,7 @@
       {
         "name": "aks-access",
         "action": "Allow",
-        "priority": 700,
+        "priority": 2700,
         "rules": [
           {
             "name": "aks-fqdn-tags",
@@ -128,27 +128,9 @@
         ]
       },
       {
-        "name": "aks-diagnostics",
-        "action": "Allow",
-        "priority": 800,
-        "rules": [
-          {
-            "name": "monitor-logs",
-            "source_addresses": ["${subnets.work.AKSSubnet}"],
-            "destination_fqdns": ["196532a9-0816-479d-a9b1-5907fa82fa85.ods.opinsights.azure.com"],
-            "protocols": [
-              {
-                "type": "Https",
-                "port": 443
-              }
-            ]
-          }
-        ]
-      },
-      {
         "name": "monitor-vm-dns",
         "action": "Allow",
-        "priority": 900,
+        "priority": 2800,
         "rules": [
           {
             "name": "monitor.net",

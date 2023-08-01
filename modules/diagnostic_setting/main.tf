@@ -1,7 +1,7 @@
 data "azurerm_monitor_diagnostic_categories" "categories" {
   resource_id = var.target_resource_id
 }
-#TODO fix tests and examples
+
 resource "azurerm_monitor_diagnostic_setting" "diagnostics" {
   name                       = var.name
   target_resource_id         = var.target_resource_id

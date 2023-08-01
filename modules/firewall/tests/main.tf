@@ -35,9 +35,19 @@ module "vnet" {
 }
 
 locals {
+  activity_log_analytics_name           = "activity-monitor-log-workspace"
+  activity_log_analytics_resource_group = "dor-hub-n-spoke"
+}
+
+data "azurerm_log_analytics_workspace" "activity" {
+  name                = local.activity_log_analytics_name
+  resource_group_name = local.activity_log_analytics_resource_group
+}
+
+locals {
   firewall_name     = "firewall"
   firewall_sku_tier = "Standard"
-  firewall_ip_name  = "fw-pip"
+  firewall_ip_name  = "fw-ip"
 }
 
 module "firewall" {
@@ -49,4 +59,5 @@ module "firewall" {
   sku_tier            = local.firewall_sku_tier
   public_ip_name      = local.firewall_ip_name
   subnet_id           = module.vnet.subnet_ids["AzureFirewallSubnet"]
+  log_analytics_id    = data.azurerm_log_analytics_workspace.activity.id
 }

@@ -71,3 +71,41 @@ variable "public_network_access_enabled" {
   type        = bool
   default     = false
 }
+
+variable "private_endpoint_enabled" {
+  description = "(Optional) Should the container registry have a private endpoint."
+  type        = bool
+  default     = false
+}
+
+variable "private_dns_enabled" {
+  description = "(Optional) Should the private endpoint be attached to a private dns zone."
+  type        = bool
+  default     = false
+}
+
+variable "private_endpoints_subnet_id" {
+  description = "(Optional) The subnet id of the private endpoints."
+  type        = string
+  default     = false
+}
+
+variable "private_endpoints" {
+  description = "(Optional) A list of private endpoints of the storage subresources."
+  type = list(object({
+    name             = string
+    nic_name         = string
+    subresource_name = string
+    dns_name         = optional(string)
+  }))
+  default = []
+}
+
+variable "vnet_links" {
+  description = "(Optional) A list of virtual networks to link with the private dns zone."
+  type = list(object({
+    name    = string
+    vnet_id = string
+  }))
+  default = []
+}

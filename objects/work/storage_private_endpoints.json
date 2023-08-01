@@ -1,0 +1,26 @@
+[
+  {
+    "name": "${storage_account_name}-blob-pe",
+    "subresource_name": "blob",
+    "dns_name": "privatelink.blob.core.windows.net",
+    "nic_name": "${storage_account_name}-blob-nic"
+  },
+  {
+    "name": "${storage_account_name}-file-pe",
+    "subresource_name": "file",
+    "dns_name": "privatelink.file.core.windows.net",
+    "nic_name": "${storage_account_name}-file-nic"
+  },
+  {
+    "name": "${storage_account_name}-queue-pe",
+    "subresource_name": "queue",
+    "dns_name": "privatelink.queue.core.windows.net",
+    "nic_name": "${storage_account_name}-queue-nic"
+  },
+  {
+    "name": "${storage_account_name}-table-pe",
+    "subresource_name": "table",
+    "dns_name": "privatelink.table.core.windows.net",
+    "nic_name": "${storage_account_name}-table-nic"
+  }
+]

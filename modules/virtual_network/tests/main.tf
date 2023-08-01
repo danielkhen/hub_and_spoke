@@ -25,28 +25,15 @@ module "route_table" {
 }
 
 locals {
-  nsg_name = "nsg"
-}
-
-module "nsg" {
-  source = "../../network_security_group"
-
-  name                = local.nsg_name
-  location            = local.location
-  resource_group_name = azurerm_resource_group.test_rg.name
-}
-
-locals {
   vnet_name          = "vnet"
   vnet_address_space = ["10.0.0.0/16"]
   vnet_dns_servers   = ["11.0.0.0"]
 
   vnet_subnets = [
     {
-      name                      = "TestSubnet"
-      address_prefix            = "10.0.0.0/24"
-      network_security_group_id = module.nsg.id
-      route_table_id            = module.route_table.id
+      name           = "TestSubnet"
+      address_prefix = "10.0.0.0/24"
+      route_table_id = module.route_table.id
     }
   ]
 }

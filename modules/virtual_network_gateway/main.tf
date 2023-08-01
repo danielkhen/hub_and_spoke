@@ -104,7 +104,7 @@ resource "azurerm_virtual_network_gateway" "vnet_gateway" {
 locals {
   vnet_gateway_diagnostic_name     = "${azurerm_virtual_network_gateway.vnet_gateway.name}-diagnostic"
   ip_diagnostic_name               = "${azurerm_public_ip.ip.name}-diagnostic"
-  active_active_ip_diagnostic_name = "${azurerm_public_ip.active_active_ip[0].name}-diagnostic"
+  active_active_ip_diagnostic_name = try("${azurerm_public_ip.active_active_ip[0].name}-diagnostic", null)
 }
 
 module "vnet_gateway_diagnostic" {

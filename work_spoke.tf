@@ -89,6 +89,16 @@ locals {
   work_storage_name                    = "${local.prefix}workstorage"
   hub_storage_account_tier             = "Standard"
   hub_storage_account_replication_type = "LRS"
+  work_storage_private_endpoints = jsondecode(templatefile("./objects/work/storage_private_endpoints.json", {
+    storage_account_name = local.work_storage_name
+  }))
+
+  work_storage_vnet_links = [
+    {
+      vnet_id = module.work_virtual_network.id
+      name    = "work-link"
+    }
+  ]
 }
 
 module "work_storage_account" {
@@ -100,42 +110,19 @@ module "work_storage_account" {
   account_tier             = local.hub_storage_account_tier
   account_replication_type = local.hub_storage_account_replication_type
   log_analytics_id         = module.hub_log_analytics.id
+
+  private_endpoint_enabled    = local.private_endpoints_enabled
+  private_dns_enabled         = local.private_endpoints_dns_enabled
+  private_endpoints_subnet_id = module.work_virtual_network.subnet_ids["StorageSubnet"]
+  vnet_links                  = local.work_storage_vnet_links
+  private_endpoints           = local.work_storage_private_endpoints
 }
 
-locals {
-  work_storage_subresources     = jsondecode(file("./objects/work/storage_subresources.json"))
-  work_storage_subresources_map = { for subresource in local.work_storage_subresources : subresource.name => subresource }
-
-  work_storage_vnet_links = [
-    {
-      vnet_id = module.work_virtual_network.id
-      name    = "work-link"
-    }
-  ]
-}
-
-module "work_subresources_private_endpoints" {
-  source   = "github.com/danielkhen/private_endpoint_module"
-  for_each = local.work_storage_subresources_map
-
-  name                = each.value.private_endpoint_name
-  location            = local.location
-  resource_group_name = azurerm_resource_group.work.name
-  private_dns_enabled = local.private_endpoints_dns_enabled
-  dns_name            = each.value.dns_name
-  log_analytics_id    = module.hub_log_analytics.id
-
-  resource_id      = module.work_storage_account.id
-  subresource_name = each.value.name
-  subnet_id        = module.work_virtual_network.subnet_ids["StorageSubnet"]
-  vnet_links       = local.work_storage_vnet_links
-}
 
 locals {
   work_aks_name                       = "${local.prefix}-work-aks"
   work_aks_node_resource_group        = "${local.prefix}-work-aks-rg"
   work_aks_network_plugin             = "azure"
-  work_aks_container_registry_role    = true
   work_aks_max_node_provisioning_time = "60m"
 
   work_aks_default_node_pool = {
@@ -156,8 +143,7 @@ module "work_aks" {
   node_resource_group        = local.work_aks_node_resource_group
   network_plugin             = local.work_aks_network_plugin
   default_node_pool          = local.work_aks_default_node_pool
-  container_registry_link    = local.work_aks_container_registry_role
-  container_registry_id      = azurerm_container_registry.hub_acr.id
+  container_registry_id      = module.hub_acr.id
   max_node_provisioning_time = local.work_aks_max_node_provisioning_time
   log_analytics_id           = module.hub_log_analytics.id
 
@@ -178,7 +164,7 @@ locals {
     },
     {
       name  = "acr_role"
-      scope = azurerm_container_registry.hub_acr.id
+      scope = module.hub_acr.id
       role  = "AcrPush"
     }
   ]

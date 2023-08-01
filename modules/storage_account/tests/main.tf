@@ -13,6 +13,16 @@ resource "azurerm_resource_group" "test_rg" {
 }
 
 locals {
+  activity_log_analytics_name           = "activity-monitor-log-workspace"
+  activity_log_analytics_resource_group = "dor-hub-n-spoke"
+}
+
+data "azurerm_log_analytics_workspace" "activity" {
+  name                = local.activity_log_analytics_name
+  resource_group_name = local.activity_log_analytics_resource_group
+}
+
+locals {
   storage_account_name             = "dtfstorageaccountest"
   storage_account_tier             = "Standard"
   storage_account_replication_type = "LRS"
@@ -28,4 +38,5 @@ module "storage_account" {
   account_tier             = local.storage_account_tier
   account_replication_type = local.storage_account_replication_type
   account_kind             = local.storage_account_kind
+  log_analytics_id         = data.azurerm_log_analytics_workspace.activity.id
 }

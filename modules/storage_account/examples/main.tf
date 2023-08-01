@@ -10,7 +10,5 @@ module "storage_account" {
   enable_https_traffic_only     = true
   access_tier                   = "Hot"
   public_network_access_enabled = false
-
-  log_analytics_enabled = true
-  log_analytics_id      = azurerm_log_analytics_workspace.example.id
+  log_analytics_id              = azurerm_log_analytics_workspace.example.id
 }

@@ -16,7 +16,5 @@ module "virtual_network_gateway" {
   vpn_address_space = ["172.0.0.0/16"] # enables p2s and default auth (AAD) requires aad credentials
   aad_tenant        = local.aad_tenant #should be sensitive
   aad_audience      = local.aad_audience
-
-  log_analytics_enabled = true
-  log_analytics_id      = azurerm_log_analytics_workspace.example.id
+  log_analytics_id  = azurerm_log_analytics_workspace.example.id
 }

@@ -13,15 +13,13 @@ resource "azurerm_resource_group" "test_rg" {
 }
 
 locals {
-  log_analytics_name = "log-analytics"
+  activity_log_analytics_name           = "activity-monitor-log-workspace"
+  activity_log_analytics_resource_group = "dor-hub-n-spoke"
 }
 
-module "log_analytics_workspace" {
-  source = "../../log_analytics_workspace"
-
-  name                = local.log_analytics_name
-  location            = local.location
-  resource_group_name = azurerm_resource_group.test_rg.name
+data "azurerm_log_analytics_workspace" "activity" {
+  name                = local.activity_log_analytics_name
+  resource_group_name = local.activity_log_analytics_resource_group
 }
 
 locals {
@@ -38,6 +36,7 @@ module "storage_account" {
   resource_group_name      = azurerm_resource_group.test_rg.name
   account_tier             = local.storage_account_tier
   account_replication_type = local.storage_account_replication_type
+  log_analytics_id         = data.azurerm_log_analytics_workspace.activity.id
 }
 
 locals {
@@ -48,6 +47,6 @@ module "diagnostic_setting" {
   source = "../"
 
   name                       = local.diagnostic_setting_name
-  log_analytics_workspace_id = module.log_analytics_workspace.id
+  log_analytics_workspace_id = data.azurerm_log_analytics_workspace.activity.id
   target_resource_id         = module.storage_account.id
 }

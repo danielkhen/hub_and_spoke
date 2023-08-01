@@ -44,7 +44,7 @@ resource "azurerm_firewall" "firewall" {
   sku_tier           = var.sku_tier
   firewall_policy_id = var.policy_id
 
-  ip_configuration { #TODO check about private firewalls
+  ip_configuration {
     name                 = local.default_ip_configuration_name
     public_ip_address_id = azurerm_public_ip.ip.id
     subnet_id            = var.subnet_id
@@ -68,7 +68,7 @@ resource "azurerm_firewall" "firewall" {
 locals {
   firewall_diagnostic_name      = "${azurerm_firewall.firewall.name}-diagnostic"
   ip_diagnostic_name            = azurerm_public_ip.ip.name
-  management_ip_diagnostic_name = "${azurerm_public_ip.management_ip[0].name}-diagnostic"
+  management_ip_diagnostic_name = try("${azurerm_public_ip.management_ip[0].name}-diagnostic", null)
 }
 
 module "firewall_diagnostics" {

@@ -35,6 +35,16 @@ module "vnet" {
 }
 
 locals {
+  activity_log_analytics_name           = "activity-monitor-log-workspace"
+  activity_log_analytics_resource_group = "dor-hub-n-spoke"
+}
+
+data "azurerm_log_analytics_workspace" "activity" {
+  name                = local.activity_log_analytics_name
+  resource_group_name = local.activity_log_analytics_resource_group
+}
+
+locals {
   virtual_network_gateway_name       = "vng"
   virtual_network_gateway_ip         = "vng-ip"
   virtual_network_gateway_sku        = "VpnGw1"
@@ -53,4 +63,6 @@ module "virtual_network_gateway" {
   type                = local.virtual_network_gateway_type
   generation          = local.virtual_network_gateway_generation
   subnet_id           = module.vnet.subnet_ids["GatewaySubnet"]
+  log_analytics_id    = data.azurerm_log_analytics_workspace.activity.id
+
 }

@@ -136,7 +136,7 @@ module "hub_vpn_gateway" {
 }
 
 locals {
-  hub_firewall_policy_name               = "${local.prefix}-hub-fw-pl"
+  hub_firewall_policy_name               = "${local.prefix}-hub-fw-policy"
   hub_firewall_policy_network_groups     = jsondecode(templatefile("./objects/hub/network_rule_collection_groups.json", local.network_vars))
   hub_firewall_policy_application_groups = jsondecode(templatefile("./objects/hub/application_rule_collection_groups.json", local.network_vars))
   hub_firewall_policy_nat_groups         = jsondecode(templatefile("./objects/hub/nat_rule_collection_groups.json", local.network_vars))
@@ -152,7 +152,6 @@ module "hub_firewall_policy" {
   dns_proxy_enabled   = local.hub_firewall_policy_dns_proxy
 
   # TODO remove temp rules
-  # TODO check the aks rule (weird DNS)
   network_rule_collection_groups     = local.hub_firewall_policy_network_groups
   application_rule_collection_groups = local.hub_firewall_policy_application_groups
   nat_rule_collection_groups         = local.hub_firewall_policy_nat_groups
@@ -187,29 +186,10 @@ module "hub_firewall" {
 
 locals {
   hub_acr_name = "${local.prefix}hubacr"
-  # TODO check if premium is needed
-  hub_acr_sku                    = "Premium"
-  hub_acr_network_access_enabled = false
-}
-
-# TODO create module acr and create acr and endpoint in it
-resource "azurerm_container_registry" "hub_acr" {
-  name                          = local.hub_acr_name
-  location                      = local.location
-  resource_group_name           = azurerm_resource_group.hub.name
-  sku                           = local.hub_acr_sku
-  public_network_access_enabled = local.hub_acr_network_access_enabled
-
-  lifecycle {
-    ignore_changes = [tags["CreationDateTime"], tags["Environment"]]
-  }
-}
-
-locals {
-  hub_acr_dns_name                     = "privatelink.azurecr.io"
-  hub_acr_nic_name                     = "${local.prefix}-hub-acr-nic"
-  hub_acr_private_endpoint_name        = "${local.prefix}-hub-acr-pe"
-  hub_acr_private_endpoint_subresource = "registry"
+  hub_acr_sku                   = "Premium"
+  hub_acr_nic_name              = "${local.prefix}-hub-acr-nic"
+  hub_acr_private_endpoint_name = "${local.prefix}-hub-acr-pe"
+  hub_acr_dns_name              = "privatelink.azurecr.io"
 
   hub_acr_vnet_links = [
     {
@@ -223,19 +203,20 @@ locals {
   ]
 }
 
-module "hub_acr_private_endpoint" {
-  source = "github.com/danielkhen/private_endpoint_module"
+module "hub_acr" {
+  source = "github.com/danielkhen/container_registry_module"
 
-  location            = local.location
-  resource_group_name = azurerm_resource_group.hub.name
-  nic_name            = local.hub_acr_nic_name
-  name                = local.hub_acr_private_endpoint_name
-  private_dns_enabled = local.private_endpoints_dns_enabled
-  dns_name            = local.hub_acr_dns_name
-  log_analytics_id    = module.hub_log_analytics.id
+  name                     = local.hub_acr_name
+  location                 = local.location
+  resource_group_name      = azurerm_resource_group.hub.name
+  sku                      = local.hub_acr_sku
+  log_analytics_id         = module.hub_log_analytics.id
+  private_endpoint_enabled = local.private_endpoints_enabled
+  private_dns_enabled      = local.private_endpoints_dns_enabled
 
-  resource_id      = azurerm_container_registry.hub_acr.id
-  subresource_name = local.hub_acr_private_endpoint_subresource
-  subnet_id        = module.hub_virtual_network.subnet_ids["ACRSubnet"]
-  vnet_links       = local.hub_acr_vnet_links
+  private_endpoint_name      = local.hub_acr_private_endpoint_name
+  private_endpoint_subnet_id = module.hub_virtual_network.subnet_ids["ACRSubnet"]
+  nic_name                   = local.hub_acr_nic_name
+  dns_name                   = local.hub_acr_dns_name
+  vnet_links                 = local.hub_acr_vnet_links
 }

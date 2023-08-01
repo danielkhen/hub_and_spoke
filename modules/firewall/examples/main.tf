@@ -12,7 +12,5 @@ module "firewall" {
   forced_tunneling          = true # Forced tunneling requires another public ip
   management_public_ip_name = "example-management-public-ip"
   management_subnet_id      = azurerm_subnet.firewall_management_example.id
-
-  log_analytics_enabled = true
-  log_analytics_id      = azurerm_log_analytics_workspace.example.id
+  log_analytics_id          = azurerm_log_analytics_workspace.example.id
 }

@@ -1,8 +1,9 @@
 locals {
   prefix                        = "dtf"
   location                      = "westeurope"
-  private_endpoints_dns_enabled = true
   subnet_newbits                = 8 # The number of bits which to extend the prefix of the vnet to get a subnet
+  private_endpoints_enabled     = true
+  private_endpoints_dns_enabled = true
 
   network_vars = {
     ip_addresses = {
@@ -49,7 +50,6 @@ locals {
 }
 
 data "azurerm_log_analytics_workspace" "activity" {
-
   name                = local.activity_log_analytics_name
   resource_group_name = local.activity_log_analytics_resource_group
 }

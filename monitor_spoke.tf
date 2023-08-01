@@ -92,7 +92,6 @@ locals {
   ]
 }
 
-# TODO test incremental lun number for data disks
 module "monitor_vm" {
   source = "github.com/danielkhen/virtual_machine_module"
 

@@ -11,6 +11,5 @@ module "private_endpoint" {
   private_dns_enabled = true
   dns_name            = "privatelink.blob.core.windows.net"
 
-  log_analytics_enabled = true
-  log_analytics_id      = azurerm_log_analytics_workspace.example.id
+  log_analytics_id = azurerm_log_analytics_workspace.example.id
 }
