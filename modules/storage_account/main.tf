@@ -31,7 +31,7 @@ locals {
   subresources = ["blob", "file", "table", "queue"]
   subresources_diagnostic_map = {
     for subresource in local.subresources : subresource => {
-      name = "${azurerm_storage_account.storage.name}-${subresource}-diagnostic"
+      name               = "${azurerm_storage_account.storage.name}-${subresource}-diagnostic"
       target_resource_id = "${azurerm_storage_account.storage.id}/${subresource}Services/default/"
     }
   }

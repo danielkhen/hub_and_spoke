@@ -66,8 +66,8 @@ resource "azurerm_firewall" "firewall" {
 }
 
 locals {
-  firewall_diagnostic_name = "${azurerm_firewall.firewall.name}-diagnostic"
-  ip_diagnostic_name = "${azurerm_public_ip.ip.name}"
+  firewall_diagnostic_name      = "${azurerm_firewall.firewall.name}-diagnostic"
+  ip_diagnostic_name            = azurerm_public_ip.ip.name
   management_ip_diagnostic_name = "${azurerm_public_ip.management_ip.name}-diagnostic"
 }
 

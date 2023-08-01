@@ -9,7 +9,7 @@ resource "azurerm_network_security_group" "nsg" {
 }
 
 locals {
-  network_security_rules_map = {for rule in var.network_security_rules : rule.name => rule}
+  network_security_rules_map = { for rule in var.network_security_rules : rule.name => rule }
 }
 
 resource "azurerm_network_security_rule" "rules" {

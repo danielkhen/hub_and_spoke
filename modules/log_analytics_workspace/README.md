@@ -10,11 +10,9 @@
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_diagnostic_settings_name"></a> [diagnostic\_settings\_name](#input\_diagnostic\_settings\_name) | (Optional) The name of the diagnostic settings. | `string` | `"log-analytics-workspace-diagnostics"` | no |
 | <a name="input_internet_ingestion_enabled"></a> [internet\_ingestion\_enabled](#input\_internet\_ingestion\_enabled) | (Optional) Should the log analytics workspace support ingestion over the public internet. | `bool` | `true` | no |
 | <a name="input_internet_query_enabled"></a> [internet\_query\_enabled](#input\_internet\_query\_enabled) | (Optional) Should the log analytics workspace support querying over the public internet. | `bool` | `true` | no |
 | <a name="input_location"></a> [location](#input\_location) | (Required) The location of the log analytics workspace. | `string` | n/a | yes |
-| <a name="input_log_analytics_enabled"></a> [log\_analytics\_enabled](#input\_log\_analytics\_enabled) | (Optional) Should logs be sent to itself. | `bool` | `false` | no |
 | <a name="input_name"></a> [name](#input\_name) | (Required) The name of the log analytics workspace. | `string` | n/a | yes |
 | <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name) | (Required) The resource group name of the log analytics workspace. | `string` | n/a | yes |
 | <a name="input_sku"></a> [sku](#input\_sku) | (Optional) The SKU of the log analytics workspace. | `string` | `"PerGB2018"` | no |
@@ -37,7 +35,7 @@
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_log_analytics_diagnostics"></a> [log\_analytics\_diagnostics](#module\_log\_analytics\_diagnostics) | github.com/danielkhen/diagnostic_setting_module | n/a |
+| <a name="module_log_analytics_diagnostic"></a> [log\_analytics\_diagnostic](#module\_log\_analytics\_diagnostic) | github.com/danielkhen/diagnostic_setting_module | n/a |
 
 ## Example Code
 

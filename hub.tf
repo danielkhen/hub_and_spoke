@@ -19,16 +19,15 @@ locals {
 module "hub_log_analytics" {
   source = "github.com/danielkhen/log_analytics_workspace_module"
 
-  name                  = local.hub_log_analytics_name
-  location              = local.location
-  resource_group_name   = azurerm_resource_group.hub.name
-  sku                   = local.hub_log_analytics_sku
-  log_analytics_enabled = local.log_analytics_enabled
+  name                = local.hub_log_analytics_name
+  location            = local.location
+  resource_group_name = azurerm_resource_group.hub.name
+  sku                 = local.hub_log_analytics_sku
 }
 
 locals {
   hub_network_security_groups     = jsondecode(templatefile("./objects/hub/network_security_groups.json", local.network_vars))
-  hub_network_security_groups_map = {for nsg in local.hub_network_security_groups : nsg.name => nsg}
+  hub_network_security_groups_map = { for nsg in local.hub_network_security_groups : nsg.name => nsg }
 }
 
 module "hub_network_security_groups" {
@@ -39,14 +38,12 @@ module "hub_network_security_groups" {
   location               = local.location
   resource_group_name    = azurerm_resource_group.hub.name
   network_security_rules = each.value.network_security_rules
-
-  log_analytics_enabled = local.log_analytics_enabled
-  log_analytics_id      = module.hub_log_analytics.id
+  log_analytics_id       = module.hub_log_analytics.id
 }
 
 locals {
   hub_route_tables     = jsondecode(templatefile("./objects/hub/route_tables.json", local.network_vars))
-  hub_route_tables_map = {for rt in local.hub_route_tables : rt.name => rt}
+  hub_route_tables_map = { for rt in local.hub_route_tables : rt.name => rt }
 }
 
 module "hub_route_tables" {
@@ -126,6 +123,7 @@ module "hub_vpn_gateway" {
   generation          = local.hub_vnet_gateway_generation
   type                = local.hub_vnet_gateway_type
   vpn_type            = local.hub_vpn_type
+  log_analytics_id    = module.hub_log_analytics.id
 
   ip_name               = local.hub_vnet_gateway_ip_name
   subnet_id             = module.hub_virtual_network.subnet_ids["GatewaySubnet"]
@@ -135,9 +133,6 @@ module "hub_vpn_gateway" {
   vpn_address_space = [local.hub_vpn_address_prefix]
   aad_tenant        = var.aad_tenant_id
   aad_audience      = local.aad_audience
-
-  log_analytics_enabled = local.log_analytics_enabled
-  log_analytics_id      = module.hub_log_analytics.id
 }
 
 locals {
@@ -181,19 +176,17 @@ module "hub_firewall" {
   subnet_id           = module.hub_virtual_network.subnet_ids["AzureFirewallSubnet"]
   policy_id           = module.hub_firewall_policy.id
   public_ip_name      = local.hub_firewall_ip_name
+  log_analytics_id    = module.hub_log_analytics.id
 
   forced_tunneling          = local.hub_firewall_forced_tunneling
   management_public_ip_name = local.hub_firewall_management_ip_name
   management_subnet_id      = module.hub_virtual_network.subnet_ids["AzureFirewallManagementSubnet"]
 
-  log_analytics_enabled = local.log_analytics_enabled
-  log_analytics_id      = module.hub_log_analytics.id
-
   depends_on = [module.hub_virtual_network] # Sometimes the firewall blocks creation of other subnets
 }
 
 locals {
-  hub_acr_name                   = "${local.prefix}hubacr"
+  hub_acr_name = "${local.prefix}hubacr"
   # TODO check if premium is needed
   hub_acr_sku                    = "Premium"
   hub_acr_network_access_enabled = false
@@ -239,12 +232,10 @@ module "hub_acr_private_endpoint" {
   name                = local.hub_acr_private_endpoint_name
   private_dns_enabled = local.private_endpoints_dns_enabled
   dns_name            = local.hub_acr_dns_name
+  log_analytics_id    = module.hub_log_analytics.id
 
   resource_id      = azurerm_container_registry.hub_acr.id
   subresource_name = local.hub_acr_private_endpoint_subresource
   subnet_id        = module.hub_virtual_network.subnet_ids["ACRSubnet"]
   vnet_links       = local.hub_acr_vnet_links
-
-  log_analytics_enabled = local.log_analytics_enabled
-  log_analytics_id      = module.hub_log_analytics.id
 }

@@ -19,7 +19,7 @@ locals {
 module "log_analytics_diagnostic" {
   source = "github.com/danielkhen/diagnostic_setting_module"
 
-  name = local.diagnostic_name
+  name                       = local.diagnostic_name
   target_resource_id         = azurerm_log_analytics_workspace.log_analytics.id
   log_analytics_workspace_id = azurerm_log_analytics_workspace.log_analytics.id
 }

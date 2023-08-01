@@ -1,7 +1,6 @@
 locals {
   prefix                        = "dtf"
   location                      = "westeurope"
-  log_analytics_enabled         = true
   private_endpoints_dns_enabled = true
   subnet_newbits                = 8 # The number of bits which to extend the prefix of the vnet to get a subnet
 

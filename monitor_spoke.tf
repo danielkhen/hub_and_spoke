@@ -13,7 +13,7 @@ resource "azurerm_resource_group" "monitor" {
 
 locals {
   monitor_network_security_groups     = jsondecode(templatefile("./objects/monitor/network_security_groups.json", local.network_vars))
-  monitor_network_security_groups_map = {for nsg in local.monitor_network_security_groups : nsg.name => nsg}
+  monitor_network_security_groups_map = { for nsg in local.monitor_network_security_groups : nsg.name => nsg }
 }
 
 module "monitor_network_security_groups" {
@@ -24,14 +24,12 @@ module "monitor_network_security_groups" {
   location               = local.location
   resource_group_name    = azurerm_resource_group.monitor.name
   network_security_rules = each.value.network_security_rules
-
-  log_analytics_enabled = local.log_analytics_enabled
-  log_analytics_id      = module.hub_log_analytics.id
+  log_analytics_id       = module.hub_log_analytics.id
 }
 
 locals {
   monitor_route_tables     = jsondecode(templatefile("./objects/monitor/route_tables.json", local.network_vars))
-  monitor_route_tables_map = {for rt in local.monitor_route_tables : rt.name => rt}
+  monitor_route_tables_map = { for rt in local.monitor_route_tables : rt.name => rt }
 }
 
 module "monitor_route_tables" {
@@ -77,9 +75,9 @@ module "monitor_virtual_network" {
 }
 
 locals {
-  monitor_vm_name             = "${local.prefix}-monitor-vm"
-  monitor_vm_nic_name         = "${local.prefix}-monitor-vm-nic"
-  monitor_vm_os_disk          = merge(local.vm_os_disk, { name = "${local.prefix}-monitor-vm-os-disk" })
+  monitor_vm_name     = "${local.prefix}-monitor-vm"
+  monitor_vm_nic_name = "${local.prefix}-monitor-vm-nic"
+  monitor_vm_os_disk  = merge(local.vm_os_disk, { name = "${local.prefix}-monitor-vm-os-disk" })
   monitor_vm_role_assignments = [
     {
       name  = "hub-logs-role"
@@ -107,19 +105,17 @@ module "monitor_vm" {
   os_type                = local.vm_os_type
   os_disk                = local.monitor_vm_os_disk
   source_image_reference = local.vm_source_image_reference
+  log_analytics_id       = module.hub_log_analytics.id
 
   admin_username = local.vm_admin_username
   admin_password = var.vm_admin_password
 
   identity_type    = local.vm_identity_type
   role_assignments = local.monitor_vm_role_assignments
-
-  log_analytics_enabled = local.log_analytics_enabled
-  log_analytics_id      = module.hub_log_analytics.id
 }
 
 locals {
-  monitor_vm_dns_name  = "monitor.net"
+  monitor_vm_dns_name = "monitor.net"
   monitor_vm_a_records = [
     {
       name    = "grafana"

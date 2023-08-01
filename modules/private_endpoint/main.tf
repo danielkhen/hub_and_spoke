@@ -10,7 +10,7 @@ resource "azurerm_private_dns_zone" "dns_zone" {
 }
 
 locals {
-  vnet_links_map = {for link in var.vnet_links : link.name => link}
+  vnet_links_map = { for link in var.vnet_links : link.name => link }
 }
 
 resource "azurerm_private_dns_zone_virtual_network_link" "vnet_links" {

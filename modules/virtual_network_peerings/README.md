@@ -10,7 +10,8 @@
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_allow_forwarded_traffic"></a> [allow\_forwarded\_traffic](#input\_allow\_forwarded\_traffic) | (Optional) Allow forwarded traffic through an nva. | `bool` | `false` | no |
+| <a name="input_local_forwarded_traffic"></a> [local\_forwarded\_traffic](#input\_local\_forwarded\_traffic) | (Optional) Allow forwarded traffic to the local virtual network. | `bool` | `false` | no |
+| <a name="input_remote_forwarded_traffic"></a> [remote\_forwarded\_traffic](#input\_remote\_forwarded\_traffic) | (Optional) Allow forwarded traffic to the remote virtual network. | `bool` | `false` | no |
 | <a name="input_remote_resource_group_name"></a> [remote\_resource\_group\_name](#input\_remote\_resource\_group\_name) | The remote resource group name for the peerings | `string` | n/a | yes |
 | <a name="input_remote_vnet_id"></a> [remote\_vnet\_id](#input\_remote\_vnet\_id) | The id of the remote vnet | `string` | n/a | yes |
 | <a name="input_remote_vnet_name"></a> [remote\_vnet\_name](#input\_remote\_vnet\_name) | The name of the remote vnet | `string` | n/a | yes |

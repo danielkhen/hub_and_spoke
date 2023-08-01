@@ -48,7 +48,7 @@ module "virtual_network_gateway" {
   name                = local.virtual_network_gateway_name
   location            = local.location
   resource_group_name = azurerm_resource_group.test_rg.name
-  ip_name     = local.virtual_network_gateway_ip
+  ip_name             = local.virtual_network_gateway_ip
   sku                 = local.virtual_network_gateway_sku
   type                = local.virtual_network_gateway_type
   generation          = local.virtual_network_gateway_generation

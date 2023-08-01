@@ -24,9 +24,7 @@ module "work_network_security_groups" {
   location               = local.location
   resource_group_name    = azurerm_resource_group.work.name
   network_security_rules = each.value.network_security_rules
-
-  log_analytics_enabled = local.log_analytics_enabled
-  log_analytics_id      = module.hub_log_analytics.id
+  log_analytics_id       = module.hub_log_analytics.id
 }
 
 locals {
@@ -101,9 +99,7 @@ module "work_storage_account" {
   resource_group_name      = azurerm_resource_group.work.name
   account_tier             = local.hub_storage_account_tier
   account_replication_type = local.hub_storage_account_replication_type
-
-  log_analytics_enabled = local.log_analytics_enabled
-  log_analytics_id      = module.hub_log_analytics.id
+  log_analytics_id         = module.hub_log_analytics.id
 }
 
 locals {
@@ -127,14 +123,12 @@ module "work_subresources_private_endpoints" {
   resource_group_name = azurerm_resource_group.work.name
   private_dns_enabled = local.private_endpoints_dns_enabled
   dns_name            = each.value.dns_name
+  log_analytics_id    = module.hub_log_analytics.id
 
   resource_id      = module.work_storage_account.id
   subresource_name = each.value.name
   subnet_id        = module.work_virtual_network.subnet_ids["StorageSubnet"]
   vnet_links       = local.work_storage_vnet_links
-
-  log_analytics_enabled = local.log_analytics_enabled
-  log_analytics_id      = module.hub_log_analytics.id
 }
 
 locals {
@@ -165,9 +159,7 @@ module "work_aks" {
   container_registry_link    = local.work_aks_container_registry_role
   container_registry_id      = azurerm_container_registry.hub_acr.id
   max_node_provisioning_time = local.work_aks_max_node_provisioning_time
-
-  log_analytics_enabled = local.log_analytics_enabled
-  log_analytics_id      = module.hub_log_analytics.id
+  log_analytics_id           = module.hub_log_analytics.id
 
   # Depends on the firewall to allow Azure Kubernetes Services and the peerings to pass the traffic
   depends_on = [module.hub_firewall, module.hub_to_work_peerings]
@@ -204,13 +196,11 @@ module "work_vm" {
   os_type                = local.vm_os_type
   os_disk                = local.work_vm_os_disk
   source_image_reference = local.vm_source_image_reference
+  log_analytics_id       = module.hub_log_analytics.id
 
   admin_username = local.vm_admin_username
   admin_password = var.vm_admin_password
 
   identity_type    = local.vm_identity_type
   role_assignments = local.work_vm_role_assignments
-
-  log_analytics_enabled = local.log_analytics_enabled
-  log_analytics_id      = module.hub_log_analytics.id
 }
