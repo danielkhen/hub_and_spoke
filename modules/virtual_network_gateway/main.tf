@@ -2,9 +2,9 @@ locals {
   ip_allocation_method = "Dynamic"
 }
 
-resource "azurerm_public_ip" "vng_default_pip" {
+resource "azurerm_public_ip" "ip" {
   location            = var.location
-  name                = var.default_ip_name
+  name                = var.ip_name
   resource_group_name = var.resource_group_name
   allocation_method   = local.ip_allocation_method
 
@@ -13,7 +13,7 @@ resource "azurerm_public_ip" "vng_default_pip" {
   }
 }
 
-resource "azurerm_public_ip" "vng_aa_pip" {
+resource "azurerm_public_ip" "active_active_ip" {
   count = var.active_active ? 1 : 0
 
   location            = var.location
@@ -27,11 +27,13 @@ resource "azurerm_public_ip" "vng_aa_pip" {
 }
 
 locals {
-  aad_tenant = sensitive("https://login.microsoftonline.com/${var.aad_tenant}/")
-  aad_issuer = sensitive("https://sts.windows.net/${var.aad_tenant}/")
+  aad_tenant                          = sensitive("https://login.microsoftonline.com/${var.aad_tenant}/")
+  aad_issuer                          = sensitive("https://sts.windows.net/${var.aad_tenant}/")
+  default_ip_configuration_name       = "default"
+  active_active_ip_configuration_name = "active-active"
 }
 
-resource "azurerm_virtual_network_gateway" "vng" {
+resource "azurerm_virtual_network_gateway" "vnet_gateway" {
   name                = var.name
   location            = var.location
   resource_group_name = var.resource_group_name
@@ -42,20 +44,20 @@ resource "azurerm_virtual_network_gateway" "vng" {
   active_active       = var.active_active
 
   ip_configuration {
-    name                          = var.default_ip_configuration_name
+    name                          = local.default_ip_configuration_name
     private_ip_address_allocation = local.ip_allocation_method
     subnet_id                     = var.subnet_id
-    public_ip_address_id          = azurerm_public_ip.vng_default_pip.id
+    public_ip_address_id          = azurerm_public_ip.ip.id
   }
 
   dynamic "ip_configuration" {
     for_each = var.active_active ? [true] : []
 
     content {
-      name                          = var.active_active_ip_configuration_name
+      name                          = local.active_active_ip_configuration_name
       private_ip_address_allocation = local.ip_allocation_method
       subnet_id                     = var.subnet_id
-      public_ip_address_id          = azurerm_public_ip.vng_aa_pip[0].id
+      public_ip_address_id          = azurerm_public_ip.active_active_ip[0].id
     }
   }
 
@@ -99,30 +101,32 @@ resource "azurerm_virtual_network_gateway" "vng" {
   }
 }
 
+locals {
+  vnet_gateway_diagnostic_name     = "${azurerm_virtual_network_gateway.vnet_gateway.name}-diagnostic"
+  ip_diagnostic_name       = "${azurerm_public_ip.ip.name}-diagnostic"
+  active_active_ip_diagnostic_name = "${azurerm_public_ip.active_active_ip.name}-diagnostic"
+}
 
-module "vng_diagnostics" {
+module "vnet_gateway_diagnostic" {
   source = "github.com/danielkhen/diagnostic_setting_module"
-  count  = var.log_analytics_enabled ? 1 : 0
 
-  name                       = var.vng_diagnostics_name
-  target_resource_id         = azurerm_virtual_network_gateway.vng.id
+  name                       = local.vnet_gateway_diagnostic_name
+  target_resource_id         = azurerm_virtual_network_gateway.vnet_gateway.id
   log_analytics_workspace_id = var.log_analytics_id
 }
 
-module "default_pip_diagnostics" {
+module "ip_diagnostic" {
   source = "github.com/danielkhen/diagnostic_setting_module"
-  count  = var.log_analytics_enabled ? 1 : 0
 
-  name                       = var.default_ip_diagnostics_name
-  target_resource_id         = azurerm_public_ip.vng_default_pip.id
+  name                       = local.ip_diagnostic_name
+  target_resource_id         = azurerm_public_ip.ip.id
   log_analytics_workspace_id = var.log_analytics_id
 }
 
-module "aa_pip_diagnostics" {
+module "active_active_ip_diagnostic" {
   source = "github.com/danielkhen/diagnostic_setting_module"
-  count  = var.active_active && var.log_analytics_enabled ? 1 : 0
 
-  name                       = var.active_active_ip_diagnostics_name
-  target_resource_id         = azurerm_public_ip.vng_aa_pip[0].id
+  name                       = local.active_active_ip_diagnostic_name
+  target_resource_id         = azurerm_public_ip.active_active_ip[0].id
   log_analytics_workspace_id = var.log_analytics_id
 }

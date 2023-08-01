@@ -1,6 +1,5 @@
 locals {
-  # TODO add rg in name suffix
-  hub_rg_name = "${local.prefix}-hub"
+  hub_rg_name = "${local.prefix}-hub-rg"
 }
 
 resource "azurerm_resource_group" "hub" {
@@ -20,8 +19,7 @@ locals {
 module "hub_log_analytics" {
   source = "github.com/danielkhen/log_analytics_workspace_module"
 
-  # TODO use the local
-  name                  = "${local.prefix}-hub-log-analytics-workspace"
+  name                  = local.hub_log_analytics_name
   location              = local.location
   resource_group_name   = azurerm_resource_group.hub.name
   sku                   = local.hub_log_analytics_sku
@@ -30,7 +28,7 @@ module "hub_log_analytics" {
 
 locals {
   hub_network_security_groups     = jsondecode(templatefile("./objects/hub/network_security_groups.json", local.network_vars))
-  hub_network_security_groups_map = { for nsg in local.hub_network_security_groups : nsg.name => nsg }
+  hub_network_security_groups_map = {for nsg in local.hub_network_security_groups : nsg.name => nsg}
 }
 
 module "hub_network_security_groups" {
@@ -48,7 +46,7 @@ module "hub_network_security_groups" {
 
 locals {
   hub_route_tables     = jsondecode(templatefile("./objects/hub/route_tables.json", local.network_vars))
-  hub_route_tables_map = { for rt in local.hub_route_tables : rt.name => rt }
+  hub_route_tables_map = {for rt in local.hub_route_tables : rt.name => rt}
 }
 
 module "hub_route_tables" {
@@ -62,26 +60,25 @@ module "hub_route_tables" {
 }
 
 locals {
-  hub_vnet_name          = "${local.prefix}-hub-vnet"
-  hub_vnet_address_space = ["10.0.0.0/16"]
+  hub_vnet_name           = "${local.prefix}-hub-vnet"
+  hub_vnet_address_prefix = "10.0.0.0/16"
 
   hub_vnet_subnets_map = {
     GatewaySubnet = {
-      # TODO use cidrsubnet to get the subnet addresses
-      address_prefix = "10.0.0.0/24"
+      address_prefix = cidrsubnet(local.hub_vnet_address_prefix, local.subnet_newbits, 0)
       route_table    = "hub-gateway-rt"
     }
 
     AzureFirewallSubnet = {
-      address_prefix = "10.0.1.0/24"
+      address_prefix = cidrsubnet(local.hub_vnet_address_prefix, local.subnet_newbits, 1)
     }
 
     AzureFirewallManagementSubnet = {
-      address_prefix = "10.0.2.0/24"
+      address_prefix = cidrsubnet(local.hub_vnet_address_prefix, local.subnet_newbits, 2)
     }
 
     ACRSubnet = {
-      address_prefix         = "10.0.3.0/24"
+      address_prefix         = cidrsubnet(local.hub_vnet_address_prefix, local.subnet_newbits, 3)
       network_security_group = "hub-ACRSubnet-nsg"
       route_table            = "hub-rt"
     }
@@ -102,41 +99,40 @@ module "hub_virtual_network" {
   name                = local.hub_vnet_name
   location            = local.location
   resource_group_name = azurerm_resource_group.hub.name
-  address_space       = local.hub_vnet_address_space
+  address_space       = [local.hub_vnet_address_prefix]
   subnets             = local.hub_vnet_subnets
 }
 
 locals {
-  # TODO remove the vng shortcut (vnet gateway)
-  hub_vng_name                  = "${local.prefix}-hub-vpn"
-  hub_vng_type                  = "Vpn"
-  hub_vng_vpn_type              = "RouteBased"
-  hub_vng_default_ip_name       = "${local.prefix}-hub-vpn-default-ip"
-  hub_vng_active_active_ip_name = "${local.prefix}-hub-vpn-aa-ip"
-  hub_vng_active_active         = true
-  hub_vng_vpn_address_space     = ["172.0.0.0/16"]
-  hub_vng_sku                   = "VpnGw1"
-  hub_vng_generation            = "Generation1"
-  aad_audience                  = "41b23e61-6c1e-4545-b367-cd054e0ed4b4"
+  hub_vnet_gateway_name                  = "${local.prefix}-hub-vpn"
+  hub_vnet_gateway_type                  = "Vpn"
+  hub_vpn_type                           = "RouteBased"
+  hub_vnet_gateway_ip_name               = "${local.prefix}-hub-vpn-default-ip"
+  hub_vnet_gateway_active_active_ip_name = "${local.prefix}-hub-vpn-aa-ip"
+  hub_vnet_gateway_active_active         = true
+  hub_vpn_address_prefix                 = "172.0.0.0/16"
+  hub_vnet_gateway_sku                   = "VpnGw1"
+  hub_vnet_gateway_generation            = "Generation1"
+  aad_audience                           = "41b23e61-6c1e-4545-b367-cd054e0ed4b4"
 }
 
 module "hub_vpn_gateway" {
   source = "github.com/danielkhen/virtual_network_gateway_module"
 
-  name                = local.hub_vng_name
+  name                = local.hub_vnet_gateway_name
   location            = local.location
   resource_group_name = azurerm_resource_group.hub.name
-  sku                 = local.hub_vng_sku
-  generation          = local.hub_vng_generation
-  type                = local.hub_vng_type
-  vpn_type            = local.hub_vng_vpn_type
+  sku                 = local.hub_vnet_gateway_sku
+  generation          = local.hub_vnet_gateway_generation
+  type                = local.hub_vnet_gateway_type
+  vpn_type            = local.hub_vpn_type
 
-  default_ip_name       = local.hub_vng_default_ip_name
+  ip_name               = local.hub_vnet_gateway_ip_name
   subnet_id             = module.hub_virtual_network.subnet_ids["GatewaySubnet"]
-  active_active         = local.hub_vng_active_active
-  active_active_ip_name = local.hub_vng_active_active_ip_name
+  active_active         = local.hub_vnet_gateway_active_active
+  active_active_ip_name = local.hub_vnet_gateway_active_active_ip_name
 
-  vpn_address_space = local.hub_vng_vpn_address_space
+  vpn_address_space = [local.hub_vpn_address_prefix]
   aad_tenant        = var.aad_tenant_id
   aad_audience      = local.aad_audience
 
@@ -197,7 +193,7 @@ module "hub_firewall" {
 }
 
 locals {
-  hub_acr_name = "${local.prefix}hubacr"
+  hub_acr_name                   = "${local.prefix}hubacr"
   # TODO check if premium is needed
   hub_acr_sku                    = "Premium"
   hub_acr_network_access_enabled = false

@@ -1,5 +1,5 @@
 locals {
-  monitor_rg_name = "${local.prefix}-monitor-spoke"
+  monitor_rg_name = "${local.prefix}-monitor-spoke-rg"
 }
 
 resource "azurerm_resource_group" "monitor" {
@@ -13,7 +13,7 @@ resource "azurerm_resource_group" "monitor" {
 
 locals {
   monitor_network_security_groups     = jsondecode(templatefile("./objects/monitor/network_security_groups.json", local.network_vars))
-  monitor_network_security_groups_map = { for nsg in local.monitor_network_security_groups : nsg.name => nsg }
+  monitor_network_security_groups_map = {for nsg in local.monitor_network_security_groups : nsg.name => nsg}
 }
 
 module "monitor_network_security_groups" {
@@ -31,7 +31,7 @@ module "monitor_network_security_groups" {
 
 locals {
   monitor_route_tables     = jsondecode(templatefile("./objects/monitor/route_tables.json", local.network_vars))
-  monitor_route_tables_map = { for rt in local.monitor_route_tables : rt.name => rt }
+  monitor_route_tables_map = {for rt in local.monitor_route_tables : rt.name => rt}
 }
 
 module "monitor_route_tables" {
@@ -46,12 +46,12 @@ module "monitor_route_tables" {
 
 
 locals {
-  monitor_vnet_name          = "${local.prefix}-monitor-vnet"
-  monitor_vnet_address_space = ["10.2.0.0/16"]
+  monitor_vnet_name           = "${local.prefix}-monitor-vnet"
+  monitor_vnet_address_prefix = "10.2.0.0/16"
 
   monitor_vnet_subnets_map = {
     MonitorSubnet = {
-      address_prefix         = "10.2.0.0/24"
+      address_prefix         = cidrsubnet(local.monitor_vnet_address_prefix, local.subnet_newbits, 0)
       network_security_group = "monitor-MonitorSubnet-nsg"
       route_table            = "monitor-rt"
     }
@@ -72,14 +72,14 @@ module "monitor_virtual_network" {
   name                = local.monitor_vnet_name
   location            = local.location
   resource_group_name = azurerm_resource_group.monitor.name
-  address_space       = local.monitor_vnet_address_space
+  address_space       = [local.monitor_vnet_address_prefix]
   subnets             = local.monitor_vnet_subnets
 }
 
 locals {
-  monitor_vm_name     = "${local.prefix}-monitor-vm"
-  monitor_vm_nic_name = "${local.prefix}-monitor-vm-nic"
-  monitor_vm_os_disk  = merge(local.vm_os_disk, { name = "${local.prefix}-monitor-vm-os-disk" })
+  monitor_vm_name             = "${local.prefix}-monitor-vm"
+  monitor_vm_nic_name         = "${local.prefix}-monitor-vm-nic"
+  monitor_vm_os_disk          = merge(local.vm_os_disk, { name = "${local.prefix}-monitor-vm-os-disk" })
   monitor_vm_role_assignments = [
     {
       name  = "hub-logs-role"
@@ -94,7 +94,7 @@ locals {
   ]
 }
 
-# TODO in module vm, use an incremental lun number for data disks
+# TODO test incremental lun number for data disks
 module "monitor_vm" {
   source = "github.com/danielkhen/virtual_machine_module"
 
@@ -119,9 +119,14 @@ module "monitor_vm" {
 }
 
 locals {
-  monitor_vm_dns_name    = "monitor.net"
-  monitor_vm_record_name = "grafana"
-  monitor_vm_record_type = "a"
+  monitor_vm_dns_name  = "monitor.net"
+  monitor_vm_a_records = [
+    {
+      name    = "grafana"
+      ttl     = 300
+      records = module.monitor_vm.private_ips
+    }
+  ]
 
   monitor_vm_vnet_links = [
     {
@@ -131,14 +136,10 @@ locals {
   ]
 }
 
-# TODO change DNS record module to DNS Zone module that can create multiple records
-module "monitor_vm_record" {
-  source = "github.com/danielkhen/dns_record_module"
+module "monitor_vm_dns_zone" {
+  source = "github.com/danielkhen/private_dns_zone_module"
 
-  name                = local.monitor_vm_record_name
+  name                = local.monitor_vm_dns_name
   resource_group_name = azurerm_resource_group.monitor.name
-  dns_name            = local.monitor_vm_dns_name
-  records             = [module.monitor_vm.private_ips[0]]
-  vnet_links          = local.monitor_vm_vnet_links
-  record_type         = local.monitor_vm_record_type
+  a_records           = local.monitor_vm_a_records
 }

@@ -23,12 +23,14 @@ variable "network_rule_collection_groups" {
       action   = string
       priority = number
       rules = list(object({
-        name             = string
-        source_addresses = list(string)
-        protocols        = list(string)
-        # TODO add all options for addresses (ip, fqdn) and make them optional
+        name                  = string
+        source_addresses      = optional(list(string), null)
+        source_ip_groups      = optional(list(string), null)
+        protocols             = list(string)
         destination_ports     = list(string)
-        destination_addresses = list(string)
+        destination_addresses = optional(list(string), null)
+        destination_fqdns     = optional(list(string), null)
+        destination_ip_groups = optional(list(string), null)
       }))
     }))
   }))
@@ -46,9 +48,14 @@ variable "application_rule_collection_groups" {
       priority = number
       rules = list(object({
         name                  = string
-        source_addresses      = list(string)
-        destination_fqdns     = optional(list(string), [])
-        destination_fqdn_tags = optional(list(string), [])
+        source_addresses      = optional(list(string), null)
+        source_ip_groups      = optional(list(string), null)
+        terminate_tls         = optional(bool, null)
+        destination_addresses = optional(list(string), null)
+        destination_fqdns     = optional(list(string), null)
+        destination_fqdn_tags = optional(list(string), null)
+        destination_urls      = optional(list(string), null)
+        web_categories        = optional(list(string), null)
         protocols = list(object({
           type = string
           port = string
@@ -70,11 +77,13 @@ variable "nat_rule_collection_groups" {
       priority = number
       rules = list(object({
         name                = string
-        source_addresses    = list(string)
+        source_addresses    = optional(list(string), null)
+        source_ip_groups    = optional(list(string), null)
         protocols           = list(string)
         destination_ports   = list(string)
         destination_address = string
-        translated_address  = string
+        translated_address  = optional(string, null)
+        translated_fqdn     = optional(string, null)
         translated_port     = string
       }))
     }))

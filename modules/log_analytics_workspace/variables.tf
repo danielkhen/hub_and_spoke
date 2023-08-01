@@ -35,15 +35,3 @@ variable "internet_query_enabled" {
   type        = bool
   default     = true
 }
-
-variable "log_analytics_enabled" {
-  description = "(Optional) Should logs be sent to itself."
-  type        = bool
-  default     = false
-}
-
-variable "diagnostic_settings_name" {
-  description = "(Optional) The name of the diagnostic settings."
-  type        = string
-  default     = "log-analytics-workspace-diagnostics"
-}

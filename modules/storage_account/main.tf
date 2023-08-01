@@ -15,28 +15,33 @@ resource "azurerm_storage_account" "storage" {
   }
 }
 
-module "storage_diagnostics" {
-  source = "github.com/danielkhen/diagnostic_setting_module"
-  count  = var.log_analytics_enabled ? 1 : 0
+locals {
+  storage_account_diagnostic_name = "${azurerm_storage_account.storage.name}-diagnostic"
+}
 
-  name                       = "storage-diagnostics"
+module "storage_diagnostic" {
+  source = "github.com/danielkhen/diagnostic_setting_module"
+
+  name                       = local.storage_account_diagnostic_name
   target_resource_id         = azurerm_storage_account.storage.id
   log_analytics_workspace_id = var.log_analytics_id
 }
 
 locals {
-  subresources_diagnostics_map = {
-    for diagnostic in var.subresources_diagnostics : diagnostic.name => merge(diagnostic, {
-      target_resource_id = "${azurerm_storage_account.storage.id}/${diagnostic.name}Services/default/"
-    })
+  subresources = ["blob", "file", "table", "queue"]
+  subresources_diagnostic_map = {
+    for subresource in local.subresources : subresource => {
+      name = "${azurerm_storage_account.storage.name}-${subresource}-diagnostic"
+      target_resource_id = "${azurerm_storage_account.storage.id}/${subresource}Services/default/"
+    }
   }
 }
 
 module "subresources_diagnostics" {
   source   = "github.com/danielkhen/diagnostic_setting_module"
-  for_each = var.log_analytics_enabled ? local.subresources_diagnostics_map : {}
+  for_each = local.subresources_diagnostic_map
 
-  name                       = each.value.diagnostics_name
+  name                       = each.value.name
   target_resource_id         = each.value.target_resource_id
   log_analytics_workspace_id = var.log_analytics_id
 }

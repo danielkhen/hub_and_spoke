@@ -9,7 +9,7 @@ resource "azurerm_network_security_group" "nsg" {
 }
 
 locals {
-  network_security_rules_map = { for rule in var.network_security_rules : rule.name => rule }
+  network_security_rules_map = {for rule in var.network_security_rules : rule.name => rule}
 }
 
 resource "azurerm_network_security_rule" "rules" {
@@ -29,11 +29,13 @@ resource "azurerm_network_security_rule" "rules" {
   destination_port_range     = each.value.destination_port_range
 }
 
-module "nsg_diagnostics" {
-  source = "github.com/danielkhen/diagnostic_setting_module"
-  count  = var.log_analytics_enabled ? 1 : 0
+locals {
+  nsg_diagnostic_name = "${azurerm_network_security_group.nsg.name}-diagnostic"
+}
 
-  name                       = var.diagnostic_settings_name
+module "nsg_diagnostic" {
+  source                     = "github.com/danielkhen/diagnostic_setting_module"
+  name                       = local.nsg_diagnostic_name
   target_resource_id         = azurerm_network_security_group.nsg.id
   log_analytics_workspace_id = var.log_analytics_id
 }

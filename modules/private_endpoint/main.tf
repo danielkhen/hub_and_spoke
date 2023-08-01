@@ -10,7 +10,7 @@ resource "azurerm_private_dns_zone" "dns_zone" {
 }
 
 locals {
-  vnet_links_map = { for link in var.vnet_links : link.name => link }
+  vnet_links_map = {for link in var.vnet_links : link.name => link}
 }
 
 resource "azurerm_private_dns_zone_virtual_network_link" "vnet_links" {
@@ -54,11 +54,13 @@ resource "azurerm_private_endpoint" "private_endpoint" {
   }
 }
 
-module "nic-diagnostics" {
-  source = "github.com/danielkhen/diagnostic_setting_module"
-  count  = var.log_analytics_enabled ? 1 : 0
+locals {
+  nic_diagnostic_name = "${azurerm_private_endpoint.private_endpoint.network_interface[0].name}-diagnostic"
+}
 
-  name                       = var.nic-diagnostics-name
+module "nic-diagnostic" {
+  source                     = "github.com/danielkhen/diagnostic_setting_module"
+  name                       = local.nic_diagnostic_name
   target_resource_id         = azurerm_private_endpoint.private_endpoint.network_interface[0].id
   log_analytics_workspace_id = var.log_analytics_id
 }

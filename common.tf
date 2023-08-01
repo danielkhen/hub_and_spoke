@@ -3,6 +3,7 @@ locals {
   location                      = "westeurope"
   log_analytics_enabled         = true
   private_endpoints_dns_enabled = true
+  subnet_newbits                = 8 # The number of bits which to extend the prefix of the vnet to get a subnet
 
   network_vars = {
     ip_addresses = {
@@ -10,12 +11,12 @@ locals {
     }
 
     address_prefixes = {
-      hub_vnet     = local.hub_vnet_address_space[0]
-      work_vnet    = local.work_vnet_address_space[0]
-      monitor_vnet = local.monitor_vnet_address_space[0]
-      vpn          = local.hub_vng_vpn_address_space[0]
-      vpn_pool_1   = cidrsubnet(local.hub_vng_vpn_address_space[0], 1, 0)
-      vpn_pool_2   = cidrsubnet(local.hub_vng_vpn_address_space[0], 1, 1)
+      hub_vnet     = local.hub_vnet_address_prefix
+      work_vnet    = local.work_vnet_address_prefix
+      monitor_vnet = local.monitor_vnet_address_prefix
+      vpn          = local.hub_vng_vpn_address_prefix
+      vpn_pool_1   = cidrsubnet(local.hub_vng_vpn_address_prefix, 1, 0)
+      vpn_pool_2   = cidrsubnet(local.hub_vng_vpn_address_prefix, 1, 1)
     }
 
     subnets = {
@@ -89,8 +90,9 @@ module "hub_to_monitor_peerings" {
   remote_vnet_name           = module.monitor_virtual_network.name
   remote_vnet_id             = module.monitor_virtual_network.id
 
-  use_local_gateway = local.peering_use_local_gateway
-  # TODO add forwarded traffic configurations
+  use_local_gateway        = local.peering_use_local_gateway
+  local_forwarded_traffic  = local.peering_local_forwarded_traffic
+  remote_forwarded_traffic = local.peering_remote_forwarded_traffic
 
   depends_on = [module.hub_vpn_gateway]
 }

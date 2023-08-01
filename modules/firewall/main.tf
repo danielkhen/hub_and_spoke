@@ -4,7 +4,7 @@ locals {
   ip_sku               = "Standard"
 }
 
-resource "azurerm_public_ip" "fw_ip" {
+resource "azurerm_public_ip" "ip" {
   name                = var.public_ip_name
   location            = var.location
   resource_group_name = var.resource_group_name
@@ -16,7 +16,7 @@ resource "azurerm_public_ip" "fw_ip" {
   }
 }
 
-resource "azurerm_public_ip" "fw_management_ip" {
+resource "azurerm_public_ip" "management_ip" {
   count = var.forced_tunneling ? 1 : 0
 
   name                = var.management_public_ip_name
@@ -30,7 +30,12 @@ resource "azurerm_public_ip" "fw_management_ip" {
   }
 }
 
-resource "azurerm_firewall" "fw" {
+locals {
+  default_ip_configuration_name    = "default"
+  management_ip_configuration_name = "management"
+}
+
+resource "azurerm_firewall" "firewall" {
   name                = var.name
   location            = var.location
   resource_group_name = var.resource_group_name
@@ -39,9 +44,9 @@ resource "azurerm_firewall" "fw" {
   sku_tier           = var.sku_tier
   firewall_policy_id = var.policy_id
 
-  ip_configuration {
-    name                 = var.ip_configuration_name
-    public_ip_address_id = azurerm_public_ip.fw_ip.id
+  ip_configuration { #TODO check about private firewalls
+    name                 = local.default_ip_configuration_name
+    public_ip_address_id = azurerm_public_ip.ip.id
     subnet_id            = var.subnet_id
   }
 
@@ -49,8 +54,8 @@ resource "azurerm_firewall" "fw" {
     for_each = var.forced_tunneling ? [true] : []
 
     content {
-      name                 = var.management_ip_configuration_name
-      public_ip_address_id = azurerm_public_ip.fw_management_ip[0].id
+      name                 = local.management_ip_configuration_name
+      public_ip_address_id = azurerm_public_ip.management_ip[0].id
       subnet_id            = var.management_subnet_id
     }
   }
@@ -60,29 +65,32 @@ resource "azurerm_firewall" "fw" {
   }
 }
 
-module "fw_diagnostics" {
-  source = "github.com/danielkhen/diagnostic_setting_module"
-  count  = var.log_analytics_enabled ? 1 : 0
+locals {
+  firewall_diagnostic_name = "${azurerm_firewall.firewall.name}-diagnostic"
+  ip_diagnostic_name = "${azurerm_public_ip.ip.name}"
+  management_ip_diagnostic_name = "${azurerm_public_ip.management_ip.name}-diagnostic"
+}
 
-  name                       = var.fw_diagnostics_name
-  target_resource_id         = azurerm_firewall.fw.id
+module "firewall_diagnostics" {
+  source = "github.com/danielkhen/diagnostic_setting_module"
+
+  name                       = local.firewall_diagnostic_name
+  target_resource_id         = azurerm_firewall.firewall.id
   log_analytics_workspace_id = var.log_analytics_id
 }
 
-module "fw_ip_diagnostics" {
+module "ip_diagnostics" {
   source = "github.com/danielkhen/diagnostic_setting_module"
-  count  = var.log_analytics_enabled ? 1 : 0
 
-  name                       = var.pip_diagnostics_name
-  target_resource_id         = azurerm_public_ip.fw_ip.id
+  name                       = local.ip_diagnostic_name
+  target_resource_id         = azurerm_public_ip.ip.id
   log_analytics_workspace_id = var.log_analytics_id
 }
 
-module "fw_management_ip_diagnostics" {
+module "management_ip_diagnostics" {
   source = "github.com/danielkhen/diagnostic_setting_module"
-  count  = var.log_analytics_enabled && var.forced_tunneling ? 1 : 0
 
-  name                       = var.management_pip_diagnostics_name
-  target_resource_id         = azurerm_public_ip.fw_management_ip[0].id
+  name                       = local.management_ip_diagnostic_name
+  target_resource_id         = azurerm_public_ip.management_ip[0].id
   log_analytics_workspace_id = var.log_analytics_id
 }

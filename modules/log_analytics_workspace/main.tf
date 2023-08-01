@@ -12,11 +12,14 @@ resource "azurerm_log_analytics_workspace" "log_analytics" {
   }
 }
 
-module "log_analytics_diagnostics" {
-  source = "github.com/danielkhen/diagnostic_setting_module"
-  count  = var.log_analytics_enabled ? 1 : 0
+locals {
+  diagnostic_name = "${azurerm_log_analytics_workspace.log_analytics.name}-diagnostic"
+}
 
-  name                       = var.diagnostic_settings_name
+module "log_analytics_diagnostic" {
+  source = "github.com/danielkhen/diagnostic_setting_module"
+
+  name = local.diagnostic_name
   target_resource_id         = azurerm_log_analytics_workspace.log_analytics.id
   log_analytics_workspace_id = azurerm_log_analytics_workspace.log_analytics.id
 }

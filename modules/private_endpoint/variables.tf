@@ -68,20 +68,7 @@ variable "dns_prefix" {
   default     = "private-endpoint"
 }
 
-variable "log_analytics_enabled" {
-  description = "(Optional) Should all logs be sent to a log analytics workspace."
-  type        = bool
-  default     = false
-}
-
 variable "log_analytics_id" {
-  description = "(Optional) The id of the log analytics workspace."
+  description = "(Required) The id of the log analytics workspace."
   type        = string
-  default     = null
-}
-
-variable "nic-diagnostics-name" {
-  description = "(Optional) The name of the diagnostic settings for the network interface."
-  type        = string
-  default     = "pe-nic-diagnostics"
 }

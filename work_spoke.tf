@@ -1,5 +1,5 @@
 locals {
-  work_rg_name = "${local.prefix}-work-spoke"
+  work_rg_name = "${local.prefix}-work-spoke-rg"
 }
 
 resource "azurerm_resource_group" "work" {
@@ -45,24 +45,24 @@ module "work_route_tables" {
 }
 
 locals {
-  work_vnet_name          = "${local.prefix}-work-vnet"
-  work_vnet_address_space = ["10.1.0.0/16"]
+  work_vnet_name           = "${local.prefix}-work-vnet"
+  work_vnet_address_prefix = "10.1.0.0/16"
 
   work_vnet_subnets_map = {
     WorkSubnet = {
-      address_prefix         = "10.1.0.0/24"
+      address_prefix         = cidrsubnet(local.work_vnet_address_prefix, local.subnet_newbits, 0)
       network_security_group = "work-WorkSubnet-nsg"
       route_table            = "work-rt"
     }
 
     StorageSubnet = {
-      address_prefix         = "10.1.1.0/24"
+      address_prefix         = cidrsubnet(local.work_vnet_address_prefix, local.subnet_newbits, 1)
       network_security_group = "work-StorageSubnet-nsg"
       route_table            = "work-rt"
     }
 
     AKSSubnet = {
-      address_prefix         = "10.1.2.0/24"
+      address_prefix         = cidrsubnet(local.work_vnet_address_prefix, local.subnet_newbits, 2)
       network_security_group = "work-AKSSubnet-nsg"
       route_table            = "work-rt"
     }
@@ -83,7 +83,7 @@ module "work_virtual_network" {
   name                = local.work_vnet_name
   location            = local.location
   resource_group_name = azurerm_resource_group.work.name
-  address_space       = local.work_vnet_address_space
+  address_space       = [local.work_vnet_address_prefix]
   subnets             = local.work_vnet_subnets
 }
 
@@ -93,8 +93,7 @@ locals {
   hub_storage_account_replication_type = "LRS"
 }
 
-# TODO change name
-module "work_private_storage" {
+module "work_storage_account" {
   source = "github.com/danielkhen/storage_account_module"
 
   name                     = local.work_storage_name
@@ -129,7 +128,7 @@ module "work_subresources_private_endpoints" {
   private_dns_enabled = local.private_endpoints_dns_enabled
   dns_name            = each.value.dns_name
 
-  resource_id      = module.work_private_storage.id
+  resource_id      = module.work_storage_account.id
   subresource_name = each.value.name
   subnet_id        = module.work_virtual_network.subnet_ids["StorageSubnet"]
   vnet_links       = local.work_storage_vnet_links
@@ -154,7 +153,6 @@ locals {
   }
 }
 
-# TODO diagnostic settings and acr for aks should be required
 module "work_aks" {
   source = "github.com/danielkhen/kubernetes_cluster_module"
 

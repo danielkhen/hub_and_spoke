@@ -55,16 +55,9 @@ variable "access_tier" {
   }
 }
 
-variable "log_analytics_enabled" {
-  description = "(Optional) Should all logs be sent to a log analytics workspace."
-  type        = bool
-  default     = false
-}
-
 variable "log_analytics_id" {
-  description = "(Optional) The id of the log analytics workspace."
+  description = "(Required) The id of the log analytics workspace."
   type        = string
-  default     = null
 }
 
 variable "enable_https_traffic_only" {
@@ -77,36 +70,4 @@ variable "public_network_access_enabled" {
   description = "(Optional) Allow public network access."
   type        = bool
   default     = false
-}
-
-variable "diagnostics_name" {
-  description = "(Optional) The name of the diagnostic settings of the storage account."
-  type        = string
-  default     = "storage-diagnostics"
-}
-
-variable "subresources_diagnostics" {
-  description = "(Optional) A list of the subresource to add diagnostic settings to."
-  type = list(object({
-    name             = string
-    diagnostics_name = string
-  }))
-  default = [
-    {
-      name             = "blob"
-      diagnostics_name = "blob-diagnostics"
-    },
-    {
-      name             = "queue"
-      diagnostics_name = "queue-diagnostics"
-    },
-    {
-      name             = "file"
-      diagnostics_name = "file-diagnostics"
-    },
-    {
-      name             = "table"
-      diagnostics_name = "table-diagnostics"
-    }
-  ]
 }

@@ -57,44 +57,7 @@ variable "management_public_ip_name" {
   default     = null
 }
 
-variable "ip_configuration_name" {
-  description = "(Optional) The name of the default ip configuration."
-  type        = string
-  default     = "fw-pip"
-}
-
-variable "management_ip_configuration_name" {
-  description = "(Optional) The name of the management ip configuration."
-  type        = string
-  default     = "fw-mng-pip"
-}
-
-variable "fw_diagnostics_name" {
-  description = "(Optional) The name of the diagnostic settings of the firewall."
-  type        = string
-  default     = "fw-diagnostics"
-}
-
-variable "pip_diagnostics_name" {
-  description = "(Optional) The name of the diagnostic settings of the default public ip."
-  type        = string
-  default     = "fw-pip-diagnostics"
-}
-
-variable "management_pip_diagnostics_name" {
-  description = "(Optional) The name of the diagnostic settings of the management public ip."
-  type        = string
-  default     = "fw-management-pip-diagnostics"
-}
-
-variable "log_analytics_enabled" {
-  description = "(Optional) Should all logs be sent to a log analytics workspace."
-  type        = bool
-  default     = false
-}
-
 variable "log_analytics_id" {
-  description = "(Optional) The id of the log analytics workspace."
+  description = "(Required) The id of the log analytics workspace."
   type        = string
-  default     = null
 }
