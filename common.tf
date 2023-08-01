@@ -13,9 +13,9 @@ locals {
       hub_vnet     = local.hub_vnet_address_prefix
       work_vnet    = local.work_vnet_address_prefix
       monitor_vnet = local.monitor_vnet_address_prefix
-      vpn          = local.hub_vng_vpn_address_prefix
-      vpn_pool_1   = cidrsubnet(local.hub_vng_vpn_address_prefix, 1, 0)
-      vpn_pool_2   = cidrsubnet(local.hub_vng_vpn_address_prefix, 1, 1)
+      vpn          = local.hub_vpn_address_prefix
+      vpn_pool_1   = cidrsubnet(local.hub_vpn_address_prefix, 1, 0)
+      vpn_pool_2   = cidrsubnet(local.hub_vpn_address_prefix, 1, 1)
     }
 
     subnets = {

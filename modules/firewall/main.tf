@@ -68,7 +68,7 @@ resource "azurerm_firewall" "firewall" {
 locals {
   firewall_diagnostic_name      = "${azurerm_firewall.firewall.name}-diagnostic"
   ip_diagnostic_name            = azurerm_public_ip.ip.name
-  management_ip_diagnostic_name = "${azurerm_public_ip.management_ip.name}-diagnostic"
+  management_ip_diagnostic_name = "${azurerm_public_ip.management_ip[0].name}-diagnostic"
 }
 
 module "firewall_diagnostics" {
@@ -89,6 +89,7 @@ module "ip_diagnostics" {
 
 module "management_ip_diagnostics" {
   source = "github.com/danielkhen/diagnostic_setting_module"
+  count  = var.forced_tunneling ? 1 : 0
 
   name                       = local.management_ip_diagnostic_name
   target_resource_id         = azurerm_public_ip.management_ip[0].id
