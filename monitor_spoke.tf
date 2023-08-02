@@ -74,9 +74,8 @@ module "monitor_virtual_network" {
 }
 
 locals {
-  monitor_vm_name     = "${local.prefix}-monitor-vm"
-  monitor_vm_nic_name = "${local.prefix}-monitor-vm-nic"
-  monitor_vm_os_disk  = merge(local.vm_os_disk, { name = "${local.prefix}-monitor-vm-os-disk" })
+  monitor_vm_name    = "${local.prefix}-monitor-vm"
+  monitor_vm_os_disk = merge(local.vm_os_disk, { name = "${local.prefix}-monitor-vm-os-disk" })
   monitor_vm_role_assignments = [
     {
       name  = "hub-logs-role"

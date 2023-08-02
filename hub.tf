@@ -97,15 +97,13 @@ module "hub_virtual_network" {
 }
 
 locals {
-  hub_vnet_gateway_name                  = "${local.prefix}-hub-vpn"
-  hub_vnet_gateway_type                  = "Vpn"
-  hub_vpn_type                           = "RouteBased"
-  hub_vnet_gateway_ip_name               = "${local.prefix}-hub-vpn-default-ip"
-  hub_vnet_gateway_active_active_ip_name = "${local.prefix}-hub-vpn-aa-ip"
-  hub_vnet_gateway_active_active         = true
-  hub_vnet_gateway_sku                   = "VpnGw1"
-  hub_vnet_gateway_generation            = "Generation1"
-  aad_audience                           = "41b23e61-6c1e-4545-b367-cd054e0ed4b4"
+  hub_vnet_gateway_name          = "${local.prefix}-hub-vpn"
+  hub_vnet_gateway_type          = "Vpn"
+  hub_vpn_type                   = "RouteBased"
+  hub_vnet_gateway_active_active = true
+  hub_vnet_gateway_sku           = "VpnGw1"
+  hub_vnet_gateway_generation    = "Generation1"
+  aad_audience                   = "41b23e61-6c1e-4545-b367-cd054e0ed4b4"
 }
 
 module "hub_vpn_gateway" {
@@ -149,11 +147,9 @@ module "hub_firewall_policy" {
 }
 
 locals {
-  hub_firewall_name               = "${local.prefix}-hub-fw"
-  hub_firewall_ip_name            = "${local.prefix}-hub-fw-ip"
-  hub_firewall_management_ip_name = "${local.prefix}-hub-fw-mng-ip"
-  hub_firewall_sku_tier           = "Standard"
-  hub_firewall_forced_tunneling   = true
+  hub_firewall_name             = "${local.prefix}-hub-fw"
+  hub_firewall_sku_tier         = "Standard"
+  hub_firewall_forced_tunneling = true
 }
 
 module "hub_firewall" {
@@ -175,7 +171,6 @@ module "hub_firewall" {
 locals {
   hub_acr_name                  = "${local.prefix}hubacr"
   hub_acr_sku                   = "Premium"
-  hub_acr_nic_name              = "${local.prefix}-hub-acr-nic"
   hub_acr_private_endpoint_name = "${local.prefix}-hub-acr-pe"
   hub_acr_dns_name              = "privatelink.azurecr.io"
 

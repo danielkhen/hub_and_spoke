@@ -149,9 +149,8 @@ module "work_aks" {
 }
 
 locals {
-  work_vm_name     = "${local.prefix}-work-vm"
-  work_vm_nic_name = "${local.prefix}-work-vm-nic"
-  work_vm_os_disk  = merge(local.vm_os_disk, { name = "${local.prefix}-work-vm-os-disk" })
+  work_vm_name    = "${local.prefix}-work-vm"
+  work_vm_os_disk = merge(local.vm_os_disk, { name = "${local.prefix}-work-vm-os-disk" })
 
   work_vm_role_assignments = [
     {
