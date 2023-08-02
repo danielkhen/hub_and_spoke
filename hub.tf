@@ -79,7 +79,7 @@ locals {
 
   hub_vnet_subnets_populated = [
     for subnet in local.hub_vnet_subnets : merge(subnet, {
-      address_prefix            = module.ipam.subnet_address_prefixes.hub[subnet.name]
+      address_prefix            = module.ipam.hub.subnet_address_prefixes[subnet.name]
       network_security_group_id = can(subnet.network_security_group) ? module.hub_network_security_groups[subnet.network_security_group].id : ""
       route_table_id            = can(subnet.route_table) ? module.hub_route_tables[subnet.route_table].id : ""
     })
