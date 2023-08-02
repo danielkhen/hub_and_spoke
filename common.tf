@@ -1,5 +1,5 @@
 module "ipam" {
-  source = "./modules/ip_address_management"
+  source = "github.com/danielkhen/ip_address_management_module"
 }
 
 locals {
