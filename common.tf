@@ -37,43 +37,43 @@ data "azurerm_log_analytics_workspace" "activity" {
 }
 
 locals {
-  peering_use_local_gateway        = true
-  peering_local_forwarded_traffic  = false
-  peering_remote_forwarded_traffic = true
+  peering_use_hub_gateway_transit      = true
+  peering_use_spokes_remote_gateway    = true
+  peering_use_spokes_forwarded_traffic = true
 }
 
 module "hub_to_work_peerings" {
-  source = "./modules/virtual_network_peerings"
+  source = "github.com/danielkhen/virtual_network_peerings_module"
 
-  resource_group_name = azurerm_resource_group.hub.name
-  vnet_name           = module.hub_virtual_network.name
-  vnet_id             = module.hub_virtual_network.id
+  first_resource_group_name = azurerm_resource_group.hub.name
+  first_vnet_name           = module.hub_virtual_network.name
+  first_vnet_id             = module.hub_virtual_network.id
 
-  remote_resource_group_name = azurerm_resource_group.work.name
-  remote_vnet_name           = module.work_virtual_network.name
-  remote_vnet_id             = module.work_virtual_network.id
+  second_resource_group_name = azurerm_resource_group.work.name
+  second_vnet_name           = module.work_virtual_network.name
+  second_vnet_id             = module.work_virtual_network.id
 
-  use_local_gateway        = local.peering_use_local_gateway
-  local_forwarded_traffic  = local.peering_local_forwarded_traffic
-  remote_forwarded_traffic = local.peering_remote_forwarded_traffic
+  first_gateway_transit    = local.peering_use_hub_gateway_transit
+  second_remote_gateway    = local.peering_use_spokes_remote_gateway
+  second_forwarded_traffic = local.peering_use_spokes_forwarded_traffic
 
   depends_on = [module.hub_vpn_gateway]
 }
 
 module "hub_to_monitor_peerings" {
-  source = "./modules/virtual_network_peerings"
+  source = "github.com/danielkhen/virtual_network_peerings_module"
 
-  resource_group_name = azurerm_resource_group.hub.name
-  vnet_name           = module.hub_virtual_network.name
-  vnet_id             = module.hub_virtual_network.id
+  first_resource_group_name = azurerm_resource_group.hub.name
+  first_vnet_name           = module.hub_virtual_network.name
+  first_vnet_id             = module.hub_virtual_network.id
 
-  remote_resource_group_name = azurerm_resource_group.monitor.name
-  remote_vnet_name           = module.monitor_virtual_network.name
-  remote_vnet_id             = module.monitor_virtual_network.id
+  second_resource_group_name = azurerm_resource_group.monitor.name
+  second_vnet_name           = module.monitor_virtual_network.name
+  second_vnet_id             = module.monitor_virtual_network.id
 
-  use_local_gateway        = local.peering_use_local_gateway
-  local_forwarded_traffic  = local.peering_local_forwarded_traffic
-  remote_forwarded_traffic = local.peering_remote_forwarded_traffic
+  first_gateway_transit    = local.peering_use_hub_gateway_transit
+  second_remote_gateway    = local.peering_use_spokes_remote_gateway
+  second_forwarded_traffic = local.peering_use_spokes_forwarded_traffic
 
   depends_on = [module.hub_vpn_gateway]
 }
