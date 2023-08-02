@@ -43,32 +43,29 @@ module "work_route_tables" {
 }
 
 locals {
-  work_vnet_name           = "${local.prefix}-work-vnet"
-  work_vnet_address_prefix = "10.1.0.0/16"
+  work_vnet_name = "${local.prefix}-work-vnet"
 
-  work_vnet_subnets_map = {
-    WorkSubnet = {
-      address_prefix         = cidrsubnet(local.work_vnet_address_prefix, local.subnet_newbits, 0)
+  work_vnet_subnets = [
+    {
+      name                   = "WorkSubnet"
       network_security_group = "work-WorkSubnet-nsg"
       route_table            = "work-rt"
-    }
-
-    StorageSubnet = {
-      address_prefix         = cidrsubnet(local.work_vnet_address_prefix, local.subnet_newbits, 1)
+    },
+    {
+      name                   = "StorageSubnet"
       network_security_group = "work-StorageSubnet-nsg"
       route_table            = "work-rt"
-    }
-
-    AKSSubnet = {
-      address_prefix         = cidrsubnet(local.work_vnet_address_prefix, local.subnet_newbits, 2)
+    },
+    {
+      name                   = "AKSSubnet"
       network_security_group = "work-AKSSubnet-nsg"
       route_table            = "work-rt"
     }
-  }
+  ]
 
-  work_vnet_subnets = [
-    for name, subnet in local.work_vnet_subnets_map : merge(subnet, {
-      name                      = name
+  work_vnet_subnets_populated = [
+    for subnet in local.work_vnet_subnets : merge(subnet, {
+      address_prefix            = module.ipam.vnet_address_prefixes.work[subnet.name]
       network_security_group_id = can(subnet.network_security_group) ? module.work_network_security_groups[subnet.network_security_group].id : ""
       route_table_id            = can(subnet.route_table) ? module.work_route_tables[subnet.route_table].id : ""
     })
@@ -81,8 +78,8 @@ module "work_virtual_network" {
   name                = local.work_vnet_name
   location            = local.location
   resource_group_name = azurerm_resource_group.work.name
-  address_space       = [local.work_vnet_address_prefix]
-  subnets             = local.work_vnet_subnets
+  address_space       = [module.ipam.vnet_address_prefixes.work]
+  subnets             = local.work_vnet_subnets_populated
 }
 
 locals {

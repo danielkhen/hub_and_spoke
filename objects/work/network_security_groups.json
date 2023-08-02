@@ -12,7 +12,7 @@
         "direction": "Inbound",
         "priority": 200,
         "protocol": "*",
-        "source_address_prefix": "${subnets.work.WorkSubnet}",
+        "source_address_prefix": "${subnet_address_prefixes.work.WorkSubnet}",
         "source_port_range": "*",
         "destination_address_prefix": "*",
         "destination_port_range": "*"

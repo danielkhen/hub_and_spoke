@@ -57,33 +57,29 @@ module "hub_route_tables" {
 }
 
 locals {
-  hub_vnet_name           = "${local.prefix}-hub-vnet"
-  hub_vnet_address_prefix = "10.0.0.0/16"
+  hub_vnet_name = "${local.prefix}-hub-vnet"
 
-  hub_vnet_subnets_map = {
-    GatewaySubnet = {
-      address_prefix = cidrsubnet(local.hub_vnet_address_prefix, local.subnet_newbits, 0)
-      route_table    = "hub-gateway-rt"
-    }
-
-    AzureFirewallSubnet = {
-      address_prefix = cidrsubnet(local.hub_vnet_address_prefix, local.subnet_newbits, 1)
-    }
-
-    AzureFirewallManagementSubnet = {
-      address_prefix = cidrsubnet(local.hub_vnet_address_prefix, local.subnet_newbits, 2)
-    }
-
-    ACRSubnet = {
-      address_prefix         = cidrsubnet(local.hub_vnet_address_prefix, local.subnet_newbits, 3)
+  hub_vnet_subnets = [
+    {
+      name        = "GatewaySubnet"
+      route_table = "hub-gateway-rt"
+    },
+    {
+      name = "AzureFirewallSubnet"
+    },
+    {
+      name = "AzureFirewallManagementSubnet"
+    },
+    {
+      name                   = "ACRSubnet"
       network_security_group = "hub-ACRSubnet-nsg"
       route_table            = "hub-rt"
     }
-  }
+  ]
 
-  hub_vnet_subnets = [
-    for name, subnet in local.hub_vnet_subnets_map : merge(subnet, {
-      name                      = name
+  hub_vnet_subnets_populated = [
+    for subnet in local.hub_vnet_subnets : merge(subnet, {
+      address_prefix            = module.ipam.vnet_address_prefixes.hub[subnet.name]
       network_security_group_id = can(subnet.network_security_group) ? module.hub_network_security_groups[subnet.network_security_group].id : ""
       route_table_id            = can(subnet.route_table) ? module.hub_route_tables[subnet.route_table].id : ""
     })
@@ -96,8 +92,8 @@ module "hub_virtual_network" {
   name                = local.hub_vnet_name
   location            = local.location
   resource_group_name = azurerm_resource_group.hub.name
-  address_space       = [local.hub_vnet_address_prefix]
-  subnets             = local.hub_vnet_subnets
+  address_space       = [module.ipam.vnet_address_prefixes.hub]
+  subnets             = local.hub_vnet_subnets_populated
 }
 
 locals {
@@ -107,7 +103,6 @@ locals {
   hub_vnet_gateway_ip_name               = "${local.prefix}-hub-vpn-default-ip"
   hub_vnet_gateway_active_active_ip_name = "${local.prefix}-hub-vpn-aa-ip"
   hub_vnet_gateway_active_active         = true
-  hub_vpn_address_prefix                 = "172.0.0.0/16"
   hub_vnet_gateway_sku                   = "VpnGw1"
   hub_vnet_gateway_generation            = "Generation1"
   aad_audience                           = "41b23e61-6c1e-4545-b367-cd054e0ed4b4"
@@ -130,7 +125,7 @@ module "hub_vpn_gateway" {
   active_active         = local.hub_vnet_gateway_active_active
   active_active_ip_name = local.hub_vnet_gateway_active_active_ip_name
 
-  vpn_address_space = [local.hub_vpn_address_prefix]
+  vpn_address_space = [module.ipam.vpn_address_prefix]
   aad_tenant        = var.aad_tenant_id
   aad_audience      = local.aad_audience
 }
@@ -151,7 +146,6 @@ module "hub_firewall_policy" {
   resource_group_name = azurerm_resource_group.hub.name
   dns_proxy_enabled   = local.hub_firewall_policy_dns_proxy
 
-  # TODO remove temp rules
   network_rule_collection_groups     = local.hub_firewall_policy_network_groups
   application_rule_collection_groups = local.hub_firewall_policy_application_groups
   nat_rule_collection_groups         = local.hub_firewall_policy_nat_groups
@@ -185,7 +179,7 @@ module "hub_firewall" {
 }
 
 locals {
-  hub_acr_name = "${local.prefix}hubacr"
+  hub_acr_name                  = "${local.prefix}hubacr"
   hub_acr_sku                   = "Premium"
   hub_acr_nic_name              = "${local.prefix}-hub-acr-nic"
   hub_acr_private_endpoint_name = "${local.prefix}-hub-acr-pe"

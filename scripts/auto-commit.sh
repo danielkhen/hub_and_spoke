@@ -7,7 +7,6 @@ for module in modules/*/;
 do
   cd $module
   pwd
-  git rm --cached tests/terraform.tfstate.backup
   git add -A
   git commit -m "$message"
   git push

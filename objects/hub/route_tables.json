@@ -4,15 +4,15 @@
     "routes": [
       {
         "name": "work-vnet",
-        "address_prefix": "${address_prefixes.work_vnet}",
+        "address_prefix": "${vnet_address_prefixes.work}",
         "next_hop_type": "VirtualAppliance",
-        "next_hop_in_ip_address": "${ip_addresses.firewall}"
+        "next_hop_in_ip_address": "${private_ip_addresses.firewall}"
       },
       {
         "name": "monitor-vnet",
-        "address_prefix": "${address_prefixes.monitor_vnet}",
+        "address_prefix": "${vnet_address_prefixes.monitor}",
         "next_hop_type": "VirtualAppliance",
-        "next_hop_in_ip_address": "${ip_addresses.firewall}"
+        "next_hop_in_ip_address": "${private_ip_addresses.firewall}"
       }
     ]
   },
@@ -21,21 +21,21 @@
     "routes": [
       {
         "name": "work-vnet",
-        "address_prefix": "${address_prefixes.work_vnet}",
+        "address_prefix": "${vnet_address_prefixes.work}",
         "next_hop_type": "VirtualAppliance",
-        "next_hop_in_ip_address": "${ip_addresses.firewall}"
+        "next_hop_in_ip_address": "${private_ip_addresses.firewall}"
       },
       {
         "name": "monitor-vnet",
-        "address_prefix": "${address_prefixes.monitor_vnet}",
+        "address_prefix": "${vnet_address_prefixes.monitor}",
         "next_hop_type": "VirtualAppliance",
-        "next_hop_in_ip_address": "${ip_addresses.firewall}"
+        "next_hop_in_ip_address": "${private_ip_addresses.firewall}"
       },
       {
         "name": "outbound",
         "address_prefix": "0.0.0.0/0",
         "next_hop_type": "VirtualAppliance",
-        "next_hop_in_ip_address": "${ip_addresses.firewall}"
+        "next_hop_in_ip_address": "${private_ip_addresses.firewall}"
       }
     ]
   }

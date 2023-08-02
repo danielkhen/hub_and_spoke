@@ -10,17 +10,17 @@
         "rules": [
           {
             "name": "ssh",
-            "source_addresses": ["${address_prefixes.vpn}"],
+            "source_addresses": ["${vpn_address_prefixes.full}"],
             "protocols": ["TCP"],
             "destination_ports":["22"],
-            "destination_addresses": ["${subnets.work.WorkSubnet}", "${subnets.monitor.MonitorSubnet}"]
+            "destination_addresses": ["${subnet_address_prefixes.work.WorkSubnet}", "${subnet_address_prefixes.monitor.MonitorSubnet}"]
           },
           {
             "name": "grafana-monitor",
-            "source_addresses": ["${address_prefixes.vpn}"],
+            "source_addresses": ["${vpn_address_prefixes.full}"],
             "protocols": ["TCP"],
             "destination_ports":["80"],
-            "destination_addresses": ["${subnets.monitor.MonitorSubnet}"]
+            "destination_addresses": ["${subnet_address_prefixes.monitor.MonitorSubnet}"]
           }
         ]
       }

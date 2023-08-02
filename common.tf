@@ -1,28 +1,22 @@
+module "ipam" {
+  source = "./modules/ip_address_management"
+}
+
 locals {
   prefix                        = "dtf"
   location                      = "westeurope"
-  subnet_newbits                = 8 # The number of bits which to extend the prefix of the vnet to get a subnet
   private_endpoints_enabled     = true
   private_endpoints_dns_enabled = true
 
   network_vars = {
-    ip_addresses = {
-      firewall = cidrhost(local.hub_vnet_subnets_map.AzureFirewallSubnet.address_prefix, 4)
-    }
+    vnet_address_prefixes   = module.ipam.vnet_address_prefixes
+    subnet_address_prefixes = module.ipam.subnet_address_prefixes
+    private_ip_addresses    = module.ipam.private_ip_addresses
 
-    address_prefixes = {
-      hub_vnet     = local.hub_vnet_address_prefix
-      work_vnet    = local.work_vnet_address_prefix
-      monitor_vnet = local.monitor_vnet_address_prefix
-      vpn          = local.hub_vpn_address_prefix
-      vpn_pool_1   = cidrsubnet(local.hub_vpn_address_prefix, 1, 0)
-      vpn_pool_2   = cidrsubnet(local.hub_vpn_address_prefix, 1, 1)
-    }
-
-    subnets = {
-      hub     = { for name, subnet in local.hub_vnet_subnets_map : name => subnet.address_prefix }
-      work    = { for name, subnet in local.work_vnet_subnets_map : name => subnet.address_prefix }
-      monitor = { for name, subnet in local.monitor_vnet_subnets_map : name => subnet.address_prefix }
+    vpn_address_prefixes = {
+      full        = module.ipam.vpn_address_prefix
+      first_half  = cidrsubnet(module.ipam.vpn_address_prefix, 1, 0)
+      second_half = cidrsubnet(module.ipam.vpn_address_prefix, 1, 1)
     }
   }
 

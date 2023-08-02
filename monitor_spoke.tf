@@ -44,20 +44,19 @@ module "monitor_route_tables" {
 
 
 locals {
-  monitor_vnet_name           = "${local.prefix}-monitor-vnet"
-  monitor_vnet_address_prefix = "10.2.0.0/16"
+  monitor_vnet_name = "${local.prefix}-monitor-vnet"
 
-  monitor_vnet_subnets_map = {
-    MonitorSubnet = {
-      address_prefix         = cidrsubnet(local.monitor_vnet_address_prefix, local.subnet_newbits, 0)
+  monitor_vnet_subnets = [
+    {
+      name                   = "MonitorSubnet"
       network_security_group = "monitor-MonitorSubnet-nsg"
       route_table            = "monitor-rt"
     }
-  }
+  ]
 
-  monitor_vnet_subnets = [
-    for name, subnet in local.monitor_vnet_subnets_map : merge(subnet, {
-      name                      = name
+  monitor_vnet_subnets_populated = [
+    for subnet in local.monitor_vnet_subnets : merge(subnet, {
+      address_prefix            = module.ipam.subnet_address_prefixes.monitor[subnet.name]
       network_security_group_id = can(subnet.network_security_group) ? module.monitor_network_security_groups[subnet.network_security_group].id : ""
       route_table_id            = can(subnet.route_table) ? module.monitor_route_tables[subnet.route_table].id : ""
     })
@@ -70,8 +69,8 @@ module "monitor_virtual_network" {
   name                = local.monitor_vnet_name
   location            = local.location
   resource_group_name = azurerm_resource_group.monitor.name
-  address_space       = [local.monitor_vnet_address_prefix]
-  subnets             = local.monitor_vnet_subnets
+  address_space       = [module.ipam.vnet_address_prefixes.monitor]
+  subnets             = local.monitor_vnet_subnets_populated
 }
 
 locals {
