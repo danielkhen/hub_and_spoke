@@ -137,3 +137,4 @@ module "monitor_vm_dns_zone" {
   resource_group_name = azurerm_resource_group.monitor.name
   a_records           = local.monitor_vm_a_records
 }
+#TODO learn about azure dns, dns tunneling

@@ -10,27 +10,26 @@ do
 
   if [[ " ${modules_to_exclude[*]} " == *" $module_name "* ]]; then
     echo "Skipping tests for module: $module_name"
-    continue
-  fi
-
-  error_output=$(terraform -chdir="$module/tests" init -upgrade 2>&1 >/dev/null)
-
-  if [ $? -ne 0 ]; then
-    echo "Error in tests init $module_name:"
-    echo "$error_output"
   else
-    apply_output=$(terraform -chdir="$module/tests" apply -auto-approve 2>&1 >/dev/null)
+    error_output=$(terraform -chdir="$module/tests" init -upgrade 2>&1 >/dev/null)
 
     if [ $? -ne 0 ]; then
-      echo "Error in tests apply $module_name:"
-      echo "$apply_output"
-    fi
+      echo "Error in tests init $module_name:"
+      echo "$error_output"
+    else
+      apply_output=$(terraform -chdir="$module/tests" apply -auto-approve 2>&1 >/dev/null)
 
-    destroy_output=$(terraform -chdir="$module/tests" destroy -auto-approve 2>&1 >/dev/null)
+      if [ $? -ne 0 ]; then
+        echo "Error in tests apply $module_name:"
+        echo "$apply_output"
+      fi
 
-    if [ $? -ne 0 ]; then
-      echo "Error in tests destroy $module_name:"
-      echo "$destroy_output"
+      destroy_output=$(terraform -chdir="$module/tests" destroy -auto-approve 2>&1 >/dev/null)
+
+      if [ $? -ne 0 ]; then
+        echo "Error in tests destroy $module_name:"
+        echo "$destroy_output"
+      fi
     fi
   fi
   ) &

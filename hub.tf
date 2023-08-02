@@ -10,7 +10,7 @@ resource "azurerm_resource_group" "hub" {
     ignore_changes = [tags["CreationDateTime"], tags["Environment"]]
   }
 }
-
+#TODO dns zone testing for ido
 locals {
   hub_log_analytics_name = "${local.prefix}-hub-log-analytics-workspace"
   hub_log_analytics_sku  = "PerGB2018"

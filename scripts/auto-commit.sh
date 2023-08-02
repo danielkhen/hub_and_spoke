@@ -2,7 +2,7 @@
 message="Auto-Commit: $1"
 
 cd ..
-
+terraform fmt --recursive
 for module in modules/*/;
 do
   cd $module
