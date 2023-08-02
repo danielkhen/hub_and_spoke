@@ -119,11 +119,8 @@ module "hub_vpn_gateway" {
   type                = local.hub_vnet_gateway_type
   vpn_type            = local.hub_vpn_type
   log_analytics_id    = module.hub_log_analytics.id
-
-  ip_name               = local.hub_vnet_gateway_ip_name
-  subnet_id             = module.hub_virtual_network.subnet_ids["GatewaySubnet"]
-  active_active         = local.hub_vnet_gateway_active_active
-  active_active_ip_name = local.hub_vnet_gateway_active_active_ip_name
+  subnet_id           = module.hub_virtual_network.subnet_ids["GatewaySubnet"]
+  active_active       = local.hub_vnet_gateway_active_active
 
   vpn_address_space = [module.ipam.hub.vpn_address_prefix]
   aad_tenant        = var.aad_tenant_id
@@ -162,18 +159,15 @@ locals {
 module "hub_firewall" {
   source = "github.com/danielkhen/firewall_module"
 
-  name                = local.hub_firewall_name
-  location            = local.location
-  resource_group_name = azurerm_resource_group.hub.name
-  sku_tier            = local.hub_firewall_sku_tier
-  subnet_id           = module.hub_virtual_network.subnet_ids["AzureFirewallSubnet"]
-  policy_id           = module.hub_firewall_policy.id
-  public_ip_name      = local.hub_firewall_ip_name
-  log_analytics_id    = module.hub_log_analytics.id
-
-  forced_tunneling          = local.hub_firewall_forced_tunneling
-  management_public_ip_name = local.hub_firewall_management_ip_name
-  management_subnet_id      = module.hub_virtual_network.subnet_ids["AzureFirewallManagementSubnet"]
+  name                 = local.hub_firewall_name
+  location             = local.location
+  resource_group_name  = azurerm_resource_group.hub.name
+  sku_tier             = local.hub_firewall_sku_tier
+  subnet_id            = module.hub_virtual_network.subnet_ids["AzureFirewallSubnet"]
+  policy_id            = module.hub_firewall_policy.id
+  log_analytics_id     = module.hub_log_analytics.id
+  forced_tunneling     = local.hub_firewall_forced_tunneling
+  management_subnet_id = module.hub_virtual_network.subnet_ids["AzureFirewallManagementSubnet"]
 
   depends_on = [module.hub_virtual_network] # Sometimes the firewall blocks creation of other subnets
 }
@@ -210,7 +204,6 @@ module "hub_acr" {
 
   private_endpoint_name      = local.hub_acr_private_endpoint_name
   private_endpoint_subnet_id = module.hub_virtual_network.subnet_ids["ACRSubnet"]
-  nic_name                   = local.hub_acr_nic_name
   dns_name                   = local.hub_acr_dns_name
   vnet_links                 = local.hub_acr_vnet_links
 }

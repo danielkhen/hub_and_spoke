@@ -174,7 +174,6 @@ module "work_vm" {
   location               = local.location
   resource_group_name    = azurerm_resource_group.work.name
   size                   = local.vm_size
-  nic_name               = local.work_vm_nic_name
   subnet_id              = module.work_virtual_network.subnet_ids["WorkSubnet"]
   os_type                = local.vm_os_type
   os_disk                = local.work_vm_os_disk

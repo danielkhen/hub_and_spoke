@@ -98,7 +98,6 @@ module "monitor_vm" {
   location               = local.location
   resource_group_name    = azurerm_resource_group.monitor.name
   size                   = local.vm_size
-  nic_name               = local.monitor_vm_nic_name
   subnet_id              = module.monitor_virtual_network.subnet_ids["MonitorSubnet"]
   os_type                = local.vm_os_type
   os_disk                = local.monitor_vm_os_disk
