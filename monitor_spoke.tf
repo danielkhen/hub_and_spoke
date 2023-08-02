@@ -12,7 +12,7 @@ resource "azurerm_resource_group" "monitor" {
 }
 
 locals {
-  monitor_network_security_groups     = jsondecode(templatefile("./objects/monitor/network_security_groups.json", local.network_vars))
+  monitor_network_security_groups     = jsondecode(templatefile("./objects/monitor/network_security_groups.json", module.ipam))
   monitor_network_security_groups_map = { for nsg in local.monitor_network_security_groups : nsg.name => nsg }
 }
 
@@ -28,7 +28,7 @@ module "monitor_network_security_groups" {
 }
 
 locals {
-  monitor_route_tables     = jsondecode(templatefile("./objects/monitor/route_tables.json", local.network_vars))
+  monitor_route_tables     = jsondecode(templatefile("./objects/monitor/route_tables.json", module.ipam))
   monitor_route_tables_map = { for rt in local.monitor_route_tables : rt.name => rt }
 }
 
@@ -56,7 +56,7 @@ locals {
 
   monitor_vnet_subnets_populated = [
     for subnet in local.monitor_vnet_subnets : merge(subnet, {
-      address_prefix            = module.ipam.subnet_address_prefixes.monitor[subnet.name]
+      address_prefix            = module.ipam.monitor.subnet_address_prefixes[subnet.name]
       network_security_group_id = can(subnet.network_security_group) ? module.monitor_network_security_groups[subnet.network_security_group].id : ""
       route_table_id            = can(subnet.route_table) ? module.monitor_route_tables[subnet.route_table].id : ""
     })
@@ -69,7 +69,7 @@ module "monitor_virtual_network" {
   name                = local.monitor_vnet_name
   location            = local.location
   resource_group_name = azurerm_resource_group.monitor.name
-  address_space       = [module.ipam.vnet_address_prefixes.monitor]
+  address_space       = [module.ipam.monitor.vnet_address_prefix]
   subnets             = local.monitor_vnet_subnets_populated
 }
 

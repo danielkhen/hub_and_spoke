@@ -12,7 +12,7 @@ resource "azurerm_resource_group" "work" {
 }
 
 locals {
-  work_network_security_groups     = jsondecode(templatefile("./objects/work/network_security_groups.json", local.network_vars))
+  work_network_security_groups     = jsondecode(templatefile("./objects/work/network_security_groups.json", module.ipam))
   work_network_security_groups_map = { for nsg in local.work_network_security_groups : nsg.name => nsg }
 }
 
@@ -28,7 +28,7 @@ module "work_network_security_groups" {
 }
 
 locals {
-  work_route_tables     = jsondecode(templatefile("./objects/work/route_tables.json", local.network_vars))
+  work_route_tables     = jsondecode(templatefile("./objects/work/route_tables.json", module.ipam))
   work_route_tables_map = { for rt in local.work_route_tables : rt.name => rt }
 }
 
@@ -65,7 +65,7 @@ locals {
 
   work_vnet_subnets_populated = [
     for subnet in local.work_vnet_subnets : merge(subnet, {
-      address_prefix            = module.ipam.subnet_address_prefixes.work[subnet.name]
+      address_prefix            = module.ipam.work.subnet_address_prefixes[subnet.name]
       network_security_group_id = can(subnet.network_security_group) ? module.work_network_security_groups[subnet.network_security_group].id : ""
       route_table_id            = can(subnet.route_table) ? module.work_route_tables[subnet.route_table].id : ""
     })
@@ -78,7 +78,7 @@ module "work_virtual_network" {
   name                = local.work_vnet_name
   location            = local.location
   resource_group_name = azurerm_resource_group.work.name
-  address_space       = [module.ipam.vnet_address_prefixes.work]
+  address_space       = [module.ipam.work.vnet_address_prefix]
   subnets             = local.work_vnet_subnets_populated
 }
 

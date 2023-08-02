@@ -26,7 +26,7 @@ module "hub_log_analytics" {
 }
 
 locals {
-  hub_network_security_groups     = jsondecode(templatefile("./objects/hub/network_security_groups.json", local.network_vars))
+  hub_network_security_groups     = jsondecode(templatefile("./objects/hub/network_security_groups.json", module.ipam))
   hub_network_security_groups_map = { for nsg in local.hub_network_security_groups : nsg.name => nsg }
 }
 
@@ -42,7 +42,7 @@ module "hub_network_security_groups" {
 }
 
 locals {
-  hub_route_tables     = jsondecode(templatefile("./objects/hub/route_tables.json", local.network_vars))
+  hub_route_tables     = jsondecode(templatefile("./objects/hub/route_tables.json", module.ipam))
   hub_route_tables_map = { for rt in local.hub_route_tables : rt.name => rt }
 }
 
@@ -92,7 +92,7 @@ module "hub_virtual_network" {
   name                = local.hub_vnet_name
   location            = local.location
   resource_group_name = azurerm_resource_group.hub.name
-  address_space       = [module.ipam.vnet_address_prefixes.hub]
+  address_space       = [module.ipam.hub.vnet_address_prefix]
   subnets             = local.hub_vnet_subnets_populated
 }
 
@@ -125,16 +125,16 @@ module "hub_vpn_gateway" {
   active_active         = local.hub_vnet_gateway_active_active
   active_active_ip_name = local.hub_vnet_gateway_active_active_ip_name
 
-  vpn_address_space = [module.ipam.vpn_address_prefix]
+  vpn_address_space = [module.ipam.hub.vpn_address_prefix]
   aad_tenant        = var.aad_tenant_id
   aad_audience      = local.aad_audience
 }
 
 locals {
   hub_firewall_policy_name               = "${local.prefix}-hub-fw-policy"
-  hub_firewall_policy_network_groups     = jsondecode(templatefile("./objects/hub/network_rule_collection_groups.json", local.network_vars))
-  hub_firewall_policy_application_groups = jsondecode(templatefile("./objects/hub/application_rule_collection_groups.json", local.network_vars))
-  hub_firewall_policy_nat_groups         = jsondecode(templatefile("./objects/hub/nat_rule_collection_groups.json", local.network_vars))
+  hub_firewall_policy_network_groups     = jsondecode(templatefile("./objects/hub/network_rule_collection_groups.json", module.ipam))
+  hub_firewall_policy_application_groups = jsondecode(templatefile("./objects/hub/application_rule_collection_groups.json", module.ipam))
+  hub_firewall_policy_nat_groups         = jsondecode(templatefile("./objects/hub/nat_rule_collection_groups.json", module.ipam))
   hub_firewall_policy_dns_proxy          = true
 }
 

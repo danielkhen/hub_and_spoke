@@ -10,7 +10,7 @@
         "rules": [
           {
             "name": "azure-ubuntu-archive",
-            "source_addresses": ["${subnet_address_prefixes.work.WorkSubnet}", "${subnet_address_prefixes.monitor.MonitorSubnet}"],
+            "source_addresses": ["${work.subnet_address_prefixes.WorkSubnet}", "${monitor.subnet_address_prefixes.MonitorSubnet}"],
             "destination_fqdns": ["azure.archive.ubuntu.com"],
             "protocols": [
               {
@@ -21,7 +21,7 @@
           },
           {
             "name": "google-apis",
-            "source_addresses": ["${subnet_address_prefixes.work.WorkSubnet}"],
+            "source_addresses": ["${work.subnet_address_prefixes.WorkSubnet}"],
             "destination_fqdns": ["storage.googleapis.com"],
             "protocols": [
               {
@@ -32,7 +32,7 @@
           },
           {
             "name": "docker",
-            "source_addresses": ["${subnet_address_prefixes.work.WorkSubnet}", "${subnet_address_prefixes.monitor.MonitorSubnet}"],
+            "source_addresses": ["${work.subnet_address_prefixes.WorkSubnet}", "${monitor.subnet_address_prefixes.MonitorSubnet}"],
             "destination_fqdns": ["auth.docker.io", "registry-1.docker.io", "index.docker.io", "dseasb33srnrn.cloudfront.net", "production.cloudflare.docker.com"],
             "protocols": [
               {
@@ -50,7 +50,7 @@
         "rules": [
           {
             "name": "active-directory",
-            "source_addresses": ["${subnet_address_prefixes.work.WorkSubnet}"],
+            "source_addresses": ["${work.subnet_address_prefixes.WorkSubnet}"],
             "destination_fqdns": ["login.microsoftonline.com"],
             "protocols": [
               {
@@ -61,7 +61,7 @@
           },
           {
             "name": "resource-manager-both-vms",
-            "source_addresses": ["${subnet_address_prefixes.work.WorkSubnet}", "${subnet_address_prefixes.monitor.MonitorSubnet}"],
+            "source_addresses": ["${work.subnet_address_prefixes.WorkSubnet}", "${monitor.subnet_address_prefixes.MonitorSubnet}"],
             "destination_fqdns": ["management.azure.com"],
             "protocols": [
               {
@@ -79,7 +79,7 @@
         "rules": [
           {
             "name": "active-directory",
-            "source_addresses": ["${subnet_address_prefixes.monitor.MonitorSubnet}"],
+            "source_addresses": ["${monitor.subnet_address_prefixes.MonitorSubnet}"],
             "destination_fqdns": ["api.loganalytics.io"],
             "protocols": [
               {
@@ -97,7 +97,7 @@
         "rules": [
           {
             "name": "acr-access",
-            "source_addresses": ["${subnet_address_prefixes.work.WorkSubnet}", "${subnet_address_prefixes.work.AKSSubnet}"],
+            "source_addresses": ["${work.subnet_address_prefixes.WorkSubnet}", "${work.subnet_address_prefixes.AKSSubnet}"],
             "destination_fqdns": ["dtfhubacr.azurecr.io", "dtfhubacr.westeurope.data.azurecr.io"],
             "destination_fqdn_tags": [],
             "protocols": [
@@ -116,7 +116,7 @@
         "rules": [
           {
             "name": "aks-fqdn-tags",
-            "source_addresses": ["${subnet_address_prefixes.work.AKSSubnet}"],
+            "source_addresses": ["${work.subnet_address_prefixes.AKSSubnet}"],
             "destination_fqdn_tags": ["AzureKubernetesService"],
             "protocols": [
               {
@@ -134,7 +134,7 @@
         "rules": [
           {
             "name": "monitor.net",
-            "source_addresses": ["${vpn_address_prefixes.full}"],
+            "source_addresses": ["${hub.vpn_address_prefix}"],
             "destination_fqdns": ["grafana.monitor.net"],
             "protocols": [
               {
