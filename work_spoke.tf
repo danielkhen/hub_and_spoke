@@ -104,13 +104,12 @@ locals {
 module "work_storage_account" {
   source = "github.com/danielkhen/storage_account_module"
 
-  name                     = local.work_storage_name
-  location                 = local.location
-  resource_group_name      = azurerm_resource_group.work.name
-  account_tier             = local.work_storage_account_tier
-  account_replication_type = local.work_storage_account_replication_type
-  log_analytics_id         = module.hub_log_analytics.id
-  #TODO variables not in environment
+  name                        = local.work_storage_name
+  location                    = local.location
+  resource_group_name         = azurerm_resource_group.work.name
+  account_tier                = local.work_storage_account_tier
+  account_replication_type    = local.work_storage_account_replication_type
+  log_analytics_id            = module.hub_log_analytics.id
   private_endpoint_enabled    = local.work_storage_private_endpoints_enabled
   private_dns_enabled         = local.work_storage_private_endpoints_dns_enabled
   private_endpoints_subnet_id = module.work_virtual_network.subnet_ids["StorageSubnet"]
