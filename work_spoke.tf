@@ -153,24 +153,7 @@ module "work_aks" {
 }
 
 locals {
-  #TODO change to user assigned identity
-  work_vm_name           = "${local.prefix}-work-vm"
-  work_vm_size           = "Standard_B2s"
-  work_vm_os_type        = "Linux"
-  work_vm_admin_username = "daniel"
-  work_vm_identity_type  = "SystemAssigned"
-
-  work_vm_os_disk = {
-    caching              = "ReadWrite"
-    storage_account_type = "Standard_LRS"
-  }
-
-  work_vm_source_image_reference = {
-    publisher = "Canonical"
-    offer     = "0001-com-ubuntu-server-focal"
-    sku       = "20_04-lts"
-    version   = "latest"
-  }
+  work_vm_identity_name = "work-vm-identity"
 
   work_vm_role_assignments = [
     {
@@ -184,6 +167,35 @@ locals {
       role  = "AcrPush"
     }
   ]
+}
+
+module "work_vm_user_assigned_identity" {
+  source = "github.com/danielkhen/user_assigned_identity_module"
+
+  name                = local.work_vm_identity_name
+  location            = local.location
+  resource_group_name = azurerm_resource_group.work.name
+  role_assignments    = local.work_vm_role_assignments
+}
+
+locals {
+  work_vm_name           = "${local.prefix}-work-vm"
+  work_vm_size           = "Standard_B2s"
+  work_vm_os_type        = "Linux"
+  work_vm_admin_username = "daniel"
+  work_vm_identity_type  = "UserAssigned"
+
+  work_vm_os_disk = {
+    caching              = "ReadWrite"
+    storage_account_type = "Standard_LRS"
+  }
+
+  work_vm_source_image_reference = {
+    publisher = "Canonical"
+    offer     = "0001-com-ubuntu-server-focal"
+    sku       = "20_04-lts"
+    version   = "latest"
+  }
 }
 
 module "work_vm" {
@@ -202,6 +214,6 @@ module "work_vm" {
   admin_username = local.work_vm_admin_username
   admin_password = var.vm_admin_password
 
-  identity_type    = local.work_vm_identity_type
-  role_assignments = local.work_vm_role_assignments
+  identity_type            = local.work_vm_identity_type
+  user_assigned_identities = [module.work_vm_user_assigned_identity.id]
 }

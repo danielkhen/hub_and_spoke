@@ -75,24 +75,7 @@ module "monitor_virtual_network" {
 }
 
 locals {
-  monitor_vm_name           = "${local.prefix}-monitor-vm"
-  monitor_vm_size           = "Standard_B2s"
-  monitor_vm_os_type        = "Linux"
-  monitor_vm_admin_username = "daniel"
-  monitor_vm_identity_type  = "SystemAssigned"
-
-  monitor_vm_os_disk = {
-    name                 = "${local.prefix}-work-vm-os-disk"
-    caching              = "ReadWrite"
-    storage_account_type = "Standard_LRS"
-  }
-
-  monitor_vm_source_image_reference = {
-    publisher = "Canonical"
-    offer     = "0001-com-ubuntu-server-focal"
-    sku       = "20_04-lts"
-    version   = "latest"
-  }
+  monitor_vm_identity_name = "monitor-vm-identity"
 
   monitor_vm_role_assignments = [
     {
@@ -106,6 +89,36 @@ locals {
       role  = "Reader"
     }
   ]
+}
+
+module "monitor_vm_user_assigned_identity" {
+  source = "github.com/danielkhen/user_assigned_identity_module"
+
+  name                = local.monitor_vm_identity_name
+  location            = local.location
+  resource_group_name = azurerm_resource_group.work.name
+  role_assignments    = local.monitor_vm_role_assignments
+}
+
+locals {
+  monitor_vm_name           = "${local.prefix}-monitor-vm"
+  monitor_vm_size           = "Standard_B2s"
+  monitor_vm_os_type        = "Linux"
+  monitor_vm_admin_username = "daniel"
+  monitor_vm_identity_type  = "UserAssigned"
+
+  monitor_vm_os_disk = {
+    name                 = "${local.prefix}-work-vm-os-disk"
+    caching              = "ReadWrite"
+    storage_account_type = "Standard_LRS"
+  }
+
+  monitor_vm_source_image_reference = {
+    publisher = "Canonical"
+    offer     = "0001-com-ubuntu-server-focal"
+    sku       = "20_04-lts"
+    version   = "latest"
+  }
 }
 
 module "monitor_vm" {
@@ -124,8 +137,8 @@ module "monitor_vm" {
   admin_username = local.monitor_vm_admin_username
   admin_password = var.vm_admin_password
 
-  identity_type    = local.monitor_vm_identity_type
-  role_assignments = local.monitor_vm_role_assignments
+  identity_type            = local.monitor_vm_identity_type
+  user_assigned_identities = [module.monitor_vm_user_assigned_identity.id]
 }
 
 locals {
