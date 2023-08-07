@@ -71,6 +71,7 @@ module "monitor_virtual_network" {
   resource_group_name = azurerm_resource_group.monitor.name
   address_space       = [module.ipam.monitor.vnet_address_prefix]
   subnets             = local.monitor_vnet_subnets_populated
+  dns_servers         = [module.ipam.hub.private_ip_addresses.firewall]
 }
 
 locals {
@@ -119,13 +120,6 @@ locals {
       records = module.monitor_vm.private_ips
     }
   ]
-
-  monitor_vm_vnet_links = [
-    {
-      vnet_id = module.hub_virtual_network.id
-      name    = "hub-link"
-    }
-  ]
 }
 
 module "monitor_vm_dns_zone" {
@@ -134,5 +128,5 @@ module "monitor_vm_dns_zone" {
   name                = local.monitor_vm_dns_name
   resource_group_name = azurerm_resource_group.monitor.name
   a_records           = local.monitor_vm_a_records
+  vnet_links          = local.hub_vnet_link
 }
-#TODO learn about azure dns, dns tunneling

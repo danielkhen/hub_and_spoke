@@ -10,19 +10,22 @@ resource "azurerm_resource_group" "hub" {
     ignore_changes = [tags["CreationDateTime"], tags["Environment"]]
   }
 }
-#TODO dns zone testing for ido
 locals {
-  hub_log_analytics_name = "${local.prefix}-hub-log-analytics-workspace"
-  hub_log_analytics_sku  = "PerGB2018"
+  hub_log_analytics_name                       = "${local.prefix}-hub-log-analytics-workspace"
+  hub_log_analytics_sku                        = "PerGB2018"
+  hub_log_analytics_internet_query_enabled     = true
+  hub_log_analytics_internet_ingestion_enabled = true
 }
 
 module "hub_log_analytics" {
   source = "github.com/danielkhen/log_analytics_workspace_module"
 
-  name                = local.hub_log_analytics_name
-  location            = local.location
-  resource_group_name = azurerm_resource_group.hub.name
-  sku                 = local.hub_log_analytics_sku
+  name                       = local.hub_log_analytics_name
+  location                   = local.location
+  resource_group_name        = azurerm_resource_group.hub.name
+  sku                        = local.hub_log_analytics_sku
+  internet_query_enabled     = local.hub_log_analytics_internet_query_enabled
+  internet_ingestion_enabled = local.hub_log_analytics_internet_ingestion_enabled
 }
 
 locals {
@@ -94,6 +97,7 @@ module "hub_virtual_network" {
   resource_group_name = azurerm_resource_group.hub.name
   address_space       = [module.ipam.hub.vnet_address_prefix]
   subnets             = local.hub_vnet_subnets_populated
+  dns_servers         = [module.ipam.hub.private_ip_addresses.firewall]
 }
 
 locals {
@@ -173,17 +177,6 @@ locals {
   hub_acr_sku                   = "Premium"
   hub_acr_private_endpoint_name = "${local.prefix}-hub-acr-pe"
   hub_acr_dns_name              = "privatelink.azurecr.io"
-
-  hub_acr_vnet_links = [
-    {
-      vnet_id = module.work_virtual_network.id
-      name    = "work-link"
-    },
-    {
-      vnet_id = module.hub_virtual_network.id
-      name    = "hub-link"
-    }
-  ]
 }
 
 module "hub_acr" {
@@ -200,5 +193,5 @@ module "hub_acr" {
   private_endpoint_name      = local.hub_acr_private_endpoint_name
   private_endpoint_subnet_id = module.hub_virtual_network.subnet_ids["ACRSubnet"]
   dns_name                   = local.hub_acr_dns_name
-  vnet_links                 = local.hub_acr_vnet_links
+  vnet_links                 = local.hub_vnet_link
 }

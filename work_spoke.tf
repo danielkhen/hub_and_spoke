@@ -80,6 +80,7 @@ module "work_virtual_network" {
   resource_group_name = azurerm_resource_group.work.name
   address_space       = [module.ipam.work.vnet_address_prefix]
   subnets             = local.work_vnet_subnets_populated
+  dns_servers         = [module.ipam.hub.private_ip_addresses.firewall]
 }
 
 locals {
@@ -89,13 +90,6 @@ locals {
   work_storage_private_endpoints = jsondecode(templatefile("./objects/work/storage_private_endpoints.json", {
     storage_account_name = local.work_storage_name
   }))
-
-  work_storage_vnet_links = [
-    {
-      vnet_id = module.work_virtual_network.id
-      name    = "work-link"
-    }
-  ]
 }
 
 module "work_storage_account" {
@@ -111,7 +105,7 @@ module "work_storage_account" {
   private_endpoint_enabled    = local.private_endpoints_enabled
   private_dns_enabled         = local.private_endpoints_dns_enabled
   private_endpoints_subnet_id = module.work_virtual_network.subnet_ids["StorageSubnet"]
-  vnet_links                  = local.work_storage_vnet_links
+  vnet_links                  = local.hub_vnet_link
   private_endpoints           = local.work_storage_private_endpoints
 }
 

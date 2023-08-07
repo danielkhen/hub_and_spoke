@@ -1,12 +1,15 @@
-module "ipam" {
-  source = "github.com/danielkhen/ip_address_management_module"
-}
-
 locals {
   prefix                        = "dtf"
   location                      = "westeurope"
   private_endpoints_enabled     = true
   private_endpoints_dns_enabled = true
+
+  hub_vnet_link = [
+    {
+      vnet_id = module.hub_virtual_network.id
+      name    = "hub-link"
+    }
+  ]
 
   vm_size           = "Standard_B2s"
   vm_os_type        = "Linux"
@@ -24,6 +27,10 @@ locals {
     sku       = "20_04-lts"
     version   = "latest"
   }
+}
+
+module "ipam" {
+  source = "github.com/danielkhen/ip_address_management_module"
 }
 
 locals {
