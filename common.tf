@@ -1,32 +1,6 @@
 locals {
-  prefix                        = "dtf"
-  location                      = "westeurope"
-  private_endpoints_enabled     = true
-  private_endpoints_dns_enabled = true
-
-  hub_vnet_link = [
-    {
-      vnet_id = module.hub_virtual_network.id
-      name    = "hub-link"
-    }
-  ]
-
-  vm_size           = "Standard_B2s"
-  vm_os_type        = "Linux"
-  vm_admin_username = "daniel"
-  vm_identity_type  = "SystemAssigned"
-
-  vm_os_disk = {
-    caching              = "ReadWrite"
-    storage_account_type = "Standard_LRS"
-  }
-
-  vm_source_image_reference = {
-    publisher = "Canonical"
-    offer     = "0001-com-ubuntu-server-focal"
-    sku       = "20_04-lts"
-    version   = "latest"
-  }
+  prefix   = "dtf"
+  location = "westeurope"
 }
 
 module "ipam" {

@@ -35,8 +35,8 @@ No outputs.
 | <a name="module_hub_log_analytics"></a> [hub\_log\_analytics](#module\_hub\_log\_analytics) | github.com/danielkhen/log_analytics_workspace_module | n/a |
 | <a name="module_hub_network_security_groups"></a> [hub\_network\_security\_groups](#module\_hub\_network\_security\_groups) | github.com/danielkhen/network_security_group_module | n/a |
 | <a name="module_hub_route_tables"></a> [hub\_route\_tables](#module\_hub\_route\_tables) | github.com/danielkhen/route_table_module | n/a |
-| <a name="module_hub_to_monitor_peerings"></a> [hub\_to\_monitor\_peerings](#module\_hub\_to\_monitor\_peerings) | ./modules/virtual_network_peerings | n/a |
-| <a name="module_hub_to_work_peerings"></a> [hub\_to\_work\_peerings](#module\_hub\_to\_work\_peerings) | ./modules/virtual_network_peerings | n/a |
+| <a name="module_hub_to_monitor_peerings"></a> [hub\_to\_monitor\_peerings](#module\_hub\_to\_monitor\_peerings) | github.com/danielkhen/virtual_network_peerings_module | n/a |
+| <a name="module_hub_to_work_peerings"></a> [hub\_to\_work\_peerings](#module\_hub\_to\_work\_peerings) | github.com/danielkhen/virtual_network_peerings_module | n/a |
 | <a name="module_hub_virtual_network"></a> [hub\_virtual\_network](#module\_hub\_virtual\_network) | github.com/danielkhen/virtual_network_module | n/a |
 | <a name="module_hub_vpn_gateway"></a> [hub\_vpn\_gateway](#module\_hub\_vpn\_gateway) | github.com/danielkhen/virtual_network_gateway_module | n/a |
 | <a name="module_ipam"></a> [ipam](#module\_ipam) | github.com/danielkhen/ip_address_management_module | n/a |

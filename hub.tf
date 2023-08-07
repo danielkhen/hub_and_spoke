@@ -169,14 +169,22 @@ module "hub_firewall" {
   forced_tunneling     = local.hub_firewall_forced_tunneling
   management_subnet_id = module.hub_virtual_network.subnet_ids["AzureFirewallManagementSubnet"]
 
-  depends_on = [module.hub_virtual_network] # Sometimes the firewall blocks creation of other subnets
+  depends_on = [module.hub_virtual_network]
 }
 
 locals {
-  hub_acr_name                  = "${local.prefix}hubacr"
-  hub_acr_sku                   = "Premium"
-  hub_acr_private_endpoint_name = "${local.prefix}-hub-acr-pe"
-  hub_acr_dns_name              = "privatelink.azurecr.io"
+  hub_acr_name                          = "${local.prefix}hubacr"
+  hub_acr_sku                           = "Premium"
+  hub_acr_dns_name                      = "privatelink.azurecr.io"
+  hub_acr_private_endpoints_enabled     = true
+  hub_acr_private_endpoints_dns_enabled = true
+
+  hub_acr_vnet_links = [
+    {
+      vnet_id = module.hub_virtual_network.id
+      name    = "hub-link"
+    }
+  ]
 }
 
 module "hub_acr" {
@@ -187,11 +195,10 @@ module "hub_acr" {
   resource_group_name      = azurerm_resource_group.hub.name
   sku                      = local.hub_acr_sku
   log_analytics_id         = module.hub_log_analytics.id
-  private_endpoint_enabled = local.private_endpoints_enabled
-  private_dns_enabled      = local.private_endpoints_dns_enabled
+  private_endpoint_enabled = local.hub_acr_private_endpoints_enabled
+  private_dns_enabled      = local.hub_acr_private_endpoints_dns_enabled
 
-  private_endpoint_name      = local.hub_acr_private_endpoint_name
   private_endpoint_subnet_id = module.hub_virtual_network.subnet_ids["ACRSubnet"]
   dns_name                   = local.hub_acr_dns_name
-  vnet_links                 = local.hub_vnet_link
+  vnet_links                 = local.hub_acr_vnet_links
 }

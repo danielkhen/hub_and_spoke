@@ -75,8 +75,25 @@ module "monitor_virtual_network" {
 }
 
 locals {
-  monitor_vm_name    = "${local.prefix}-monitor-vm"
-  monitor_vm_os_disk = merge(local.vm_os_disk, { name = "${local.prefix}-monitor-vm-os-disk" })
+  monitor_vm_name           = "${local.prefix}-monitor-vm"
+  monitor_vm_size           = "Standard_B2s"
+  monitor_vm_os_type        = "Linux"
+  monitor_vm_admin_username = "daniel"
+  monitor_vm_identity_type  = "SystemAssigned"
+
+  monitor_vm_os_disk = {
+    name                 = "${local.prefix}-work-vm-os-disk"
+    caching              = "ReadWrite"
+    storage_account_type = "Standard_LRS"
+  }
+
+  monitor_vm_source_image_reference = {
+    publisher = "Canonical"
+    offer     = "0001-com-ubuntu-server-focal"
+    sku       = "20_04-lts"
+    version   = "latest"
+  }
+
   monitor_vm_role_assignments = [
     {
       name  = "hub-logs-role"
@@ -97,27 +114,35 @@ module "monitor_vm" {
   name                   = local.monitor_vm_name
   location               = local.location
   resource_group_name    = azurerm_resource_group.monitor.name
-  size                   = local.vm_size
+  size                   = local.monitor_vm_size
   subnet_id              = module.monitor_virtual_network.subnet_ids["MonitorSubnet"]
-  os_type                = local.vm_os_type
+  os_type                = local.monitor_vm_os_type
   os_disk                = local.monitor_vm_os_disk
-  source_image_reference = local.vm_source_image_reference
+  source_image_reference = local.monitor_vm_source_image_reference
   log_analytics_id       = module.hub_log_analytics.id
 
-  admin_username = local.vm_admin_username
+  admin_username = local.monitor_vm_admin_username
   admin_password = var.vm_admin_password
 
-  identity_type    = local.vm_identity_type
+  identity_type    = local.monitor_vm_identity_type
   role_assignments = local.monitor_vm_role_assignments
 }
 
 locals {
   monitor_vm_dns_name = "monitor.net"
+
   monitor_vm_a_records = [
     {
       name    = "grafana"
       ttl     = 300
       records = module.monitor_vm.private_ips
+    }
+  ]
+
+  monitor_vm_vnet_links = [
+    {
+      vnet_id = module.hub_virtual_network.id
+      name    = "hub-link"
     }
   ]
 }
@@ -128,5 +153,5 @@ module "monitor_vm_dns_zone" {
   name                = local.monitor_vm_dns_name
   resource_group_name = azurerm_resource_group.monitor.name
   a_records           = local.monitor_vm_a_records
-  vnet_links          = local.hub_vnet_link
+  vnet_links          = local.monitor_vm_vnet_links
 }

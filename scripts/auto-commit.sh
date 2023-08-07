@@ -1,8 +1,10 @@
 #!/bin/bash
 message="Auto-Commit: $1"
 
+bash update-terraform-docs.sh
 cd ..
 terraform fmt --recursive
+
 for module in modules/*/;
 do
   cd $module

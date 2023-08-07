@@ -84,12 +84,21 @@ module "work_virtual_network" {
 }
 
 locals {
-  work_storage_name                    = "${local.prefix}workstorage"
-  hub_storage_account_tier             = "Standard"
-  hub_storage_account_replication_type = "LRS"
+  work_storage_name                     = "${local.prefix}workstorage"
+  work_storage_account_tier             = "Standard"
+  work_storage_account_replication_type = "LRS"
   work_storage_private_endpoints = jsondecode(templatefile("./objects/work/storage_private_endpoints.json", {
     storage_account_name = local.work_storage_name
   }))
+  work_storage_private_endpoints_enabled     = true
+  work_storage_private_endpoints_dns_enabled = true
+
+  work_storage_vnet_links = [
+    {
+      vnet_id = module.hub_virtual_network.id
+      name    = "hub-link"
+    }
+  ]
 }
 
 module "work_storage_account" {
@@ -98,14 +107,14 @@ module "work_storage_account" {
   name                     = local.work_storage_name
   location                 = local.location
   resource_group_name      = azurerm_resource_group.work.name
-  account_tier             = local.hub_storage_account_tier
-  account_replication_type = local.hub_storage_account_replication_type
+  account_tier             = local.work_storage_account_tier
+  account_replication_type = local.work_storage_account_replication_type
   log_analytics_id         = module.hub_log_analytics.id
-
-  private_endpoint_enabled    = local.private_endpoints_enabled
-  private_dns_enabled         = local.private_endpoints_dns_enabled
+  #TODO variables not in environment
+  private_endpoint_enabled    = local.work_storage_private_endpoints_enabled
+  private_dns_enabled         = local.work_storage_private_endpoints_dns_enabled
   private_endpoints_subnet_id = module.work_virtual_network.subnet_ids["StorageSubnet"]
-  vnet_links                  = local.hub_vnet_link
+  vnet_links                  = local.work_storage_vnet_links
   private_endpoints           = local.work_storage_private_endpoints
 }
 
@@ -138,13 +147,31 @@ module "work_aks" {
   max_node_provisioning_time = local.work_aks_max_node_provisioning_time
   log_analytics_id           = module.hub_log_analytics.id
 
-  # Depends on the firewall to allow Azure Kubernetes Services and the peerings to pass the traffic
+  # Depends on the firewall to allow Azure Kubernetes Services and the peerings to pass the traffic.
+  # Even after the firewall is provisioned there is a delay until it starts working, thus we need
+  # The max_node_provisioning_time to increase the time the aks waits until failure.
   depends_on = [module.hub_firewall, module.hub_to_work_peerings]
 }
 
 locals {
-  work_vm_name    = "${local.prefix}-work-vm"
-  work_vm_os_disk = merge(local.vm_os_disk, { name = "${local.prefix}-work-vm-os-disk" })
+  #TODO change to user assigned identity
+  work_vm_name           = "${local.prefix}-work-vm"
+  work_vm_size           = "Standard_B2s"
+  work_vm_os_type        = "Linux"
+  work_vm_admin_username = "daniel"
+  work_vm_identity_type  = "SystemAssigned"
+
+  work_vm_os_disk = {
+    caching              = "ReadWrite"
+    storage_account_type = "Standard_LRS"
+  }
+
+  work_vm_source_image_reference = {
+    publisher = "Canonical"
+    offer     = "0001-com-ubuntu-server-focal"
+    sku       = "20_04-lts"
+    version   = "latest"
+  }
 
   work_vm_role_assignments = [
     {
@@ -166,16 +193,16 @@ module "work_vm" {
   name                   = local.work_vm_name
   location               = local.location
   resource_group_name    = azurerm_resource_group.work.name
-  size                   = local.vm_size
+  size                   = local.work_vm_size
   subnet_id              = module.work_virtual_network.subnet_ids["WorkSubnet"]
-  os_type                = local.vm_os_type
+  os_type                = local.work_vm_os_type
   os_disk                = local.work_vm_os_disk
-  source_image_reference = local.vm_source_image_reference
+  source_image_reference = local.work_vm_source_image_reference
   log_analytics_id       = module.hub_log_analytics.id
 
-  admin_username = local.vm_admin_username
+  admin_username = local.work_vm_admin_username
   admin_password = var.vm_admin_password
 
-  identity_type    = local.vm_identity_type
+  identity_type    = local.work_vm_identity_type
   role_assignments = local.work_vm_role_assignments
 }
