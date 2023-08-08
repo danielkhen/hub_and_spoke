@@ -48,6 +48,7 @@ No outputs.
 | <a name="module_monitor_vm_user_assigned_identity"></a> [monitor\_vm\_user\_assigned\_identity](#module\_monitor\_vm\_user\_assigned\_identity) | github.com/danielkhen/user_assigned_identity_module | n/a |
 | <a name="module_work_aks"></a> [work\_aks](#module\_work\_aks) | github.com/danielkhen/kubernetes_cluster_module | n/a |
 | <a name="module_work_aks_private_dns_zone"></a> [work\_aks\_private\_dns\_zone](#module\_work\_aks\_private\_dns\_zone) | github.com/danielkhen/private_dns_zone_module | n/a |
+| <a name="module_work_aks_user_assigned_identity"></a> [work\_aks\_user\_assigned\_identity](#module\_work\_aks\_user\_assigned\_identity) | github.com/danielkhen/user_assigned_identity_module | n/a |
 | <a name="module_work_network_security_groups"></a> [work\_network\_security\_groups](#module\_work\_network\_security\_groups) | github.com/danielkhen/network_security_group_module | n/a |
 | <a name="module_work_route_tables"></a> [work\_route\_tables](#module\_work\_route\_tables) | github.com/danielkhen/route_table_module | n/a |
 | <a name="module_work_storage_account"></a> [work\_storage\_account](#module\_work\_storage\_account) | github.com/danielkhen/storage_account_module | n/a |

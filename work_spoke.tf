@@ -137,10 +137,35 @@ module "work_aks_private_dns_zone" {
 }
 
 locals {
+  work_aks_role_assignments = [
+    {
+      name  = "dns_role"
+      scope = module.work_aks_private_dns_zone.id
+      role  = "DNS Zone Contributor"
+    },
+    {
+      name  = "acr_role"
+      scope = module.hub_acr.id
+      role  = "AcrPush"
+    }
+  ]
+}
+
+module "work_aks_user_assigned_identity" {
+  source = "github.com/danielkhen/user_assigned_identity_module"
+
+  name                = local.work_vm_identity_name
+  location            = local.location
+  resource_group_name = azurerm_resource_group.work.name
+  role_assignments    = local.work_vm_role_assignments
+}
+
+locals {
   work_aks_name                       = "${local.prefix}-work-aks"
   work_aks_node_resource_group        = "${local.prefix}-work-aks-rg"
   work_aks_network_plugin             = "azure"
   work_aks_max_node_provisioning_time = "60m"
+  work_aks_identity_type              = "UserAssigned"
 
   work_aks_default_node_pool = {
     name           = "default"
@@ -163,6 +188,8 @@ module "work_aks" {
   container_registry_id      = module.hub_acr.id
   max_node_provisioning_time = local.work_aks_max_node_provisioning_time
   private_dns_zone_id        = module.work_aks_private_dns_zone.id
+  identity_type              = local.work_aks_identity_type
+  user_assigned_identities   = [module.work_aks_user_assigned_identity.id]
   log_analytics_id           = module.hub_log_analytics.id
 
   # Depends on the firewall to allow Azure Kubernetes Services and the peerings to pass the traffic.
