@@ -117,6 +117,24 @@ module "work_storage_account" {
   private_endpoints           = local.work_storage_private_endpoints
 }
 
+locals {
+  work_aks_dns_name = "privatelink.westeurope.azmk8s.io"
+  work_aks_vnet_links = [
+    {
+      vnet_id = module.hub_virtual_network.id
+      name    = "hub-link"
+    }
+  ]
+}
+
+module "work_aks_private_dns_zone" {
+  source = "github.com/danielkhen/private_dns_zone_module"
+
+  name                = local.work_aks_dns_name
+  location            = local.location
+  resource_group_name = azurerm_resource_group.work.name
+  vnet_links          = local.work_aks_vnet_links
+}
 
 locals {
   work_aks_name                       = "${local.prefix}-work-aks"
@@ -144,6 +162,7 @@ module "work_aks" {
   default_node_pool          = local.work_aks_default_node_pool
   container_registry_id      = module.hub_acr.id
   max_node_provisioning_time = local.work_aks_max_node_provisioning_time
+  private_dns_zone_id        = module.work_aks_private_dns_zone.id
   log_analytics_id           = module.hub_log_analytics.id
 
   # Depends on the firewall to allow Azure Kubernetes Services and the peerings to pass the traffic.
