@@ -119,6 +119,7 @@ module "work_storage_account" {
 
 locals {
   work_aks_dns_name = "privatelink.westeurope.azmk8s.io"
+
   work_aks_vnet_links = [
     {
       vnet_id = module.hub_virtual_network.id
@@ -131,7 +132,6 @@ module "work_aks_private_dns_zone" {
   source = "github.com/danielkhen/private_dns_zone_module"
 
   name                = local.work_aks_dns_name
-  location            = local.location
   resource_group_name = azurerm_resource_group.work.name
   vnet_links          = local.work_aks_vnet_links
 }
