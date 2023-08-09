@@ -137,16 +137,23 @@ module "work_aks_private_dns_zone" {
 }
 
 locals {
+  work_aks_identity_name = "${local.prefix}-work-aks-identity"
+
   work_aks_role_assignments = [
     {
       name  = "dns_role"
       scope = module.work_aks_private_dns_zone.id
-      role  = "DNS Zone Contributor"
+      role  = "Private DNS Zone Contributor"
     },
     {
       name  = "acr_role"
       scope = module.hub_acr.id
       role  = "AcrPush"
+    },
+    {
+      name  = "work_vnet_role"
+      scope = module.work_virtual_network.id
+      role  = "Network Contributor"
     }
   ]
 }
@@ -154,10 +161,10 @@ locals {
 module "work_aks_user_assigned_identity" {
   source = "github.com/danielkhen/user_assigned_identity_module"
 
-  name                = local.work_vm_identity_name
+  name                = local.work_aks_identity_name
   location            = local.location
   resource_group_name = azurerm_resource_group.work.name
-  role_assignments    = local.work_vm_role_assignments
+  role_assignments    = local.work_aks_role_assignments
 }
 
 locals {
@@ -199,7 +206,7 @@ module "work_aks" {
 }
 
 locals {
-  work_vm_identity_name = "work-vm-identity"
+  work_vm_identity_name = "${local.prefix}-work-vm-identity"
 
   work_vm_role_assignments = [
     {
